@@ -21,7 +21,6 @@
 
 ### Pro Version
 - Make the chat style customizable (pro version, ask @Sylvain about this)
-- 
 
 ## Caveats
 
