@@ -1,3 +1,9 @@
+$bg-color: #FFFFFF;
+$bot-bg-color: #ecf0f1;
+$bot-text-color: #FFFFFF;
+$client-bg-color: #46CBA0;
+$client-text-color: #ecf0f1;
+
 .chat {
   height: calc(100vh);
   display: flex;
@@ -9,7 +15,7 @@
 }
 
 .messages {
-  background: url('https://s3.amazonaws.com/botpress-io/web/background.jpg');
+  background-color: $bg-color;
   background-size: cover;
   display: flex;
   flex: 1;
@@ -42,6 +48,7 @@
 }
 
 .composer input {
+  background-color: $bg-color;
   border: 0;
   flex: 1;
   padding: 10px;
@@ -57,9 +64,9 @@
 
 .message {
   clear: both;
-  display: inline-block;;
+  display: inline-block;
   float: left;
-  background: #ecf0f1;
+  background-color: $bot-bg-color;
   border-radius: 5px;
   padding: 10px;
   margin: 10px;
@@ -68,6 +75,8 @@
 
 .message {
   max-width: 80%;
+  border-radius: 20px;
+  padding: 10px 16px;
 }
 
 .message img {
@@ -76,8 +85,8 @@
 }
 
 .you {
-  background-color: #2ecc71;
-  color: #ecf0f1;
+  background-color: $client-bg-color;
+  color: $client-text-color;
   float: right;
   position: relative;
   right: 0;
@@ -98,14 +107,8 @@
   padding: 0px 10px;
 }
 
-.composer input {
-  height: 100%
-}
-
 .composer div {
-  background-color: #2ecc71;
   border-radius: 10px;
-  color: #ecf0f1;
   cursor: pointer;
   margin: 2.5px;
   -webkit-user-select: none;
@@ -117,4 +120,18 @@
 
 .hidden {
   display: none;
+  background-color: $bg-color;
+}
+
+.send {
+  width: 50px;
+  background-color: $client-bg-color;
+  color: $client-text-color;
+  border-radius: 0 !important;
+  height: 40px;
+  border: none;
+  line-height: 40px;
+  font-size: 30px;
+  display: block;
+  text-align: center;
 }
