@@ -21,14 +21,22 @@ class Composer extends React.Component {
 //   alert('The File APIs are not fully supported in this browser.');
 // }
   render() {
+
+    // FIXME: Upload picture button
+    // const uploadInput = <input className={style.hidden} ref="file" type="file" onChange={this.onSelectedFile.bind(this)}/>
+    // const uploadButton = <div onClick={this.selectFile.bind(this)}><img src="res/attach.png"/></div>
+
+    const uploadInput = null
+    const uploadButton = null
+    
     return <form ref="form" className={style.composer} action="" onSubmit={this.onSubmit.bind(this)}>
       <input ref="text"
       placeholder="Enter Your Message"
       value={this.state.text}
       onChange={this.updateState.bind(this)}
       autoComplete="off"/>
-      <input className={style.hidden} ref="file" type="file" onChange={this.onSelectedFile.bind(this)}/>
-      <div onClick={this.selectFile.bind(this)}><img src="res/attach.png"/></div>
+      {uploadInput}
+      {uploadButton}
     </form>
   }
 

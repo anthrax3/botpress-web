@@ -36,11 +36,15 @@
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.5.2",
     "react-bootstrap": "^0.30.6",
+    "react-chatview": "^0.1.1",
     "react-dom": "^15.3.2",
     "react-dropzone": "^3.13.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
     "webpack-node-externals": "^1.5.4"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }

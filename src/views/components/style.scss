@@ -9,8 +9,11 @@
 }
 
 .messages {
-  background: url('https://s3.amazonaws.com/botpress-io/web/background.jpg');
-  background-size: cover;
+  position: relative;
+  height: 100%;
+  overflow-y: auto !important;
+
+  background-color: #fefefe;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -20,15 +23,19 @@
   align-content: stretch; /* Extra space in Cross Axis */
 }
 
+.messages > div {
+  position: absolute;
+  width: 100%;
+  max-height: 100%;
+  bottom: 0;
+}
+
 .header {
   display: flex;
   flex-direction: column;
   height: 42px;
   text-align: center;
   justify-content: center;
-
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
 }
 
 .header h1 {
@@ -37,8 +44,10 @@
 
 .composer {
   display: flex;
-  height: 42px;
-  align-items:center;
+  height: 60px;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  background-color: white;
 }
 
 .composer input {
@@ -46,18 +55,20 @@
   flex: 1;
   padding: 10px;
   outline: none;
+  background-color: #fbfbfb;
 }
 
 .list {
+  height: 100%;
   flex-direction: row;
   align-items: flex-start; /* align items in Cross Axis */
   align-content: flex-start; /* Extra space in Cross Axis */
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .message {
   clear: both;
-  display: inline-block;;
+  display: inline-block;
   float: left;
   background: #ecf0f1;
   border-radius: 5px;
@@ -77,7 +88,7 @@
 
 .you {
   background-color: #2ecc71;
-  color: #ecf0f1;
+  color: #fff;
   float: right;
   position: relative;
   right: 0;
@@ -115,6 +126,6 @@
   padding: 5px 15px;
 }
 
-.hidden {
+.composer .hidden {
   display: none;
 }

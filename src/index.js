@@ -13,9 +13,36 @@ const outgoingMiddleware = bp => (event, next) => {
 
   // TODO Currently this will broadcast to all sockets
   // TODO We must target a single socket / client
-  
-  const msg = Object.assign({}, event, { from: 'bot', bp: null })
+
+  const user = event.user || (event.raw && event.raw.to && getOrCreateUser(event.raw.to))
+
+  const msg = Object.assign({}, event, {
+    from: 'bot',
+    bp: null,
+    __socketId: user && user.socketId // send back only to the sender
+  })
+
   bp.events.emit('modules.web.message',  msg)
+}
+
+const users = {}
+let usersCount = 0
+
+const getOrCreateUser = async (bp, socketId) => {
+  if (!users[socketId]) {
+    users[socketId] = {
+      first_name: 'Anonymous',
+      last_name: '#' + usersCount++,
+      profile_pic: 'http://350cr.blogs.brynmawr.edu/files/2013/05/anonymous.jpg', // TODO Remove that
+      socketId: socketId,
+      id: socketId,
+      platform: 'web'
+    }
+
+    await bp.db.saveUser(users[socketId])
+  }
+
+  return users[socketId]
 }
 
 module.exports = {
@@ -40,7 +67,7 @@ module.exports = {
 
     const config = await configurator.loadAll()
     
-    bp.events.on('modules.web.message', message => {
+    bp.events.on('modules.web.message', async (message, from, metadata) => {
       if (!message) {
         return
       }
@@ -50,11 +77,18 @@ module.exports = {
         return
       }
 
+      // If there's no client identifier, discard the event (should never happen)
+      if (!(metadata && metadata.socketId)) {
+        return
+      }
+
+      const user = await getOrCreateUser(bp, metadata.socketId)
+
       // TODO Support more types like attachment
       bp.middlewares.sendIncoming({
         platform: 'web',
         type: 'message',
-        user: message.from, // TODO Authenticate users somehow (cookies, localStorage, userId)
+        user: user,
         text: message.text,
         raw: message
       })

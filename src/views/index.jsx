@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 
 import Chat from './components/chat'
 import ChatSession from './components/chat-session'
@@ -13,7 +14,9 @@ export default class TemplateModule extends React.Component {
   }
 
   render() {
-    return <Chat 
+    const className = classnames(style.chatComponent, 'bp-modules-chat')
+    return <Chat
+      className={className}
       session={this.session}
     />
   }
