@@ -7,7 +7,6 @@ const outgoingTypes = ['text']
 
 const parseTyping = msg => {
   if (msg.raw && !!msg.raw.typing) {
-    console.log(msg.raw)
     if (isNaN(msg.raw.typing)) {
       return 1000
     } else {
