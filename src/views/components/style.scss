@@ -1,13 +1,3 @@
-.chat {
-  height: calc(100vh);
-  display: flex;
-  flex-direction: column;
-
-  justify-content: flex-start; /* align items in Main Axis */
-  align-items: stretch; /* align items in Cross Axis */
-  align-content: stretch;
-}
-
 .messages {
   position: relative;
   height: 100%;
@@ -23,11 +13,19 @@
   align-content: stretch; /* Extra space in Cross Axis */
 }
 
+.messages.typing {
+  height: calc(100% - 40px);
+}
+
 .messages > div {
   position: absolute;
   width: 100%;
   max-height: 100%;
   bottom: 0;
+
+  div:first-child {
+    margin-top: 10px;
+  }
 }
 
 .header {
@@ -73,7 +71,7 @@
   background: #ecf0f1;
   border-radius: 5px;
   padding: 10px;
-  margin: 10px;
+  margin: 0 10px 10px 10px;
   position: relative;
 }
 
@@ -106,7 +104,16 @@
 }
 
 .typing {
-  padding: 0px 10px;
+  text-align: center;
+
+  .spinner {
+    color: #58d1b0;
+
+    div {
+      width: 10px;
+      height: 10px;
+    }
+  }
 }
 
 .composer input {
@@ -128,4 +135,43 @@
 
 .composer .hidden {
   display: none;
+}
+
+.newConvo {
+  .text {
+    font-size: 20px;
+    color: #aaa;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .sayHi {
+    margin: auto;
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    padding: 15px;
+    margin-top: 10px;
+    
+    border-radius: 22px;
+
+    cursor: pointer;
+    color: #58d1b0;
+    font-size: 16px;
+    font-weight: 600;
+    
+    border: 1px solid #58d1b0;
+    background-color: white;
+    transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+
+    &:hover {
+      background-color: #58d1b0;
+      color: white;
+    }
+
+    &:active {
+      background-color: #52C3A4;
+      color: white;
+    }
+  }
 }

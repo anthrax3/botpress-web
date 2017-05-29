@@ -1,15 +1,19 @@
 import EventEmitter from 'events'
 
-//FIXME: Implement events for when message list changes
 class ChatSession extends EventEmitter {
 
   constructor({ events }) {
     super()
     this.events = events
+    this.userId = null
 
-    events.on('modules.web.message', function(msg) {
+    events.on('modules.web.message', msg => {
       // Only listen for messages coming from the bot
       if (msg.from !== 'bot') {
+        return
+      }
+
+      if(msg.__userId !== this.userId) {
         return
       }
 
@@ -18,11 +22,22 @@ class ChatSession extends EventEmitter {
         text: msg.text,
         attachment: msg.attachment
       })
-    }.bind(this))
+    })
 
-    events.on('modules.web.typing', function(msg) {
+    events.on('modules.web.typing', msg => {
       this.emit('typing')
-    }.bind(this))
+    })
+
+    events.on('modules.web.session_started', event => {
+      this.userId = event.userId
+      this.emit('session_started')
+    })
+
+    this.startNewSession()
+  }
+
+  startNewSession() {
+    this.events.emit('modules.web.new_session')
   }
 
   send(item) {
@@ -45,7 +60,7 @@ class ChatSession extends EventEmitter {
 
     var reader = new FileReader()
 
-    reader.onload = function(e) {
+    reader.onload = e => {
 
       this.emit('message', {
         class: 'you',
@@ -64,7 +79,7 @@ class ChatSession extends EventEmitter {
         }
       ]})
 
-    }.bind(this)
+    }
 
     reader.readAsDataURL(file)
   }

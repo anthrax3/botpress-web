@@ -1,8 +1,24 @@
 import _ from 'lodash'
+import Promise from 'bluebird'
+
+import umm from './umm'
 
 const outgoingTypes = ['text']
 
-const outgoingMiddleware = bp => (event, next) => {
+const parseTyping = msg => {
+  if (msg.raw && !!msg.raw.typing) {
+    console.log(msg.raw)
+    if (isNaN(msg.raw.typing)) {
+      return 1000
+    } else {
+      return Math.max(msg.raw.typing, 500)
+    }
+  }
+
+  return false
+}
+
+const outgoingMiddleware = bp => async (event, next) => {
   if (event.platform !== 'web') {
     return next()
   }
@@ -19,10 +35,22 @@ const outgoingMiddleware = bp => (event, next) => {
   const msg = Object.assign({}, event, {
     from: 'bot',
     bp: null,
+    __userId: user.id,
     __socketId: user && user.socketId // send back only to the sender
   })
 
-  bp.events.emit('modules.web.message',  msg)
+  const typing = parseTyping(msg)
+
+  if (typing) {
+    bp.events.emit('modules.web.typing', msg)
+    await Promise.delay(typing)
+  }
+
+  bp.events.emit('modules.web.message', msg)
+
+  if (msg._promise && msg._resolve) {
+    msg._resolve()
+  }
 }
 
 const users = {}
@@ -30,12 +58,14 @@ let usersCount = 0
 
 const getOrCreateUser = async (bp, socketId) => {
   if (!users[socketId]) {
+
+    const uniqueId = socketId + (`${Math.random()}`.substr(2, 5))
     users[socketId] = {
       first_name: 'Anonymous',
       last_name: '#' + usersCount++,
       profile_pic: 'http://350cr.blogs.brynmawr.edu/files/2013/05/anonymous.jpg', // TODO Remove that
       socketId: socketId,
-      id: socketId,
+      id: uniqueId,
       platform: 'web'
     }
 
@@ -43,6 +73,11 @@ const getOrCreateUser = async (bp, socketId) => {
   }
 
   return users[socketId]
+}
+
+const startNewSession = (bp, socketId) => {
+  delete users[socketId]
+  return getOrCreateUser(bp, socketId)
 }
 
 module.exports = {
@@ -59,6 +94,8 @@ module.exports = {
       description: 'Sends out messages that targets platform = web.' +
       ' This middleware should be placed at the end as it swallows events once sent.'
     })
+
+    umm(bp) // Initialize UMM
   },
 
   ready: async function(bp, configurator) {
@@ -92,6 +129,22 @@ module.exports = {
         text: message.text,
         raw: message
       })
+    })
+
+    bp.events.on('modules.web.new_session', async (message, from, metadata) => {
+      if (!(metadata && metadata.socketId)) {
+        return
+      }
+
+      const user = await startNewSession(bp, metadata.socketId)
+
+      const event = {
+        from: 'bot',
+        userId: user.id,
+        __socketId: user && user.socketId // send back only to the sender
+      }
+
+      bp.events.emit('modules.web.session_started', event)
     })
 
   }

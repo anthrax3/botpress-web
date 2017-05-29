@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import ReactChatView from 'react-chatview'
+import classnames from 'classnames'
 
 import TypingIndicator from './typing-indicator'
 import Message from './message'
@@ -20,24 +21,30 @@ class MessageList extends React.Component {
   }
 
   render() {
-    var typing = (this.props.typing) ? <TypingIndicator/> : null
+    var typing = (this.props.typing) ? <TypingIndicator /> : null
+    const className = classnames(style.messages, {
+      [style.typing]: this.props.typing
+    })
 
-    
+    if (this.props.showWelcome && !this.props.messages.length) {
+      return <div className={style.list}>
+        <div className={style.newConvo}>
+          <div className={style.text}>This is a new conversation with your bot</div>
+          <div className={style.sayHi} onClick={this.props.onInitiate}>Say Hi</div>
+        </div>
+      </div>
+    }
+
     return <div className={style.list}>
-        
-        <ReactCSSTransitionGroup transitionName="fadeInUp" transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-          { typing }
-        </ReactCSSTransitionGroup>
-
         <ReactChatView 
-            className={style.messages}
+            className={className}
             flipped={false}
             scrollLoadThreshold={50}
             ref='list'
             onInfiniteLoad={::this.loadMoreHistory}>
           {this.props.messages.map((message, index) => <Message key={index} message={message} ref='lastMessage'/> )}
         </ReactChatView>
-      
+        {typing}
     </div>
   }
 }
