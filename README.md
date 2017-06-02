@@ -11,7 +11,6 @@
 
 ## TODO
 
-- Add credit to Bottr & James in relevant file headers
 - Users are currently all anonymous / unauthenticated / unidentified
 - This works only with one user (the bot currently broadcasts to all users)
 - Change the background
@@ -25,3 +24,7 @@
 ## Caveats
 
 - If you're running the bot in NODE_ENV=production, the module will prompt a login screen. We solved this situation in Botpress Pro (ask @Sylvain about this). To run this in production you essentially need a Pro version due to technical limitations regarding authentication & UI.
+
+## Credits
+
+Thanks to James Campbell for the original code of the Web Interface (code from Bottr)!
