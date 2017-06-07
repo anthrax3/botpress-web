@@ -72,6 +72,28 @@ function processOutgoing({ event, blocName, instruction }) {
 
   const strRep = util.inspect(instruction, false, 1)
   throw new Error(`Unrecognized instruction on Web in bloc '${blocName}': ${strRep}`)
+
+}
+
+////////////
+/// TEMPLATES
+////////////
+
+function getTemplates() {
+  return [{
+      type: 'Text - Single message',
+      template: "{{BLOCK_NAME}}:\n\t- {{TEXT}}"
+    },{
+      type: 'Text - Multiple messages',
+      template: "{{BLOCK_NAME}}:\n\t- {{TEXT_1}}\n\t{{TEXT_2}}"
+    },{
+      type: 'Text - Random message',
+      template: "{{BLOCK_NAME}}:\n\t- text:\t\n- {{TEXT_1}}\n\t- {{TEXT_2}}"
+    },{
+      type: 'Typing - Between messages',
+      template: "{{BLOCK_NAME}}:\n\t- text: {{TEXT_1}}\n\t- typing: {{1000ms}}\n\t- text: {{TEXT_2}}"
+    }
+  ]
 }
 
 module.exports = bp => {
@@ -80,6 +102,6 @@ module.exports = bp => {
   umm && registerConnector && registerConnector({
     platform: 'web',
     processOutgoing: args => processOutgoing(Object.assign({}, args, { bp })),
-    templates: []
+    templates: getTemplates()
   })
 }
