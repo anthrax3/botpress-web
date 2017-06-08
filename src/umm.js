@@ -80,18 +80,19 @@ function processOutgoing({ event, blocName, instruction }) {
 ////////////
 
 function getTemplates() {
-  return [{
+  return [
+    {
       type: 'Text - Single message',
-      template: "{{BLOCK_NAME}}:\n\t- {{TEXT}}"
+      template: 'BLOCK_NAME:\n\t- TEXT'
     },{
       type: 'Text - Multiple messages',
-      template: "{{BLOCK_NAME}}:\n\t- {{TEXT_1}}\n\t{{TEXT_2}}"
+      template: 'BLOCK_NAME:\n\t- TEXT_1\n\tTEXT_2'
     },{
       type: 'Text - Random message',
-      template: "{{BLOCK_NAME}}:\n\t- text:\t\n- {{TEXT_1}}\n\t- {{TEXT_2}}"
+      template: 'BLOCK_NAME:\n\t- text:\t\n- TEXT_1\n\t- TEXT_2'
     },{
       type: 'Typing - Between messages',
-      template: "{{BLOCK_NAME}}:\n\t- text: {{TEXT_1}}\n\t- typing: {{1000ms}}\n\t- text: {{TEXT_2}}"
+      template: 'BLOCK_NAME:\n\t- text: TEXT_1\n\t- typing: 1000ms\n\t- text: TEXT_2'
     }
   ]
 }
