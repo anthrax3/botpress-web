@@ -83,16 +83,16 @@ function getTemplates() {
   return [
     {
       type: 'Text - Single message',
-      template: 'BLOCK_NAME:\n\t- TEXT'
+      template: 'block_name_sm:\n\  - Text goes here..'
     },{
       type: 'Text - Multiple messages',
-      template: 'BLOCK_NAME:\n\t- TEXT_1\n\tTEXT_2'
+      template: 'block_name_mm:\n  - Text goes here..(1)\n  - Text goes here..(2)'
     },{
       type: 'Text - Random message',
-      template: 'BLOCK_NAME:\n\t- text:\t\n- TEXT_1\n\t- TEXT_2'
+      template: 'block_name_rm:\n  - text:\n    - Text goes here..(1)\n    - Text goes here..(2)'
     },{
-      type: 'Typing - Between messages',
-      template: 'BLOCK_NAME:\n\t- text: TEXT_1\n\t- typing: 1000ms\n\t- text: TEXT_2'
+      type: 'Typing - Message with typing',
+      template: 'block_name_bm:\n  - text: Text goes here..(1)\n    typing: 1000ms'
     }
   ]
 }
