@@ -31,12 +31,14 @@ class Composer extends React.Component {
     
     return <form ref="form" className={style.composer} action="" onSubmit={this.onSubmit.bind(this)}>
       <input ref="text"
-      placeholder="Enter Your Message"
+      placeholder="Enter your message here..."
       value={this.state.text}
       onChange={this.updateState.bind(this)}
       autoComplete="off"/>
-      {uploadInput}
-      {uploadButton}
+      <input className={style.hidden} ref="file" type="file" onChange={this.onSelectedFile.bind(this)}/>
+      <div className={style.send} onClick={this.selectFile.bind(this)}>
+        <i className="material-icons">play_arrow</i>
+      </div>
     </form>
   }
 

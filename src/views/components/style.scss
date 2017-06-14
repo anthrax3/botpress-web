@@ -1,9 +1,23 @@
-.messages {
-  position: relative;
-  height: 100%;
-  overflow-y: auto !important;
 
-  background-color: #fefefe;
+$bg-color: #FFFFFF;
+$bot-bg-color: #ecf0f1;
+$bot-text-color: #FFFFFF;
+$client-bg-color: #46CBA0;
+$client-text-color: #ecf0f1;
+
+.chat {
+  height: calc(100vh);
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start; /* align items in Main Axis */
+  align-items: stretch; /* align items in Cross Axis */
+  align-content: stretch;
+}
+
+.messages {
+  background-color: $bg-color;
+  background-size: cover;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -49,6 +63,7 @@
 }
 
 .composer input {
+  background-color: $bg-color;
   border: 0;
   flex: 1;
   padding: 10px;
@@ -68,7 +83,7 @@
   clear: both;
   display: inline-block;
   float: left;
-  background: #ecf0f1;
+  background-color: $bot-bg-color;
   border-radius: 5px;
   padding: 10px;
   margin: 0 10px 10px 10px;
@@ -77,6 +92,8 @@
 
 .message {
   max-width: 80%;
+  border-radius: 20px;
+  padding: 10px 16px;
 }
 
 .message img {
@@ -85,8 +102,9 @@
 }
 
 .you {
-  background-color: #2ecc71;
-  color: #fff;
+
+  background-color: $client-bg-color;
+  color: $client-text-color;
   float: right;
   position: relative;
   right: 0;
@@ -116,14 +134,8 @@
   }
 }
 
-.composer input {
-  height: 100%
-}
-
 .composer div {
-  background-color: #2ecc71;
   border-radius: 10px;
-  color: #ecf0f1;
   cursor: pointer;
   margin: 2.5px;
   -webkit-user-select: none;
@@ -135,6 +147,20 @@
 
 .composer .hidden {
   display: none;
+  background-color: $bg-color;
+}
+
+.send {
+  width: 50px;
+  background-color: $client-bg-color;
+  color: $client-text-color;
+  border-radius: 0 !important;
+  height: 40px;
+  border: none;
+  line-height: 40px;
+  font-size: 30px;
+  display: block;
+  text-align: center;
 }
 
 .newConvo {
