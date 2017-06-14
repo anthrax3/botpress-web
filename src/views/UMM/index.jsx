@@ -2,11 +2,13 @@ import { Component } from 'react'
 import { 
   Button,
   Tooltip,
-  OverlayTrigger
+  OverlayTrigger,
+  Glyphicon
 } from 'react-bootstrap'
 
+import _ from 'lodash'
+
 import classnames from 'classnames'
-import Spinner from 'react-spinkit'
 
 import style from './style.scss'
 
@@ -15,7 +17,6 @@ export default class UMMComponent extends Component {
     super(props)
 
     this.state = {
-      typing: false,
       loading: true
     }
   }
@@ -24,45 +25,39 @@ export default class UMMComponent extends Component {
     this.setState({
       loading: false
     })
-
-    this.setTyping()
-  }
-
-  setTyping() {
-    if (!this.state.loading && this.props.raw.typing) {
-      this.setState({
-        typing: true
-      })
-
-      setTimeout(() => {
-        this.setState({
-          typing: false
-        })
-      }, this.props.raw.typing)
-    }
   }
 
   componentWillUnmount() {
     this.setState({
-      loading: false
+      loading: true
     })
   }
 
   renderTyping() {
+    if (!this.props.raw.typing) {
+      return null
+    }
+
     const classNames = classnames({
-      [style.typing]: this.state.typing,
-      'bp-messenger-typing': this.state.typing
+      [style.typing]: true,
+      'bp-web-typing': true
     })
 
+    const tooltip = <Tooltip id="tooltip">
+      Typing for <strong>{this.props.raw.typing}</strong> seconds...
+    </Tooltip>
+
     return <div className={classNames}>
-      <Spinner name='ball-beat' fadeIn={'quarter'} className={style.spinner}/>
+      <OverlayTrigger placement="top" overlay={tooltip}>
+        <Glyphicon glyph='pencil' />
+      </OverlayTrigger>
     </div>
   }
 
   renderText() {
     const classNames = classnames({
       [style.text]: true, 
-      'bp-messenger-text': true
+      'bp-web-text': true
     })
     
     if (this.state.typing) {
@@ -77,7 +72,7 @@ export default class UMMComponent extends Component {
       </div>
   }
 
-  renderButton({ title, payload }, key) {
+  renderQuickRepliesButton({ title, payload }, key) {
     const tooltip = <Tooltip id="tooltip">
       On click, payload event <strong>{payload}</strong> is emitted.
     </Tooltip>
@@ -92,15 +87,15 @@ export default class UMMComponent extends Component {
       return null
     }
 
-    const classNames = classnames(style.quickReplies, 'bp-messenger-quick-replies')
+    const classNames = classnames(style.quickReplies, 'bp-web-quick-replies')
     
     return <div className={classNames}>
-        {this.props.raw.quick_replies.map(this.renderButton)}
+        {this.props.raw.quick_replies.map(this.renderQuickRepliesButton)}
       </div>
   }
 
   renderNotSupported() {
-    return <div>Not supported yet</div>
+    return <div>Visual preview is not supported yet</div>
   }
 
   renderComponent() {
@@ -117,9 +112,10 @@ export default class UMMComponent extends Component {
       return null
     }
 
-    const classNames = classnames(style.component, 'bp-messenger-component')
+    const classNames = classnames(style.component, 'bp-web-component')
     return <div className={classNames}>
         {this.renderComponent()}
+        {this.renderTyping()}
       </div>
   }
 }
