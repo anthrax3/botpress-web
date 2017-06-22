@@ -113,7 +113,7 @@ export class Emulator extends React.Component {
           bottomLeft: false
         }}>
         <div className={style.header} onClick={::this.toggleCollapsed}>
-          <div className={style.left}>Chat Emulator</div>
+          <div className={style.left}>Emulator</div>
           <div className={style.right}>
             <span className={style.button} onClick={::this.startNewSession}>
               <i className="icon material-icons">refresh</i>
