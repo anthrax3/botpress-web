@@ -6,9 +6,11 @@ import Resizable from 'react-resizable-box'
 import Chat from './components/chat'
 import ChatSession from './components/chat-session'
 
+import UMMComponent from './UMM'
+
 import style from './style.scss'
 
-export default class TemplateModule extends React.Component {
+export default class UMMModule extends React.Component {
 
   constructor(props) {
     super()
@@ -111,7 +113,7 @@ export class Emulator extends React.Component {
           bottomLeft: false
         }}>
         <div className={style.header} onClick={::this.toggleCollapsed}>
-          <div className={style.left}>Chat Emulator</div>
+          <div className={style.left}>Emulator</div>
           <div className={style.right}>
             <span className={style.button} onClick={::this.startNewSession}>
               <i className="icon material-icons">refresh</i>
@@ -122,5 +124,14 @@ export class Emulator extends React.Component {
       </Resizable>
     </div>
   }
+}
 
+export class UMMOutgoing extends React.Component {
+  constructor(props) {
+    super()
+  }
+
+  render() {
+    return <UMMComponent {...this.props} />
+  }
 }
