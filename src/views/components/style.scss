@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 $bg-color: #FFFFFF;
 $bot-bg-color: #ecf0f1;
 $bot-text-color: #FFFFFF;
@@ -15,8 +16,11 @@ $client-text-color: #ecf0f1;
 }
 
 .messages {
-  background-color: $bg-color;
-  background-size: cover;
+  position: relative;
+  height: 100%;
+  overflow-y: auto !important;
+
+  background-color: #fefefe;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -26,15 +30,27 @@ $client-text-color: #ecf0f1;
   align-content: stretch; /* Extra space in Cross Axis */
 }
 
+.messages.typing {
+  height: calc(100% - 40px);
+}
+
+.messages > div {
+  position: absolute;
+  width: 100%;
+  max-height: 100%;
+  bottom: 0;
+
+  div:first-child {
+    margin-top: 10px;
+  }
+}
+
 .header {
   display: flex;
   flex-direction: column;
   height: 42px;
   text-align: center;
   justify-content: center;
-
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
 }
 
 .header h1 {
@@ -43,8 +59,10 @@ $client-text-color: #ecf0f1;
 
 .composer {
   display: flex;
-  height: 42px;
-  align-items:center;
+  height: 60px;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  background-color: white;
 }
 
 .composer input {
@@ -53,23 +71,29 @@ $client-text-color: #ecf0f1;
   flex: 1;
   padding: 10px;
   outline: none;
+  background-color: #fbfbfb;
 }
 
 .list {
+  height: 100%;
   flex-direction: row;
   align-items: flex-start; /* align items in Cross Axis */
   align-content: flex-start; /* Extra space in Cross Axis */
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .message {
   clear: both;
+<<<<<<< HEAD
+=======
+  white-space: pre-line;
+>>>>>>> origin/master
   display: inline-block;
   float: left;
   background-color: $bot-bg-color;
   border-radius: 5px;
   padding: 10px;
-  margin: 10px;
+  margin: 0 10px 10px 10px;
   position: relative;
 }
 
@@ -85,8 +109,13 @@ $client-text-color: #ecf0f1;
 }
 
 .you {
+<<<<<<< HEAD
   background-color: $client-bg-color;
   color: $client-text-color;
+=======
+  background-color: #2ecc71;
+  color: #fff;
+>>>>>>> origin/master
   float: right;
   position: relative;
   right: 0;
@@ -104,7 +133,16 @@ $client-text-color: #ecf0f1;
 }
 
 .typing {
-  padding: 0px 10px;
+  text-align: center;
+
+  .spinner {
+    color: #58d1b0;
+
+    div {
+      width: 10px;
+      height: 10px;
+    }
+  }
 }
 
 .composer div {
@@ -118,7 +156,7 @@ $client-text-color: #ecf0f1;
   padding: 5px 15px;
 }
 
-.hidden {
+.composer .hidden {
   display: none;
   background-color: $bg-color;
 }
@@ -134,4 +172,43 @@ $client-text-color: #ecf0f1;
   font-size: 30px;
   display: block;
   text-align: center;
+}
+
+.newConvo {
+  .text {
+    font-size: 20px;
+    color: #aaa;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .sayHi {
+    margin: auto;
+    width: 150px;
+    height: 50px;
+    text-align: center;
+    padding: 15px;
+    margin-top: 10px;
+    
+    border-radius: 22px;
+
+    cursor: pointer;
+    color: #58d1b0;
+    font-size: 16px;
+    font-weight: 600;
+    
+    border: 1px solid #58d1b0;
+    background-color: white;
+    transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+
+    &:hover {
+      background-color: #58d1b0;
+      color: white;
+    }
+
+    &:active {
+      background-color: #52C3A4;
+      color: white;
+    }
+  }
 }

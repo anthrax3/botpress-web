@@ -4,6 +4,7 @@ import MessageList from './message-list'
 import Composer from './composer'
 import Dropzone from 'react-dropzone'
 
+import parentStyle from '../style.scss'
 import style from './style.scss'
 
 // FIXME:
@@ -13,7 +14,7 @@ import style from './style.scss'
 class Chat extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       messages: [],
@@ -25,10 +26,8 @@ class Chat extends React.Component {
 
   componentDidMount() {
 
-    var messages = this.state.messages
-
-    this.session.on('message', function(message) {
-
+    this.session.on('message', message => {
+      var messages = this.state.messages.map(m => m)
       messages.push(message)
 
       this.setState({
@@ -36,13 +35,20 @@ class Chat extends React.Component {
         typing: this.props.typing && message.class !== 'bot'
       })
 
-    }.bind(this))
+    })
 
-    this.session.on('typing', function(msg) {
+    this.session.on('session_started', () => {
+      this.setState({
+        messages: [],
+        typing: false
+      })
+    })
+
+    this.session.on('typing', msg => {
       this.setState({
         typing: true
       })
-    }.bind(this));
+    })
   }
 
   render() {
@@ -50,10 +56,12 @@ class Chat extends React.Component {
       <h1>Bottr</h1>
     </div>
 
+    const sayHi = () => this.session.send('Hello')
+
     return (
-      <Dropzone className={style.chat} onDrop={this.onUpload.bind(this)} disableClick={true}>
-        <MessageList messages={this.state.messages} typing={this.state.typing}/>
-        <Composer onSubmit={this.onSubmit.bind(this)} onUpload={this.onUpload.bind(this)}/>
+      <Dropzone className={parentStyle.chat} onDrop={this.onUpload.bind(this)} disableClick={true}>
+        <MessageList showWelcome={this.props.showWelcome} messages={this.state.messages} typing={this.state.typing} onInitiate={sayHi}/>
+        <Composer onSubmit={::this.onSubmit} onUpload={::this.onUpload}/>
       </Dropzone>
     )
   }

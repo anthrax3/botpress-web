@@ -1,20 +1,35 @@
 {
   "name": "botpress-web",
-  "version": "1.0.0",
-  "description": "A web chat for Botpress",
+  "version": "1.2.2",
+  "description": "A web chat and emulator for Botpress",
   "main": "bin/node.bundle.js",
+  "homepage": "https://github.com/botpress/botpress-web",
   "botpress": {
-    "menuText": "botpress-web",
-    "menuIcon": "view_module",
-    "webBundle": "bin/web.bundle.js"
+    "menuText": "Web Emulator",
+    "menuIcon": "chrome_reader_mode",
+    "webBundle": "bin/web.bundle.js",
+    "noInterface": true,
+    "plugins": [
+      {
+        "entry": "Emulator",
+        "position": "overlay"
+      }
+    ]
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "node webpack.js --watch",
     "compile": "node webpack.js --compile"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/botpress/botpress-web"
+  },
   "author": "Botpress",
-  "license": "Botpress Proprietary License",
+  "license": "AGPL-3.0",
+  "peerDependencies": {
+    "botpress": ">= 1"
+  },
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.7",
@@ -36,11 +51,17 @@
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.5.2",
     "react-bootstrap": "^0.30.6",
+    "react-chatview": "^0.1.1",
     "react-dom": "^15.3.2",
     "react-dropzone": "^3.13.1",
+    "react-resizable-box": "^2.0.4",
+    "react-spinkit": "^3.0.0",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.3",
     "webpack-node-externals": "^1.5.4"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
