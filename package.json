@@ -11,7 +11,7 @@
     "noInterface": true,
     "plugins": [
       {
-        "entry": "Emulator",
+        "entry": "Web",
         "position": "overlay"
       }
     ]
