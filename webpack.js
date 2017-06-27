@@ -77,6 +77,7 @@ var webConfig = {
 const liteConfig = Object.assign({}, webConfig, {
   entry: {
     test: './src/views/test.lite.jsx'
+    web: './src/views/web/index.lite.jsx'
   },
   output: {
     path: './bin/lite',
