@@ -3,9 +3,10 @@ import classnames from 'classnames'
 
 import Resizable from 'react-resizable-box'
 
-import Chat from './components/chat'
-import ChatSession from './components/chat-session'
+import Chat from './components/chat' // Deprecated
+import ChatSession from './components/chat-session' // Deprecated
 
+import WebComponent from './web'
 import UMMComponent from './UMM'
 
 import style from './style.scss'
@@ -28,7 +29,7 @@ export default class UMMModule extends React.Component {
   }
 }
 
-export class Embedded extends React.Component {
+export class Embedded extends React.Component { // Deprecated
 
   constructor(props) {
     super()
@@ -45,7 +46,7 @@ export class Embedded extends React.Component {
   }
 }
 
-export class Emulator extends React.Component {
+export class Emulator extends React.Component { // Deprecated
 
   constructor(props) {
     super()
@@ -123,6 +124,16 @@ export class Emulator extends React.Component {
         {this.state.chatComponent}
       </Resizable>
     </div>
+  }
+}
+
+export class Web extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return <WebComponent />
   }
 }
 

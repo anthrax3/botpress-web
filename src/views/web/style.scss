@@ -1,0 +1,130 @@
+.web {
+    border: none;
+    display: block;
+    position: fixed;
+    visibility: none;
+    z-index: 100000;
+    max-height: 100vh;
+    max-width: 100vw;
+    transition: none;
+    background: none transparent;
+    opacity: 1;
+
+    font-size: 16px;    
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
+
+    button {
+      float: right;
+      background-color: rgb(1, 118, 255);
+      fill: rgb(255, 255, 255);
+      cursor: pointer;
+      outline: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      z-index: 1;
+      width: 52px;
+      height: 52px;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 2px 6px 0 rgba(0,0,0,.4);
+      overflow: hidden;
+
+      padding: 0;
+      border: none;
+      background-clip: padding-box;
+
+      i {
+        transition: opacity .3s ease;
+        opacity: 1;
+        fill: inherit;
+        stroke: inherit;
+        width: 100%;
+        padding: 0;
+        line-height: 0;
+      }
+    }
+}
+
+.widget {
+    top: auto;
+    left: auto;
+    bottom: 24px;
+    right: 36px;
+    width: 76px !important;
+    height: 76px !important; 
+}
+  
+.convo {
+    top: auto;
+    left: auto;
+    bottom: 24px;
+    right: 36px;
+    width: 420px !important;
+    min-height: 420px !important;
+    max-height: 500px !important;
+
+    button {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      
+      i {
+        opacity: 0.5;
+      }
+
+      &:hover {
+        i {
+          opacity: 1;
+        }
+      }
+    }
+}
+
+.side {
+    top: 0px;
+    left: auto;
+    bottom: 0px;
+    right: 0px;
+    width: 360px !important;
+    height: 100% !important;
+}
+
+.display {
+    visibility: visible;
+}
+
+.container {
+  position: absolute;
+  z-index: 2147483647;
+  width: 100%;
+  height: 100%;
+  color: #333;
+  font-size: 16px;
+  overflow: hidden;
+
+  .widget-container {
+    position: absolute;
+    bottom: 0;
+    top: 0; 
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 12px 12px 12px 16px;
+    flex-direction: column;
+
+    * {
+      box-sizing: border-box;
+      outline: none;
+    }
+
+    span {
+      flex: 1 0 auto;
+      width: 100%;
+    }
+  }
+}
