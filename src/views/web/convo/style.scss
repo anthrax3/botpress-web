@@ -1,0 +1,283 @@
+
+
+.external {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin: 32px 0 16px 16px;
+  position: relative;
+  height: 100%;
+
+  .internal {
+    background-color: white;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    box-shadow: 0 4px 23px 0 rgba(0,0,0,.09);
+    border-radius: 5px;
+
+    .header {
+      background-color: rgb(1, 118, 255);
+      color: rgb(255, 255, 255);
+      -webkit-box-flex: 1;
+      -ms-flex: 1 0 auto;
+      flex: 1 0 auto;
+      border-top-left-radius: inherit;
+      border-top-right-radius: inherit;
+
+      .line {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        color: #fff;
+        font-weight: 500;
+
+        margin-bottom: 20px;
+        margin-top: 12px;
+        padding-left: 18px;
+        padding-right: 18px;
+
+        .title {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-flex: 1;
+          -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          font-size: 18px;
+
+          .avatar {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: reverse;
+            -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+            -webkit-box-align: end;
+            -ms-flex-align: end;
+            align-items: flex-end;
+            height: 1.4em;
+
+            .square {
+              -webkit-transform: translate(-10px,12px);
+              transform: translate(-10px,12px);
+              margin-right: 4px;
+              position: relative;
+              width: 70px;
+              height: 70px;
+
+              .circle {
+                border-color: rgb(1, 118, 255);
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: auto;
+                height: auto;
+                border-width: 2px;
+                border-style: solid;
+                border-radius: 50%;
+                background-color: #f8f8f8;
+
+                -ms-flex-negative: 0;
+                flex-shrink: 0;
+
+                .picture {
+                  border-radius: 50%;
+                  background-size: cover;
+                  background-position: 50%;
+                  width: 100%;
+                  height: 100%;
+                }
+              }
+            }
+          }
+
+          .name {
+            color: rgb(255, 255, 255);
+            font-weight: 500;
+            
+            span {
+              color: inherit;
+              opacity: .6;
+            }
+          }
+        }
+      }
+
+      .text {
+        font-size: 15px;
+        font-weight: 500;
+        min-height: 50px;
+        max-height: 150px;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+        word-break: break-word;
+        white-space: pre-line;
+        -webkit-overflow-scrolling: touch;
+
+        margin-top: 4px;
+        margin-bottom: 0;
+        padding-bottom: 12px;
+        padding-left: 18px;
+        padding-right: 18px;
+
+        .paragraph {
+          font-weight: 400;
+          font-size: 15px;
+          word-break: break-word;
+          white-space: pre-line;
+
+          p {
+            margin: 0;
+            display: block;
+          }
+        }
+      }
+
+    }
+
+    .composer {
+      position: relative;
+      padding: 8px;
+      background-color: #fff;
+      border-bottom-left-radius: inherit;
+      border-bottom-right-radius: inherit;
+
+
+      .flex-column {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        display: flex;
+
+        .input {
+          outline: none;
+
+          textarea {
+            background-color: transparent;
+            min-height: 32px;
+            max-height: 96px;
+            margin-bottom: 0;
+            font-size: 14px;
+            padding: 8px;
+            width: 100%;
+            border: none;
+            resize: none;
+            line-height: 1.2;
+          }
+        }
+
+        .bottom {
+          padding: 0 8px;
+          display: flex;
+          padding: 0 16px 12px;
+          justify-content: space-between;
+          -webkit-box-align: center;
+
+          .footer {
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            position: relative;
+            height: 20px;
+            font-size: 12px;
+            color: #9a9a9a;
+
+            span {
+              .flex-minimal {
+                height: 20px;
+                position: relative;
+                -webkit-box-pack: end;
+                -ms-flex-pack: end;
+                justify-content: flex-end;
+                display: flex;
+
+                .element {
+                  display: flex;
+                  align-items: center;
+
+                  span {
+                    i {
+                      vertical-align: middle;
+                      display: inline;
+                      margin: -3px 2px;
+                      font-style: italic;
+                      text-align: center;
+                      padding: 0;
+                    }
+
+                    a {
+                      color: rgb(1, 118, 255);
+                      font-weight: 500;
+                      
+                      cursor: pointer;
+                      text-decoration: none;
+                    }
+                  }
+                }
+              }
+            }
+
+            .enter-prompt {
+              position: absolute;
+              top: 0;
+              right: 0;
+              height: 20px;
+
+              a {
+                color: rgb(1, 118, 255);
+                display: flex;
+                font-weight: 500;
+                font-size: 14px;
+                cursor: pointer;
+
+                text-decoration: none;
+
+                i {
+                  vertical-align: middle;
+                  display: inline;
+                  margin: 2px 6px;
+                  text-align: center;
+                  padding: 0;
+
+                  svg {
+                    fill: currentColor;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  

@@ -4,20 +4,18 @@ import classnames from 'classnames'
 
 import style from './style.scss'
 
-class Web extends React.Component {
+export default class Side extends React.Component {
 
   constructor(props) {
     super(props)
   }
 
-
   render() {
-    const classNames = classnames(style.web)
-    
+    const classNames = classnames(style['side-container'])
+
     return <div className={classNames}>
-        <h1>YOYO</h1>
+        <h1>Side</h1>
+        <button onClick={this.props.close}>Close</button>
       </div>
   }
 }
-
-module.exports = Web
