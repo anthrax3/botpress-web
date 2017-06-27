@@ -8,18 +8,21 @@ $(function() {
 
     window.addEventListener('message', event => {
       const data = event.data
-      // TODO Do something with the message
+
+      if (data && data.type && data.type === 'setClass') {
+        $('#bp-widget').attr('class', data.value)
+      }
     })
 
     var BASE_URL = 'http://localhost:3000'; // <<--- TODO
+
+    var style = $('<link href="' + BASE_URL + '/api/botpress-web/inject.css" rel="stylesheet">');
+    style.appendTo('head');
 
     var widgetContainer = $("<div id='bp-web-widget'></div>");
     widgetContainer.appendTo('body');
 
     $('<iframe id="bp-widget">')
     .appendTo('#bp-web-widget')
-    .attr({
-        src: BASE_URL + '/lite/?m=web&v=web',
-        style: "border: none; display: block; position: fixed; top: auto; left: auto; bottom: 24px; right: 24px; width: 76px !important; height: 76px !important; visibility: visible; z-index: 2147483647; max-height: 100vh; max-width: 100vw; transition: none; background: none transparent; opacity: 1;"
-    });
+    .attr({ src: BASE_URL + '/lite/?m=web&v=web' });
 });

@@ -151,7 +151,7 @@ export class WebInjection extends React.Component {
   render () {
     console.log('begin')
     var node = window.document.createElement('script')
-    node.src = 'http://localhost:3000/api/botpress-web/inject'
+    node.src = 'http://localhost:3000/api/botpress-web/inject.js'
     window.document.body.appendChild(node)
     console.log('Works')
   }

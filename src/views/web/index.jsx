@@ -84,7 +84,7 @@ export default class Web extends React.Component {
 
   render() {
 
-    window.parent.postMessage({ type: 'viewType', payload: 'Test!!' }, "*")
+    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-convo' }, "*")
 
     const classNames = classnames({
       [style.web]: true,
