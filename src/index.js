@@ -5,6 +5,8 @@ import Promise from 'bluebird'
 
 import umm from './umm'
 
+import injectScript from 'raw!./inject.js'
+
 const outgoingTypes = ['text']
 
 const parseTyping = msg => {
@@ -131,6 +133,12 @@ module.exports = {
 
     const config = await configurator.loadAll()
     
+    const router = bp.getRouter('botpress-web', { auth: false })
+    router.get('/inject', (req, res) => {
+      res.contentType('text/javascript')
+      res.send(injectScript)
+    })
+
     bp.events.on('modules.web.message', async (message, from, metadata) => {
       if (!message) {
         return

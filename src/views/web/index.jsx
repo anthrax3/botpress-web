@@ -7,7 +7,7 @@ import Side from './side'
 
 import style from './style.scss'
 
-class Web extends React.Component {
+export default class Web extends React.Component {
 
   constructor(props) {
     super(props)
@@ -83,6 +83,9 @@ class Web extends React.Component {
   }
 
   render() {
+
+    window.parent.postMessage({ type: 'viewType', payload: 'Test!!' }, "*")
+
     const classNames = classnames({
       [style.web]: true,
       [style.widget]: this.state.showWidget,
@@ -96,5 +99,3 @@ class Web extends React.Component {
       </div>
   }
 }
-
-module.exports = Web
