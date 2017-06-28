@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import style from './style.scss'
 
 export default class Send extends Component {
@@ -10,7 +9,9 @@ export default class Send extends Component {
 
   renderSendButton() {
     return <span>
-      <div className={style['enter-prompt']}>
+      <div
+        className={style['enter-prompt']}
+        onClick={this.props.send}>
         <a>
           <i class="flex"><svg width="13" height="13" viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg"><path d="M12.975.38c.014.043.02.087.024.132v.06c-.004.048-.014.095-.03.14-.006.017-.007.032-.014.046L7.252 12.692c-.09.19-.28.308-.49.308-.216-.002-.406-.127-.493-.32l-.537-3.41C5.56 8.18 4.55 7.1 3.478 6.86l-3.2-.72c-.18-.1-.287-.293-.277-.5.012-.206.138-.39.328-.47L12.248.04 12.3.026c.05-.015.098-.025.148-.026.02 0 .038 0 .058.003.046.004.09.013.132.028l.055.02c.056.027.11.06.154.107.053.053.085.11.11.168.008.018.013.036.018.055z" fill-rule="evenodd"></path></svg></i>
           <span>Send Message</span>

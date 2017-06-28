@@ -13,8 +13,24 @@ export default class Web extends React.Component {
     super(props)
 
     this.state = {
-      view: 'convo'
+      view: 'convo',
+      text: ''
     }
+  }
+
+  handleTextChanged(event) {
+    this.setState({
+      text: event.target.value
+    })
+  }
+
+  handleSendMessage() {
+    console.log('Message send: ' + this.state.text) //TODO
+
+    this.setState({
+      view: 'side',
+      text: ''
+    })
   }
 
   handleButtonClicked() {
@@ -57,7 +73,13 @@ export default class Web extends React.Component {
     return <div className={classnames(style['container'])}>
         <div className={classnames(style['widget-container'])}> 
           <span>
-            {this.state.view === 'convo' ? <Convo /> : null}
+            {this.state.view === 'convo'
+              ? <Convo
+                  change={::this.handleTextChanged}
+                  send={::this.handleSendMessage}
+                  text={this.state.text}
+                  />
+              : null}
             {this.renderButton()}
           </span>
         </div>
@@ -65,7 +87,11 @@ export default class Web extends React.Component {
   }
 
   renderSide() {
-    return <Side close={::this.handleClosePanel} />
+    return <Side
+      text={this.state.text}
+      close={::this.handleClosePanel}
+      send={::this.handleSendMessage}
+      change={::this.handleTextChanged} />
   }
 
   render() {

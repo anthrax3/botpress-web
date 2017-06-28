@@ -4,6 +4,7 @@ import classnames from 'classnames'
 
 import Send from '../send'
 import Message from '../message'
+import Input from '../input'
 
 import style from './style.scss'
 
@@ -45,7 +46,6 @@ export default class Side extends React.Component {
     super(props)
 
     this.state = {
-      text: '',
       loading: true
     }
   }
@@ -105,12 +105,10 @@ export default class Side extends React.Component {
 
     return <div className={style.composer}>
         <div className={style['flex-column']}>
-          <div tabindex="-1">
-            <textarea tabindex="1" 
-              placeholder={"Reply to " + name}
-              onChange={::this.handleTextChanged}>
-            </textarea>
-          </div>
+          <Input placeholder={"Reply to " + name}
+            send={this.props.send}
+            change={this.props.change}
+            text={this.props.text} />
           <div className={style.line}>
             <ul className={style.elements}>
               <li>
@@ -128,7 +126,9 @@ export default class Side extends React.Component {
                 </a>
               </li>
             </ul>
-            <Send text={this.state.text} />
+            <Send
+              send={this.props.send}
+              text={this.props.text} />
           </div>
         </div>
       </div>

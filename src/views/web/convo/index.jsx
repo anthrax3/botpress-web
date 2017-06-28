@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 
 import Send from '../send'
+import Input from '../input'
 
 import style from './style.scss'
 
@@ -88,14 +89,15 @@ export default class Convo extends React.Component {
           </div>
           <div className={classnames(style.composer)}>
             <div className={style['flex-column']}>
-              <div tabIndex="-1" className={style.input}>
-                <textarea tabindex="1"
-                  placeholder="Type your message…"
-                  onChange={::this.handleTextChanged}>
-                </textarea>
-              </div>
+              <Input
+                send={this.props.send}
+                change={this.props.change} 
+                placeholder='Type your message...'
+                text={this.props.text} />
               <div className={style.bottom}>
-                <Send text={this.state.text} />
+                <Send
+                  text={this.props.text}
+                  send={this.props.send} />
               </div>
             </div>
           </div>
