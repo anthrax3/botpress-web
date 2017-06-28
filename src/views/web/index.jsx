@@ -7,6 +7,38 @@ import Side from './side'
 
 import style from './style.scss'
 
+const MESSAGES = [ // TEST VALUES
+{
+  fromUser: false,
+  name: 'Dany Fortin-Simard',
+  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
+  date: '11:21, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'Hello!'
+  }
+},
+{
+  fromUser: true,
+  name: null,
+  avatar_url: null,
+  date: '11:22, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'Hi!'
+  }
+},
+{
+  fromUser: false,
+  name: 'Dany Fortin-Simard',
+  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
+  date: '11:33, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'How are you today?'
+  }
+}]
+
 export default class Web extends React.Component {
 
   constructor(props) {
@@ -14,22 +46,39 @@ export default class Web extends React.Component {
 
     this.state = {
       view: 'convo',
-      text: ''
+      text: '',
+      loading: true
     }
+  }
+
+  componentDidMount() {
+    this.fetchMessages()
+
+    this.setState({
+      loading: false
+    })
+  }
+
+  fetchMessages() {
+    console.log('---> Fetch messages...')
+
+    this.setState({
+      messages: MESSAGES // TODO
+    })
+  }
+
+  handleSendMessage() {
+    console.log('---> Message send: ' + this.state.text) // TODO
+
+    this.setState({
+      view: 'side',
+      text: ''
+    })
   }
 
   handleTextChanged(event) {
     this.setState({
       text: event.target.value
-    })
-  }
-
-  handleSendMessage() {
-    console.log('Message send: ' + this.state.text) //TODO
-
-    this.setState({
-      view: 'side',
-      text: ''
     })
   }
 
@@ -91,10 +140,15 @@ export default class Web extends React.Component {
       text={this.state.text}
       close={::this.handleClosePanel}
       send={::this.handleSendMessage}
-      change={::this.handleTextChanged} />
+      change={::this.handleTextChanged}
+      messages={this.state.messages} />
   }
 
   render() {
+    if (this.state.loading) {
+      return null
+    }
+
     window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, "*")
     
     return <div className={style.web}>
