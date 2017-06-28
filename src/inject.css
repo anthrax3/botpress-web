@@ -18,7 +18,7 @@
   top: auto;
   left: auto;
   bottom: 24px;
-  right: 36px;
+  right: 24px;
   width: 76px !important;
   height: 76px !important; 
 }
@@ -27,8 +27,17 @@
   top: auto;
   left: auto;
   bottom: 24px;
-  right: 36px;
+  right: 24px;
   width: 420px !important;
-  min-height: 420px !important;
+  min-height: 382px !important;
   max-height: 500px !important;
+}
+
+.bp-widget-side {
+  top: 0px;
+  left: auto;
+  bottom: 0px;
+  right: 0px;
+  width: 360px !important;
+  height: 100% !important;
 }

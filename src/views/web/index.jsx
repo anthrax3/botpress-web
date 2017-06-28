@@ -13,29 +13,25 @@ export default class Web extends React.Component {
     super(props)
 
     this.state = {
-      showWidget: true,
-      showConvo: true,
-      showPanel: false
+      view: 'convo'
     }
   }
 
   handleButtonClicked() {
-    if (this.state.showConvo) {
+    if (this.state.view === 'convo') {
       this.setState({
-        showConvo: false,
+        view: 'widget',
       })
     } else {
       this.setState({
-        showWidget: false,
-        showPanel: true
+        view: 'side'
       })
     }
   }
 
   handleClosePanel() {
     this.setState({
-      showPanel: false,
-      showWidget: true
+      view: 'widget'
     })
   }
 
@@ -53,19 +49,15 @@ export default class Web extends React.Component {
 
   renderButton() {
     return <button onClick={::this.handleButtonClicked}>
-        <i>{this.state.showConvo ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
+        <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
       </button>
   }
 
   renderWidget() {
-    if (!this.state.showWidget) {
-      return null
-    }
-
     return <div className={classnames(style['container'])}>
         <div className={classnames(style['widget-container'])}> 
           <span>
-            {this.state.showConvo ? <Convo /> : null}
+            {this.state.view === 'convo' ? <Convo /> : null}
             {this.renderButton()}
           </span>
         </div>
@@ -73,29 +65,14 @@ export default class Web extends React.Component {
   }
 
   renderSide() {
-    if (!this.state.showPanel) {
-      return null
-    }
-
-    return <div className={style.side}>
-      <Side close={::this.handleClosePanel} />
-    </div>
+    return <Side close={::this.handleClosePanel} />
   }
 
   render() {
-
-    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-convo' }, "*")
-
-    const classNames = classnames({
-      [style.web]: true,
-      [style.widget]: this.state.showWidget,
-      [style.convo]: this.state.showConvo,
-      [style.side]: this.state.showSide
-    })
-
-    return <div className={classNames}>
-        {this.renderWidget()}
-        {this.renderSide()}
+    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, "*")
+    
+    return <div className={style.web}>
+        {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }
 }
