@@ -3,8 +3,41 @@ import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 
 import Send from '../send'
+import Message from '../message'
 
 import style from './style.scss'
+
+const MESSAGES = [
+{
+  fromUser: false,
+  name: 'Dany Fortin-Simard',
+  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
+  date: '11:21, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'Hello!'
+  }
+},
+{
+  fromUser: true,
+  name: null,
+  avatar_url: null,
+  date: '11:22, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'Hi!'
+  }
+},
+{
+  fromUser: false,
+  name: 'Dany Fortin-Simard',
+  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
+  date: '11:33, Jan 27th, 1991',
+  message: {
+    type: 'text',
+    text: 'How are you today?'
+  }
+}]
 
 export default class Side extends React.Component {
 
@@ -12,8 +45,23 @@ export default class Side extends React.Component {
     super(props)
 
     this.state = {
-      text: ''
+      text: '',
+      loading: true
     }
+  }
+
+  componentDidMount() {
+    this.fetchMessages()
+
+    this.setState({
+      loading: false
+    })
+  }
+
+  fetchMessages() {
+    this.setState({
+      messages: MESSAGES
+    })
   }
 
   handleTextChanged(event) {
@@ -89,7 +137,9 @@ export default class Side extends React.Component {
   renderMessages() {
     return <div>
       <span>
-        <div></div>
+        {this.state.messages.map((m, k) => {
+          return <Message data={m} key={k} />
+        })} 
       </span>
     </div>
   }
@@ -106,6 +156,10 @@ export default class Side extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return null
+    }
+
     return <span className={style.external}>
       <div className={style.internal}>
         {this.renderHeader()}
