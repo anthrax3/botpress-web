@@ -14,15 +14,18 @@ $(function() {
       }
     })
 
-    var BASE_URL = 'http://localhost:3000'; // <<--- TODO
+    if ($('#bp-web-widget').length <= 0) {
 
-    var style = $('<link href="' + BASE_URL + '/api/botpress-web/inject.css" rel="stylesheet">');
-    style.appendTo('head');
+      var BASE_URL = 'http://localhost:3000'; // <<--- TODO
 
-    var widgetContainer = $("<div id='bp-web-widget'></div>");
-    widgetContainer.appendTo('body');
+      var style = $('<link href="' + BASE_URL + '/api/botpress-web/inject.css" rel="stylesheet">');
+      style.appendTo('head');
 
-    $('<iframe id="bp-widget">')
-    .appendTo('#bp-web-widget')
-    .attr({ src: BASE_URL + '/lite/?m=web&v=web' });
+      var widgetContainer = $("<div id='bp-web-widget'></div>");
+      widgetContainer.appendTo('body');
+
+      $('<iframe id="bp-widget">')
+      .appendTo('#bp-web-widget')
+      .attr({ src: BASE_URL + '/lite/?m=web&v=web' });
+    }
 });
