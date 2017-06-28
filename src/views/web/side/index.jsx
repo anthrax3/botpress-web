@@ -1,26 +1,34 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
+import { Picker } from 'emoji-mart'
 
 import Send from '../send'
 import Message from '../message'
 import Input from '../input'
 
 import style from './style.scss'
+require('emoji-mart/css/emoji-mart.css')
 
 export default class Side extends React.Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
-      focused: false
+      focused: false,
+      showEmoji: false
     }
   }
 
   handleFocus(value) {
     this.setState({
       focused: value
+    })
+  }
+
+  handleEmojiClicked() {
+    this.setState({
+      showEmoji: !this.state.showEmoji
     })
   }
 
@@ -80,7 +88,7 @@ export default class Side extends React.Component {
               </li>
               <li>
                 <a>
-                  <i>
+                  <i onClick={::this.handleEmojiClicked}>
                     <svg preserveAspectRatio='xMidYMid' width="18" height="18" viewBox="0 0 24 24"><path d="M12 24C5.38 24 0 18.62 0 12S5.38 0 12 0s12 5.38 12 12-5.38 12-12 12zm0-22C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-2.9 0-5.56-1.75-6.9-4.57-.24-.5-.03-1.1.47-1.33.5-.24 1.1-.03 1.33.47C7.9 16.67 9.86 18 12 18c2.15 0 4.1-1.3 5.1-3.43.23-.5.83-.7 1.33-.47.5.23.7.83.47 1.33C17.58 18.25 14.93 20 12 20zm4-8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm-8 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"></path></svg>
                   </i>
                 </a>
@@ -90,6 +98,24 @@ export default class Side extends React.Component {
               send={this.props.send}
               text={this.props.text} />
           </div>
+          {this.renderEmojiPicker()}
+        </div>
+      </div>
+  }
+
+  renderEmojiPicker() {
+    if (!this.state.showEmoji) {
+      return null
+    }
+
+    return <div className={style.emoji}>
+        <div className={style.inside}>
+          <Picker
+            onClick={this.props.addEmojiToText} 
+            set='emojione'
+            emojiSize={18}
+            perLine={10}
+            color='#0176ff'/>
         </div>
       </div>
   }

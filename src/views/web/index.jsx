@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
+import {Emoji} from 'emoji-mart'
 
 import Convo from './convo'
 import Side from './side'
@@ -82,6 +83,12 @@ export default class Web extends React.Component {
     })
   }
 
+  handleAddEmoji(emoji, event) {
+    this.setState({
+      text: this.state.text + emoji.native + ' '
+    })
+  }
+
   handleButtonClicked() {
     if (this.state.view === 'convo') {
       this.setState({
@@ -141,7 +148,8 @@ export default class Web extends React.Component {
       close={::this.handleClosePanel}
       send={::this.handleSendMessage}
       change={::this.handleTextChanged}
-      messages={this.state.messages} />
+      messages={this.state.messages}
+      addEmojiToText={::this.handleAddEmoji} />
   }
 
   render() {
