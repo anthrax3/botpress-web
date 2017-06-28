@@ -8,6 +8,16 @@ export default class Send extends Component {
     super(props)
   }
 
+  componentDidMount() {
+    this.textInput.focus()
+  }
+
+  handleFocus(value) {
+    if (this.props.focused) {
+      this.props.focused(value)
+    }
+  }
+
   handleKeyPress(e) {
     if (e.key === 'Enter') {
       this.props.send()
@@ -18,6 +28,9 @@ export default class Send extends Component {
   render() {
     return <div tabIndex="-1" className={style.input}>
         <textarea tabindex="1"
+          ref={(input) => { this.textInput = input; }}
+          onBlur={() => this.handleFocus(false)}
+          onFocus={() => this.handleFocus(true)}
           placeholder={this.props.placeholder}
           onChange={this.props.change}
           value={this.props.text} 

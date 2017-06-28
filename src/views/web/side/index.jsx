@@ -12,6 +12,16 @@ export default class Side extends React.Component {
 
   constructor(props) {
     super(props)
+
+    this.state = {
+      focused: false
+    }
+  }
+
+  handleFocus(value) {
+    this.setState({
+      focused: value
+    })
   }
 
   renderHeader() {
@@ -47,12 +57,18 @@ export default class Side extends React.Component {
   renderComposer() {
     const name = 'Dany Fortin-Simard'
 
-    return <div className={style.composer}>
+    const classNames = classnames({
+      [style.composer]: true,
+      [style.focused]: this.state.focused
+    })
+
+    return <div className={classNames}>
         <div className={style['flex-column']}>
           <Input placeholder={"Reply to " + name}
             send={this.props.send}
             change={this.props.change}
-            text={this.props.text} />
+            text={this.props.text}
+            focused={::this.handleFocus} />
           <div className={style.line}>
             <ul className={style.elements}>
               <li>

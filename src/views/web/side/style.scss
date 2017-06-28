@@ -168,6 +168,12 @@
           padding: .5rem 0 0;
           background-color: #fff;
 
+          transition: border 0.3s ease;
+
+          &.focused {
+            border-top-color: rgb(1, 118, 255);
+          }
+
           .flex-column {
             -webkit-box-orient: vertical;
             -webkit-box-direction: normal;
