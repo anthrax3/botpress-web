@@ -16,7 +16,8 @@ export default class Side extends React.Component {
     super(props)
     this.state = {
       focused: false,
-      showEmoji: false
+      showEmoji: false,
+      showConvos: false
     }
   }
 
@@ -29,6 +30,12 @@ export default class Side extends React.Component {
   handleEmojiClicked() {
     this.setState({
       showEmoji: !this.state.showEmoji
+    })
+  }
+
+  handleConvosClicked() {
+    this.setState({
+      showConvos: !this.state.showConvos
     })
   }
 
@@ -52,7 +59,9 @@ export default class Side extends React.Component {
           </div>
         </div>
         <span className={style.icon}>
-          <i class="flex"><svg width="24" height="17" viewBox="0 0 24 17" xmlns="http://www.w3.org/2000/svg"><path d="M7 14.94h16c.552 0 1 .346 1 .772 0 .427-.448.773-1 .773H7c-.552 0-1-.346-1-.773 0-.426.448-.773 1-.773zM2.25 3.09H.75C.336 3.09 0 2.746 0 2.32V.773C0 .346.336 0 .75 0h1.5c.414 0 .75.346.75.773v1.545c0 .427-.336.773-.75.773zM2.25 10.303H.75c-.414 0-.75-.346-.75-.773V7.985c0-.427.336-.773.75-.773h1.5c.414 0 .75.346.75.773V9.53c0 .427-.336.773-.75.773zM2.25 17H.75c-.414 0-.75-.346-.75-.773v-1.545c0-.427.336-.773.75-.773h1.5c.414 0 .75.345.75.772v1.545c0 .427-.336.773-.75.773zM23 2.06H7c-.552 0-1-.346-1-.772 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .426-.448.773-1 .773zM23 9.273H7c-.552 0-1-.346-1-.773 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .427-.448.773-1 .773z"></path></svg></i>
+          <i class="flex" onClick={::this.handleConvosClicked}>
+            <svg width="24" height="17" viewBox="0 0 24 17" xmlns="http://www.w3.org/2000/svg"><path d="M7 14.94h16c.552 0 1 .346 1 .772 0 .427-.448.773-1 .773H7c-.552 0-1-.346-1-.773 0-.426.448-.773 1-.773zM2.25 3.09H.75C.336 3.09 0 2.746 0 2.32V.773C0 .346.336 0 .75 0h1.5c.414 0 .75.346.75.773v1.545c0 .427-.336.773-.75.773zM2.25 10.303H.75c-.414 0-.75-.346-.75-.773V7.985c0-.427.336-.773.75-.773h1.5c.414 0 .75.346.75.773V9.53c0 .427-.336.773-.75.773zM2.25 17H.75c-.414 0-.75-.346-.75-.773v-1.545c0-.427.336-.773.75-.773h1.5c.414 0 .75.345.75.772v1.545c0 .427-.336.773-.75.773zM23 2.06H7c-.552 0-1-.346-1-.772 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .426-.448.773-1 .773zM23 9.273H7c-.552 0-1-.346-1-.773 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .427-.448.773-1 .773z"></path></svg>
+          </i>
         </span>
         <span className={style.icon}>
           <i class="flex" onClick={this.props.close}>
@@ -141,11 +150,47 @@ export default class Side extends React.Component {
       </div>
   }
 
+  renderItemConvos(i, key) {
+    return <div className={style.item} key={key}>
+        <div className={style.left}>
+          <div className={style.avatar}>
+            <div className={style.picture} style={{ backgroundImage: 'url(' + i.avatar_url +')'}}></div>
+          </div>
+        </div>
+        <div className={style.right}>
+          <div className={style.title}>
+            <div className={style.name}>{i.name}</div>
+            <div className={style.date}>
+              <span>{i.lastDate}</span>
+            </div>
+          </div>
+          <div className={style.text}>
+            {i.lastMessage}
+          </div> 
+        </div>
+      </div>
+  }
+
+  renderListOfConvos() {
+    const items = [
+    {
+      name: 'Dany Fortin-Simard',
+      avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
+      lastDate: '06/28/2017',
+      lastMessage: 'Hello!'
+    
+    }]
+
+    return <div className={style.list}>
+        {items.map(::this.renderItemConvos)}
+      </div>
+  }
+
   render() {
     return <span className={style.external}>
       <div className={style.internal}>
         {this.renderHeader()}
-        {this.renderConversation()}
+        {this.state.showConvos ? this.renderListOfConvos() : this.renderConversation()}
       </div>
     </span>
   }
