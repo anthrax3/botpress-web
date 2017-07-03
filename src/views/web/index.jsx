@@ -130,12 +130,11 @@ export default class Web extends React.Component {
         <div className={classnames(style['widget-container'])}> 
           <span>
             {this.state.view === 'convo'
-              ? <Convo
+              && <Convo
                   change={::this.handleTextChanged}
                   send={::this.handleSendMessage}
                   text={this.state.text}
-                  />
-              : null}
+                  /> }
             {this.renderButton()}
           </span>
         </div>
@@ -157,7 +156,7 @@ export default class Web extends React.Component {
       return null
     }
 
-    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, "*")
+    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
     
     return <div className={style.web}>
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}

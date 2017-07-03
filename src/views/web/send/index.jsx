@@ -44,5 +44,3 @@ export default class Send extends Component {
       </div>
   }
 }
-
-  

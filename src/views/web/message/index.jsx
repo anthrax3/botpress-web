@@ -54,5 +54,3 @@ export default class Message extends Component {
     </div>
   }
 }
-
-  
