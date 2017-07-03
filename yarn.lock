@@ -1353,6 +1353,12 @@ electron-to-chromium@^1.2.7:
   version "1.3.14"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.14.tgz#64af0f9efd3c3c6acd57d71f83b49ca7ee9c4b43"
 
+emoji-mart@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-1.0.1.tgz#0ef2fd2bf4b6762aab7486c26c574387f034e392"
+  dependencies:
+    measure-scrollbar "^0.1.0"
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -2199,6 +2205,10 @@ map-obj@^1.0.0, map-obj@^1.0.1:
 math-expression-evaluator@^1.2.14:
   version "1.2.17"
   resolved "https://registry.yarnpkg.com/math-expression-evaluator/-/math-expression-evaluator-1.2.17.tgz#de819fdbcd84dccd8fae59c6aeb79615b9d266ac"
+
+measure-scrollbar@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/measure-scrollbar/-/measure-scrollbar-0.1.0.tgz#2bbfac6773bcbb98d814e6890554c0b92846fe6f"
 
 memory-fs@^0.2.0:
   version "0.2.0"
