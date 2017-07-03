@@ -1,7 +1,12 @@
+import _ from 'lodash'
+
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
 
 import db from './db'
+
+const ERR_USER_ID_REQ = "`userId` is required and must be valid"
+const ERR_MSG_TYPE = "`type` is required and must be valid"
 
 /*
   Supported message types:
@@ -23,7 +28,7 @@ import db from './db'
 
 module.exports = async (bp, config) => {
 
-  const { listConversations } = db(knex, botfile)
+  const { listConversations, appendUserMessage } = db(knex, botfile)
 
   const router = bp.getRouter('botpress-web', { auth: false })
     
@@ -37,13 +42,27 @@ module.exports = async (bp, config) => {
     res.send(injectStyle)
   })
 
-  router.post('/message', async (req, res) => {
+  // ?conversationId=xxx (optional)
+  router.post('/message/:userId', async (req, res) => {
+    if (!validateUserId(req.params.userId)) {
+      res.status(400).send(ERR_USER_ID_REQ)
+    }
 
+    const payload = (req.body || {})
+    const { conversationId } = (req.query || {})
+
+    if (!_.includes(['text'], type)) { // TODO: Support files
+      res.status(400).send(ERR_MSG_TYPE)
+    }
+
+    await sendNewMessage(req.params.userId, conversationId, payload)
+
+    return res.sendStatus(200)
   })
 
   router.get('/conversations/:userId', async (req, res) => {
-    if (!/(a-z0-9-_)/i.test(req.params.userId)) {
-      res.status(400).send('`userId` is required and must be valid')
+    if (!validateUserId(req.params.userId)) {
+      res.status(400).send(ERR_USER_ID_REQ)
     }
 
     const conversations = await listConversations(req.params.userId)
@@ -51,12 +70,23 @@ module.exports = async (bp, config) => {
     return res.send([...conversations])
   })
 
+  function validateUserId(userId) {
+    return /(a-z0-9-_)/i.test(userId)
+  }
+
   async function _getOrCreateRecentConversation(userId) {
 
   }
 
   async function sendNewMessage(userId, conversationId, payload) {
 
+    if (payload.text && (!_.isString(payload.text) || payload.text.length > 360)) {
+      throw new Error('Text must be a valid string of less than 360 chars')
+    }
+
+    const sanitizedPayload = _.pick(payload, ['text', 'type'])
+
+    return appendUserMessage(userId, conversationId, sanitizedPayload)
   }
 
   async function sendEvent(userId, event, data) {
