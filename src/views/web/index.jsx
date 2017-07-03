@@ -1,12 +1,16 @@
+/* global: window */
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import {Emoji} from 'emoji-mart'
+import { Emoji } from 'emoji-mart'
 
 import Convo from './convo'
 import Side from './side'
 
 import style from './style.scss'
+
+const BOT_HOSTNAME = window.location.origin
 
 const MESSAGES = [ // TEST VALUES
 {
@@ -52,6 +56,13 @@ export default class Web extends React.Component {
     }
   }
 
+  componentWillMount() {
+    // Connect the Botpress's Web Socket to the server
+    if (this.props.bp && this.props.bp.events) {
+      this.props.bp.events.setup()
+    }
+  }
+
   componentDidMount() {
     this.fetchMessages()
 
@@ -69,6 +80,10 @@ export default class Web extends React.Component {
   }
 
   handleSendMessage() {
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+
+    console.log(url)
     console.log('---> Message send: ' + this.state.text) // TODO
 
     this.setState({
