@@ -24,3 +24,11 @@ Socket:
 Users:
   ✔ Get or Create User (userId) @critical @done (17-07-03 14:12)
     ✔ Give users "Silly Names" until Profile is Complete @done (17-07-03 14:12)
+
+Connect with front-end:
+  - Ping-pong Socket Test @critical
+  - List conversations @critical
+  - Send new message to conversationId = null when typing in the initial widget @critical
+  - Send new message to conversationId when typing in the conversation window @high
+  - Receive new text message from bot @high
+  - Bot "Typing" event @high
