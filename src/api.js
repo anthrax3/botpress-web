@@ -35,7 +35,15 @@ module.exports = async (bp, config) => {
   const { getOrCreateUser } = await users(bp, config)
 
   const router = bp.getRouter('botpress-web', { auth: false })
-    
+  
+  const asyncApi = fn => async (req, res, next) => {
+    try {
+      await fn(req, res, next)
+    } catch (err) {
+      res.status(500).send(err && err.message)
+    }
+  }
+
   router.get('/inject.js', (req, res) => {
     res.contentType('text/javascript')
     res.send(injectScript)
@@ -47,11 +55,11 @@ module.exports = async (bp, config) => {
   })
 
   // ?conversationId=xxx (optional)
-  router.post('/message/:userId', async (req, res) => {
+  router.post('/messages/:userId', asyncApi(async (req, res) => {
     const { userId } = req.params || {}
 
     if (!validateUserId(userId)) {
-      res.status(400).send(ERR_USER_ID_REQ)
+      return res.status(400).send(ERR_USER_ID_REQ)
     }
 
     await getOrCreateUser(userId) // Just to create the user if it doesn't exist
@@ -59,7 +67,7 @@ module.exports = async (bp, config) => {
     const payload = (req.body || {})
     let { conversationId } = (req.query || {})
 
-    if (!_.includes(['text'], type)) { // TODO: Support files
+    if (!_.includes(['text'], payload.type)) { // TODO: Support files
       res.status(400).send(ERR_MSG_TYPE)
     }
 
@@ -70,13 +78,13 @@ module.exports = async (bp, config) => {
     await sendNewMessage(userId, conversationId, payload)
 
     return res.sendStatus(200)
-  })
+  }))
 
   router.get('/conversations/:userId', async (req, res) => {
     const { userId } = req.params || {}
 
     if (!validateUserId(userId)) {
-      res.status(400).send(ERR_USER_ID_REQ)
+      return res.status(400).send(ERR_USER_ID_REQ)
     }
 
     await getOrCreateUser(userId) // Just to create the user if it doesn't exist
@@ -87,12 +95,12 @@ module.exports = async (bp, config) => {
   })
 
   function validateUserId(userId) {
-    return /(a-z0-9-_)/i.test(userId)
+    return /[a-z0-9-_]+/i.test(userId)
   }
 
   async function sendNewMessage(userId, conversationId, payload) {
 
-    if (payload.text && (!_.isString(payload.text) || payload.text.length > 360)) {
+    if (!payload.text || !_.isString(payload.text) || payload.text.length > 360) {
       throw new Error('Text must be a valid string of less than 360 chars')
     }
 

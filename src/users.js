@@ -2,7 +2,7 @@ import sillyname from 'sillyname'
 
 module.exports = async (bp, config) => {
 
-  const knex = bp.db.get()
+  const knex = await bp.db.get()
 
   async function getOrCreateUser(userId, throwIfNotFound = false) {
     const user = await knex('users').where({
