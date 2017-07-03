@@ -26,7 +26,7 @@ Users:
     ✔ Give users "Silly Names" until Profile is Complete @done (17-07-03 14:12)
 
 Connect with front-end:
-  - Ping-pong Socket Test @critical
+  ✔ Ping-pong Socket Test @critical @done (17-07-03 17:00)
   - List conversations @critical
   - Send new message to conversationId = null when typing in the initial widget @critical
   - Send new message to conversationId when typing in the conversation window @high
