@@ -38,4 +38,6 @@ module.exports = async (bp, config) => {
   async function patchUserInfo(userId, fields) {
     
   }
+
+  return { getOrCreateUser }
 }

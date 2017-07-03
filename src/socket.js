@@ -1,3 +1,5 @@
+import db from './db'
+
 const outgoingTypes = ['text']
 
 module.exports = async (bp, config) => {
