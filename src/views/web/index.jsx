@@ -61,6 +61,10 @@ export default class Web extends React.Component {
     if (this.props.bp && this.props.bp.events) {
       this.props.bp.events.setup()
     }
+
+    this.props.bp.events.on('guest.web.pong', function() {
+      console.log('PONG!!', arguments)
+    })
   }
 
   componentDidMount() {
@@ -82,6 +86,8 @@ export default class Web extends React.Component {
   handleSendMessage() {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+
+    this.props.bp.events.emit('guest.web.ping', 'data!')
 
     console.log(url)
     console.log('---> Message send: ' + this.state.text) // TODO

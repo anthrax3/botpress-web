@@ -22,6 +22,17 @@ module.exports = async (bp, config) => {
     ' This middleware should be placed at the end as it swallows events once sent.'
   })
 
+  bp.events.on('guest.web.ping', (data, from, metadata) => {
+    const { visitorId } = metadata
+    
+    console.log(data, from, metadata)
+
+    bp.events.emit('guest.web.pong', {
+      key: 'value',
+      __room: 'visitor:' + visitorId
+    })
+  })
+
   async function outgoingHandler(event, next) {
     if (event.platform !== 'web') {
       return next()
