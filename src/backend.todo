@@ -1,6 +1,6 @@
 
 APIS:
-  - List conversations (from userId) @critical
+  ✔ List conversations (from userId) @critical @done (17-07-03 11:52)
   - Send New Message (from userId, optional conversationId, type, data) @critical
     - If conversationId = null, check if there is a recent conversation
       - If no recent convo, create one

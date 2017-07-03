@@ -133,6 +133,7 @@ module.exports = (knex, botfile) => {
     appendBotMessage,
     createConversation,
     patchConversation,
-    getConversation
+    getConversation,
+    listConversations
   }
 }

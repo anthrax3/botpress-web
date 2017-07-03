@@ -1,6 +1,8 @@
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
 
+import db from './db'
+
 /*
   Supported message types:
 
@@ -21,6 +23,8 @@ import injectStyle from 'raw!./inject.css'
 
 module.exports = async (bp, config) => {
 
+  const { listConversations } = db(knex, botfile)
+
   const router = bp.getRouter('botpress-web', { auth: false })
     
   router.get('/inject.js', (req, res) => {
@@ -33,15 +37,25 @@ module.exports = async (bp, config) => {
     res.send(injectStyle)
   })
 
+  router.post('/message', async (req, res) => {
+
+  })
+
+  router.get('/conversations/:userId', async (req, res) => {
+    if (!/(a-z0-9-_)/i.test(req.params.userId)) {
+      res.status(400).send('`userId` is required and must be valid')
+    }
+
+    const conversations = await listConversations(req.params.userId)
+
+    return res.send([...conversations])
+  })
+
   async function _getOrCreateRecentConversation(userId) {
 
   }
 
   async function sendNewMessage(userId, conversationId, payload) {
-
-  }
-
-  async function listConversations(userId) {
 
   }
 
