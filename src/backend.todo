@@ -1,0 +1,25 @@
+
+APIS:
+  - List conversations (from userId) @critical
+  - Send New Message (from userId, optional conversationId, type, data) @critical
+    - If conversationId = null, check if there is a recent conversation
+      - If no recent convo, create one
+      - If recent convo, append message to the convo
+      - Make "recent" time configurable
+    - Message types
+      - Text
+      - File --> Store in database
+      - Conversation Status
+        - "Sylvain joined the Conversation"
+  - Send New Event (from userId, event name, event data)
+
+Socket:
+  - --> New Message from Bot @critical
+  - --> Bot/Agent seen the message @low
+  - <-- Mark as Read @low
+  - --> Typing Indicator {time in MS} (bot) @high
+  - <-- User is typing @low
+
+Users:
+  - Get or Create User (userId, optional additional profile info) @critical
+    - Give users "Silly Names" until Profile is Complete
