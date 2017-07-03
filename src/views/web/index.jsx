@@ -76,10 +76,21 @@ export default class Web extends React.Component {
   }
 
   fetchMessages() {
-    console.log('---> Fetch messages...')
+    console.log('---> Fetch conversations...')
 
-    this.setState({
-      messages: MESSAGES // TODO
+    const axios = this.props.bp.axios
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}`
+
+    return axios.get(url)
+    .then(({data}) => {
+      console.log('---> Conversations', data)
+
+      console.log('---> Fetch messages...')
+
+      this.setState({
+        messages: MESSAGES // TODO
+      })
     })
   }
 
