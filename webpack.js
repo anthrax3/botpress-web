@@ -8,10 +8,14 @@ var nodeConfig = {
   output: {
     path: './bin',
     filename: 'node.bundle.js',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
+    publicPath: __dirname
   },
-  externals: [nodeExternals(), 'botpress'],
+  externals: [nodeExternals()],
   target: 'node',
+  node: {
+    __dirname: false
+  },
   resolve: {
     extensions: ['', '.js']
   },
@@ -41,12 +45,12 @@ var webConfig = {
     libraryTarget: 'assign',
     library: ['botpress', pkg.name]
   },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
-  externals: {
+   externals: {
     'react': 'React',
     'react-dom': 'ReactDOM'
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx']
   },
   module: {
     loaders: [{
@@ -59,8 +63,7 @@ var webConfig = {
       }
     }, {
       test: /\.scss$/,
-      loaders: ['style', 'css?modules&importLoaders=1&localIdentName=' 
-        + pkg.name + '__[name]__[local]___[hash:base64:5]', 'sass']
+      loaders: ['style', 'css?modules&importLoaders=1&localIdentName=' + pkg.name + '__[name]__[local]___[hash:base64:5]', 'sass']
     }, {
       test: /\.css$/,
       loaders: ['style', 'css']
