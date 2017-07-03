@@ -18,7 +18,7 @@ Socket:
   ✔ --> New Message from Bot @critical @done (17-07-03 15:03)
   - --> Bot/Agent seen the message @low
   - <-- Mark as Read @low
-  - --> Typing Indicator {time in MS} (bot) @high
+  ✔ --> Typing Indicator {time in MS} (bot) @high @done (17-07-03 15:03)
   - <-- User is typing @low
 
 Users:
