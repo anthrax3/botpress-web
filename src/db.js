@@ -6,7 +6,7 @@ import { DatabaseHelpers as helpers } from 'botpress'
 module.exports = (knex, botfile) => {
 
   async function getUserInfo(userId) {
-    const user = await knex('users').where({ id: userId }).then().get(0).then()
+    const user = await knex('users').where({ platform: 'web', userId: userId }).then().get(0).then()
     const name = user && (`${user.first_name} ${user.last_name}`)
     const avatar = (user && user.picture_url) || null
 
@@ -57,7 +57,7 @@ module.exports = (knex, botfile) => {
       throw new Error(`Conversation "${conversationId}" not found`)
     }
 
-    return knex('web_messages').insert({
+    await knex('web_messages').insert({
       conversationId: conversationId,
       userId: userId,
       full_name: fullName,
@@ -66,9 +66,13 @@ module.exports = (knex, botfile) => {
       message_text: text,
       message_raw: raw,
       message_data: data,
-      sent_on: helpers(knex).date.now(),
-      last_heard_on: helpers(knex).date.now()
+      sent_on: helpers(knex).date.now()
     }).then()
+
+    return knex('web_conversations')
+    .where({ id: conversationId, userId: userId })
+    .update({ last_heard_on: helpers(knex).date.now() })
+    .then()
   }
 
   function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw, data }) {
@@ -93,9 +97,9 @@ module.exports = (knex, botfile) => {
       userId,
       created_on: helpers(knex).date.now(),
       title
-    })
+    }).then()
 
-    const conversation = knex('web_conversations')
+    const conversation = await knex('web_conversations')
     .where({ title, userId })
     .select('id')
     .then().get(0).then()
