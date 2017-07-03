@@ -1,0 +1,8 @@
+enableWelcomeMessage: false
+enableCampaigns: false 
+enableChatTargeting: false 
+welcomeMessageDelay: 5000 
+backgroundColor: '#000000'
+foregroundColor: '#ffffff'
+activeColor: '#00ff00' 
+textColor: '#ffffff'
