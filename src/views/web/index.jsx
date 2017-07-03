@@ -68,14 +68,19 @@ export default class Web extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchMessages()
-
-    this.setState({
-      loading: false
+    this.fetchData().then(() => {
+      this.setState({
+        loading: false
+      })
     })
   }
 
-  fetchMessages() {
+  fetchData() {
+    return this.fetchConversations()
+    .then(() => this.fetchMessages())
+  }
+
+  fetchConversations() {
     console.log('---> Fetch conversations...')
 
     const axios = this.props.bp.axios
@@ -84,14 +89,25 @@ export default class Web extends React.Component {
 
     return axios.get(url)
     .then(({data}) => {
-      console.log('---> Conversations', data)
-
-      console.log('---> Fetch messages...')
-
       this.setState({
-        messages: MESSAGES // TODO
+        conversations: data
       })
     })
+  }
+
+  fetchMessages() {
+    const axios = this.props.bp.axios
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}` // TODO
+
+    this.setState({
+      messages: MESSAGES
+    })
+
+    // return axios.get(url)
+    // .then(({data}) => {
+      
+    // })
   }
 
   handleSendMessage() {
@@ -181,6 +197,7 @@ export default class Web extends React.Component {
       send={::this.handleSendMessage}
       change={::this.handleTextChanged}
       messages={this.state.messages}
+      conversations={this.state.conversations}
       addEmojiToText={::this.handleAddEmoji} />
   }
 

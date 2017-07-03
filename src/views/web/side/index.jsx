@@ -172,6 +172,8 @@ export default class Side extends React.Component {
   }
 
   renderListOfConvos() {
+
+    console.log('SIDE', this.props.conversations)
     const items = [
     {
       name: 'Dany Fortin-Simard',
