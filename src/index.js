@@ -1,7 +1,12 @@
+import util from 'util'
+
 import _ from 'lodash'
 import Promise from 'bluebird'
 
 import umm from './umm'
+
+import injectScript from 'raw!./inject.js'
+import injectStyle from 'raw!./inject.css'
 
 const outgoingTypes = ['text']
 
@@ -29,7 +34,29 @@ const outgoingMiddleware = bp => async (event, next) => {
   // TODO Currently this will broadcast to all sockets
   // TODO We must target a single socket / client
 
-  const user = event.user || (event.raw && event.raw.to && getOrCreateUser(event.raw.to))
+  const extractSocketId = () => {
+    let to = (event.raw && event.raw.to) || (event.user)
+
+    if (to && to.id) {
+      to = to.id
+    }
+
+    if (!to || !to.length) {
+      next(new Error("Could not find who to send this message to: " + util.inspect(event)))
+    }
+
+    if (to.indexOf(':') >= 0) {
+      to = to.split(':')[1]
+    }
+
+    if (to.indexOf('+') >= 0) {
+      to = to.split('+')[0]
+    }
+
+    return to
+  }
+
+  let user = await getOrCreateUser(bp, extractSocketId())
 
   const msg = Object.assign({}, event, {
     from: 'bot',
@@ -58,7 +85,7 @@ let usersCount = 0
 const getOrCreateUser = async (bp, socketId) => {
   if (!users[socketId]) {
 
-    const uniqueId = socketId + (`${Math.random()}`.substr(2, 5))
+    const uniqueId = socketId + '+' + (`${Math.random()}`.substr(2, 5))
     users[socketId] = {
       first_name: 'Anonymous',
       last_name: '#' + usersCount++,
@@ -72,6 +99,10 @@ const getOrCreateUser = async (bp, socketId) => {
   }
 
   return users[socketId]
+}
+
+const getUserById = (userId) => {
+  return _.find(users, { id: userId })
 }
 
 const startNewSession = (bp, socketId) => {
@@ -103,6 +134,16 @@ module.exports = {
 
     const config = await configurator.loadAll()
     
+    const router = bp.getRouter('botpress-web', { auth: false })
+    router.get('/inject.js', (req, res) => {
+      res.contentType('text/javascript')
+      res.send(injectScript)
+    })
+    router.get('/inject.css', (req, res) => {
+      res.contentType('text/css')
+      res.send(injectStyle)
+    })
+
     bp.events.on('modules.web.message', async (message, from, metadata) => {
       if (!message) {
         return

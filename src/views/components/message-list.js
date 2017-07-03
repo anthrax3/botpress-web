@@ -29,7 +29,7 @@ class MessageList extends React.Component {
     if (this.props.showWelcome && !this.props.messages.length) {
       return <div className={style.list}>
         <div className={style.newConvo}>
-          <div className={style.text}>This is a new conversation with your bot</div>
+          <div className={style.text}>Start a new conversation with your bot</div>
           <div className={style.sayHi} onClick={this.props.onInitiate}>Say Hi</div>
         </div>
       </div>

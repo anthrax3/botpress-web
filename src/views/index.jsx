@@ -3,12 +3,15 @@ import classnames from 'classnames'
 
 import Resizable from 'react-resizable-box'
 
-import Chat from './components/chat'
-import ChatSession from './components/chat-session'
+import Chat from './components/chat' // Deprecated
+import ChatSession from './components/chat-session' // Deprecated
+
+import WebComponent from './web'
+import UMMComponent from './UMM'
 
 import style from './style.scss'
 
-export default class TemplateModule extends React.Component {
+export default class UMMModule extends React.Component {
 
   constructor(props) {
     super()
@@ -26,7 +29,7 @@ export default class TemplateModule extends React.Component {
   }
 }
 
-export class Embedded extends React.Component {
+export class Embedded extends React.Component { // Deprecated
 
   constructor(props) {
     super()
@@ -43,7 +46,7 @@ export class Embedded extends React.Component {
   }
 }
 
-export class Emulator extends React.Component {
+export class Emulator extends React.Component { // Deprecated
 
   constructor(props) {
     super()
@@ -111,7 +114,7 @@ export class Emulator extends React.Component {
           bottomLeft: false
         }}>
         <div className={style.header} onClick={::this.toggleCollapsed}>
-          <div className={style.left}>Chat Emulator</div>
+          <div className={style.left}>Emulator</div>
           <div className={style.right}>
             <span className={style.button} onClick={::this.startNewSession}>
               <i className="icon material-icons">refresh</i>
@@ -122,5 +125,32 @@ export class Emulator extends React.Component {
       </Resizable>
     </div>
   }
+}
 
+export class Web extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  render() {
+    return <WebComponent />
+  }
+}
+
+export class UMMOutgoing extends React.Component {
+  constructor(props) {
+    super()
+  }
+
+  render() {
+    return <UMMComponent {...this.props} />
+  }
+}
+
+export class WebInjection extends React.Component {
+  render () {
+    var node = window.document.createElement('script')
+    node.src = 'http://localhost:3000/api/botpress-web/inject.js'
+    window.document.body.appendChild(node)
+  }
 }
