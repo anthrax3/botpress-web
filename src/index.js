@@ -2,6 +2,8 @@ import util from 'util'
 
 import _ from 'lodash'
 import Promise from 'bluebird'
+import path from 'path'
+import fs from 'fs'
 
 import umm from './umm'
 
@@ -110,8 +112,23 @@ const startNewSession = (bp, socketId) => {
   return getOrCreateUser(bp, socketId)
 }
 
-module.exports = {
+const createConfigFile = (bp) => {
+  const name = 'botpress-web.config.yml'
+  const file = path.join(bp.projectLocation, name)
 
+  if (!fs.existsSync(file)) {
+    
+    const template = fs.readFileSync(path.resolve(__dirname, '..' ,name))
+    fs.writeFileSync(file, template)
+
+    bp.notifications.send({
+      level: 'info',
+      message: name + ' has been created, fill it'
+    })
+  }
+}
+
+module.exports = {
   config: {
     locale: { type: 'string', required: false, default: 'en-US' },
     messages: { 
@@ -144,6 +161,7 @@ module.exports = {
       ' This middleware should be placed at the end as it swallows events once sent.'
     })
 
+    createConfigFile(bp) //Create a config file
     umm(bp) // Initialize UMM
   },
 
@@ -154,10 +172,21 @@ module.exports = {
     const config = await configurator.loadAll()
     
     const router = bp.getRouter('botpress-web', { auth: false })
+    
+    router.get('/config', async (req, res) => {
+      res.json(await configurator.loadAll())
+    })
+
+    router.post('/config', async (req, res) => {
+      await configurator.saveAll(newConfigs)
+      res.json(await configurator.loadAll())
+    })
+
     router.get('/inject.js', (req, res) => {
       res.contentType('text/javascript')
       res.send(injectScript)
     })
+
     router.get('/inject.css', (req, res) => {
       res.contentType('text/css')
       res.send(injectStyle)

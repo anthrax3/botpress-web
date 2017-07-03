@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import {Emoji} from 'emoji-mart'
+import axios from 'axios'
+import { Emoji } from 'emoji-mart'
 
 import Convo from './convo'
 import Side from './side'
@@ -54,9 +55,17 @@ export default class Web extends React.Component {
 
   componentDidMount() {
     this.fetchMessages()
+    this.fetchConfig()
 
     this.setState({
       loading: false
+    })
+  }
+
+  fetchConfig() {
+    axios.get('/api/botpress-web/config')
+    .then(res => {
+      console.log(res)
     })
   }
 
