@@ -12,6 +12,7 @@ APIS:
       - Conversation Status
         - "Sylvain joined the Conversation"
   - Send New Event (from userId, event name, event data)
+  - Complete User Profile @low
 
 Socket:
   - --> New Message from Bot @critical
@@ -21,5 +22,5 @@ Socket:
   - <-- User is typing @low
 
 Users:
-  - Get or Create User (userId, optional additional profile info) @critical
+  - Get or Create User (userId) @critical
     - Give users "Silly Names" until Profile is Complete

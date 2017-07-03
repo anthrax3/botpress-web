@@ -28,8 +28,9 @@ module.exports = (knex, botfile) => {
       table.string('description')
       table.string('logo_url')
       table.timestamp('created_on')
-      table.timestamp('last_heard_on')
-      table.timestamp('last_seen_on')
+      table.timestamp('last_heard_on') // The last time the user interacted with the bot. Used for "recent" conversation
+      table.timestamp('user_last_seen_on')
+      table.timestamp('bot_last_seen_on')
     })
     .then(function() {
       return helpers(knex).createTableIfNotExists('web_messages', function (table) {
@@ -38,7 +39,8 @@ module.exports = (knex, botfile) => {
         table.string('userId')
         table.string('message_type')
         table.string('message_text')
-        table.string('message_raw')
+        table.jsonb('message_raw')
+        table.binary('message_data') // Only useful if type = file
         table.string('full_name')
         table.string('avatar_url')
         table.timestamp('sent_on')
@@ -46,7 +48,7 @@ module.exports = (knex, botfile) => {
     })
   }
 
-  async function appendUserMessage(userId, conversationId, { type, text, raw }) {
+  async function appendUserMessage(userId, conversationId, { type, text, raw, data }) {
     const { fullName, avatar_url } = await getUserInfo(userId)
 
     return knex('web_messages').insert({
@@ -57,12 +59,13 @@ module.exports = (knex, botfile) => {
       message_type: type,
       message_text: text,
       message_raw: raw,
+      message_data: data,
       sent_on: helpers(knex).date.now(),
       last_heard_on: helpers(knex).date.now()
     }).then()
   }
 
-  function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw }) {
+  function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw, data }) {
     return knex('web_messages').insert({
       conversationId: conversationId,
       userId: null,
@@ -71,6 +74,7 @@ module.exports = (knex, botfile) => {
       message_type: type,
       message_text: text,
       message_raw: raw,
+      message_data: data,
       sent_on: helpers(knex).date.now()
     }).then()
   }

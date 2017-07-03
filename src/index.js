@@ -4,9 +4,8 @@ import _ from 'lodash'
 import Promise from 'bluebird'
 
 import umm from './umm'
-
-import injectScript from 'raw!./inject.js'
-import injectStyle from 'raw!./inject.css'
+import api from './api'
+import socket from './socket'
 
 const outgoingTypes = ['text']
 
@@ -125,7 +124,8 @@ module.exports = {
       ' This middleware should be placed at the end as it swallows events once sent.'
     })
 
-    umm(bp) // Initialize UMM
+    // Initialize UMM
+    return umm(bp)
   },
 
   ready: async function(bp, configurator) {
@@ -134,15 +134,11 @@ module.exports = {
 
     const config = await configurator.loadAll()
     
-    const router = bp.getRouter('botpress-web', { auth: false })
-    router.get('/inject.js', (req, res) => {
-      res.contentType('text/javascript')
-      res.send(injectScript)
-    })
-    router.get('/inject.css', (req, res) => {
-      res.contentType('text/css')
-      res.send(injectStyle)
-    })
+    // Setup the APIs
+    await api(bp, config)
+
+    // Setup the socket events
+    await socket(bp, config)
 
     bp.events.on('modules.web.message', async (message, from, metadata) => {
       if (!message) {
