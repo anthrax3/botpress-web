@@ -6,7 +6,7 @@ import { DatabaseHelpers as helpers } from 'botpress'
 module.exports = (knex, botfile) => {
 
   async function getUserInfo(userId) {
-    const user = await knex('users').where({ id: userId }).then().get(0).then()
+    const user = await knex('users').where({ platform: 'web', userId: userId }).then().get(0).then()
     const name = user && (`${user.first_name} ${user.last_name}`)
     const avatar = (user && user.picture_url) || null
 
@@ -28,8 +28,9 @@ module.exports = (knex, botfile) => {
       table.string('description')
       table.string('logo_url')
       table.timestamp('created_on')
-      table.timestamp('last_heard_on')
-      table.timestamp('last_seen_on')
+      table.timestamp('last_heard_on') // The last time the user interacted with the bot. Used for "recent" conversation
+      table.timestamp('user_last_seen_on')
+      table.timestamp('bot_last_seen_on')
     })
     .then(function() {
       return helpers(knex).createTableIfNotExists('web_messages', function (table) {
@@ -38,7 +39,8 @@ module.exports = (knex, botfile) => {
         table.string('userId')
         table.string('message_type')
         table.string('message_text')
-        table.string('message_raw')
+        table.jsonb('message_raw')
+        table.binary('message_data') // Only useful if type = file
         table.string('full_name')
         table.string('avatar_url')
         table.timestamp('sent_on')
@@ -46,10 +48,16 @@ module.exports = (knex, botfile) => {
     })
   }
 
-  async function appendUserMessage(userId, conversationId, { type, text, raw }) {
+  async function appendUserMessage(userId, conversationId, { type, text, raw, data }) {
     const { fullName, avatar_url } = await getUserInfo(userId)
 
-    return knex('web_messages').insert({
+    const convo = await getConversation(userId, conversationId)
+
+    if (!convo) {
+      throw new Error(`Conversation "${conversationId}" not found`)
+    }
+
+    await knex('web_messages').insert({
       conversationId: conversationId,
       userId: userId,
       full_name: fullName,
@@ -57,12 +65,17 @@ module.exports = (knex, botfile) => {
       message_type: type,
       message_text: text,
       message_raw: raw,
-      sent_on: helpers(knex).date.now(),
-      last_heard_on: helpers(knex).date.now()
+      message_data: data,
+      sent_on: helpers(knex).date.now()
     }).then()
+
+    return knex('web_conversations')
+    .where({ id: conversationId, userId: userId })
+    .update({ last_heard_on: helpers(knex).date.now() })
+    .then()
   }
 
-  function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw }) {
+  function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw, data }) {
     return knex('web_messages').insert({
       conversationId: conversationId,
       userId: null,
@@ -71,6 +84,7 @@ module.exports = (knex, botfile) => {
       message_type: type,
       message_text: text,
       message_raw: raw,
+      message_data: data,
       sent_on: helpers(knex).date.now()
     }).then()
   }
@@ -83,9 +97,9 @@ module.exports = (knex, botfile) => {
       userId,
       created_on: helpers(knex).date.now(),
       title
-    })
+    }).then()
 
-    const conversation = knex('web_conversations')
+    const conversation = await knex('web_conversations')
     .where({ title, userId })
     .select('id')
     .then().get(0).then()
@@ -93,7 +107,7 @@ module.exports = (knex, botfile) => {
     return conversation && conversation.id
   }
 
-  function patchConversation(userId, conversationId, title, description, logoUrl) {
+  async function patchConversation(userId, conversationId, title, description, logoUrl) {
     await knex('web_conversations')
     .where({ userId, id: conversationId })
     .update({
@@ -101,6 +115,22 @@ module.exports = (knex, botfile) => {
       description,
       logo_url: logoUrl
     }).then()
+  }
+
+  async function getOrCreateRecentConversation(userId) {
+    const conversations = await listConversations(userId)
+
+    // TODO make this configurable
+    const isRecent = d => moment(d).isSameOrAfter(moment().subtract(6, 'hours'))
+    const recents = _.orderBy(_.filter(conversations, {
+      last_heard_on: isRecent
+    }), ['last_heard_on'], ['desc'])
+
+    if (recents.length) {
+      return recents[0].id
+    }
+
+    return createConversation(userId)
   }
 
   function listConversations(userId) {
@@ -129,6 +159,8 @@ module.exports = (knex, botfile) => {
     appendBotMessage,
     createConversation,
     patchConversation,
-    getConversation
+    getConversation,
+    listConversations,
+    getOrCreateRecentConversation
   }
 }
