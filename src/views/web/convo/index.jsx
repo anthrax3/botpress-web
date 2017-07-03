@@ -65,18 +65,32 @@ export default class Convo extends React.Component {
       </div>
 
     return <div className={style.external}>
-        <div className={style.internal}>
-          <div className={style.header}>
+        <div className={style.internal}
+          style={{
+            color: this.props.config.textColorOnBackground,
+            backgroundColor: this.props.config.backgroundColor
+          }}>
+          <div className={style.header}
+            style={{ 
+              color: this.props.config.textColorOnForeground,
+              backgroundColor: this.props.config.foregroundColor
+            }}>
             <div className={style.line}>
               <div className={style.title}>
                 <div className={style.avatar}>
                   <div className={style.square}>
-                    <div className={style.circle}>
+                    <div className={style.circle}
+                      style={{
+                        borderColor: this.props.config.foregroundColor
+                      }}>
                       <div className={style.picture} style={{ backgroundImage: 'url(' + avatar_url +')'}}></div>
                     </div>
                   </div>
                 </div>
-                <div className={style.name}>
+                <div className={style.name}
+                  style={{
+                    color: this.props.config.textColorOnForeground
+                  }}>
                   <div>
                     <span>{name}</span>
                   </div>
@@ -93,11 +107,13 @@ export default class Convo extends React.Component {
                 send={this.props.send}
                 change={this.props.change} 
                 placeholder='Type your message...'
-                text={this.props.text} />
+                text={this.props.text}
+                config={this.props.config} />
               <div className={style.bottom}>
                 <Send
                   text={this.props.text}
-                  send={this.props.send} />
+                  send={this.props.send}
+                  config={this.props.config} />
               </div>
             </div>
           </div>

@@ -145,9 +145,9 @@ module.exports = {
     enableChatTargeting: { type: 'bool', required: false, default: false },
     welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
     backgroundColor: { type: 'string', required: false, default: '#000000' },
+    textColorOnBackground: { type: 'string', required: false, default: '#000000' },
     foregroundColor: { type: 'string', required: false, default: '#ffffff' },
-    activeColor: { type: 'string', required: false, default: '#00ff00' },
-    textColor: { type: 'string', required: false, default: '#ffffff' }
+    textColorOnForeground: { type: 'string', required: false, default: '#ffffff' }
   },
 
   init: async function(bp, configurator) {

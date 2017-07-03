@@ -34,7 +34,10 @@ export default class Send extends Component {
           placeholder={this.props.placeholder}
           onChange={this.props.change}
           value={this.props.text} 
-          onKeyPress={::this.handleKeyPress} >
+          onKeyPress={::this.handleKeyPress}
+          style={{
+            color: this.props.config.textColorOnBackground
+          }}>
         </textarea>
       </div>
   }
