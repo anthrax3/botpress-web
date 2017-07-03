@@ -112,7 +112,26 @@ const startNewSession = (bp, socketId) => {
 
 module.exports = {
 
-  config: { },
+  config: {
+    locale: { type: 'string', required: false, default: 'en-US' },
+    messages: { 
+      type: 'any', required: false, 
+      default: {
+        welcomeMessage: 'Hey there!',
+        awayMessage: "Hey, we're not here right now, but leave a message.",
+        emailCaptureMessage: "Leave your email so we can get back to you.",
+        thankYouMessage: "Thanks we'll follow up soon."
+      }
+    },
+    enableWelcomeMessage: { type: 'bool', required: false, default: false },
+    enableCampaigns: { type: 'bool', required: false, default: false },
+    enableChatTargeting: { type: 'bool', required: false, default: false },
+    welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
+    backgroundColor: { type: 'string', required: false, default: '#000000' },
+    foregroundColor: { type: 'string', required: false, default: '#ffffff' },
+    activeColor: { type: 'string', required: false, default: '#00ff00' },
+    textColor: { type: 'string', required: false, default: '#ffffff' }
+  },
 
   init: async function(bp, configurator) {
     bp.middlewares.register({
