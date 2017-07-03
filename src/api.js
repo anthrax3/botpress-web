@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import moment from 'moment'
 
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
@@ -32,7 +31,7 @@ module.exports = async (bp, config) => {
 
   const knex = await bp.db.get()
 
-  const { listConversations, appendUserMessage } = db(knex, bp.botfile)
+  const { listConversations, appendUserMessage, getOrCreateRecentConversation } = db(knex, bp.botfile)
   const { getOrCreateUser } = await users(bp, config)
 
   const router = bp.getRouter('botpress-web', { auth: false })
@@ -65,7 +64,7 @@ module.exports = async (bp, config) => {
     }
 
     if (!conversationId) {
-      conversationId = await _getOrCreateRecentConversation(userId)
+      conversationId = await getOrCreateRecentConversation(userId)
     }
 
     await sendNewMessage(userId, conversationId, payload)
@@ -91,22 +90,6 @@ module.exports = async (bp, config) => {
     return /(a-z0-9-_)/i.test(userId)
   }
 
-  async function _getOrCreateRecentConversation(userId) {
-    const conversations = await listConversations(userId)
-
-    // TODO make this configurable
-    const isRecent = d => moment(d).isSameOrAfter(moment().subtract(6, 'hours'))
-    const recents = _.orderBy(_.filter(conversations, {
-      last_heard_on: isRecent
-    }), ['last_heard_on'], ['desc'])
-
-    if (recents.length) {
-      return recents[0].id
-    }
-
-    return createConversation(userId)
-  }
-
   async function sendNewMessage(userId, conversationId, payload) {
 
     if (payload.text && (!_.isString(payload.text) || payload.text.length > 360)) {
@@ -115,7 +98,17 @@ module.exports = async (bp, config) => {
 
     const sanitizedPayload = _.pick(payload, ['text', 'type'])
 
-    return appendUserMessage(userId, conversationId, sanitizedPayload)
+    await appendUserMessage(userId, conversationId, sanitizedPayload)
+
+    const user = await getOrCreateUser(userId)
+
+    return bp.middlewares.sendIncoming({
+      platform: 'web',
+      type: payload.type,
+      user: user,
+      text: payload.text,
+      raw: payload
+    })
   }
 
   async function sendEvent(userId, event, data) {

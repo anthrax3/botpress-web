@@ -15,7 +15,7 @@ APIS:
   - Complete User Profile @low
 
 Socket:
-  - --> New Message from Bot @critical
+  ✔ --> New Message from Bot @critical @done (17-07-03 15:03)
   - --> Bot/Agent seen the message @low
   - <-- Mark as Read @low
   - --> Typing Indicator {time in MS} (bot) @high

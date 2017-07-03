@@ -113,6 +113,22 @@ module.exports = (knex, botfile) => {
     }).then()
   }
 
+  async function getOrCreateRecentConversation(userId) {
+    const conversations = await listConversations(userId)
+
+    // TODO make this configurable
+    const isRecent = d => moment(d).isSameOrAfter(moment().subtract(6, 'hours'))
+    const recents = _.orderBy(_.filter(conversations, {
+      last_heard_on: isRecent
+    }), ['last_heard_on'], ['desc'])
+
+    if (recents.length) {
+      return recents[0].id
+    }
+
+    return createConversation(userId)
+  }
+
   function listConversations(userId) {
     return knex('web_conversations')
     .where({ userId })
@@ -140,6 +156,7 @@ module.exports = (knex, botfile) => {
     createConversation,
     patchConversation,
     getConversation,
-    listConversations
+    listConversations,
+    getOrCreateRecentConversation
   }
 }
