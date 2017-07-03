@@ -51,6 +51,12 @@ module.exports = (knex, botfile) => {
   async function appendUserMessage(userId, conversationId, { type, text, raw, data }) {
     const { fullName, avatar_url } = await getUserInfo(userId)
 
+    const convo = await getConversation(userId, conversationId)
+
+    if (!convo) {
+      throw new Error(`Conversation "${conversationId}" not found`)
+    }
+
     return knex('web_messages').insert({
       conversationId: conversationId,
       userId: userId,

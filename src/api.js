@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import moment from 'moment'
 
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
@@ -49,10 +50,14 @@ module.exports = async (bp, config) => {
     }
 
     const payload = (req.body || {})
-    const { conversationId } = (req.query || {})
+    let { conversationId } = (req.query || {})
 
     if (!_.includes(['text'], type)) { // TODO: Support files
       res.status(400).send(ERR_MSG_TYPE)
+    }
+
+    if (!conversationId) {
+      conversationId = await _getOrCreateRecentConversation(userId)
     }
 
     await sendNewMessage(req.params.userId, conversationId, payload)
@@ -75,7 +80,19 @@ module.exports = async (bp, config) => {
   }
 
   async function _getOrCreateRecentConversation(userId) {
+    const conversations = await listConversations(userId)
 
+    // TODO make this configurable
+    const isRecent = d => moment(d).isSameOrAfter(moment().subtract(6, 'hours'))
+    const recents = _.orderBy(_.filter(conversations, {
+      last_heard_on: isRecent
+    }), ['last_heard_on'], ['desc'])
+
+    if (recents.length) {
+      return recents[0].id
+    }
+
+    return createConversation(userId)
   }
 
   async function sendNewMessage(userId, conversationId, payload) {
