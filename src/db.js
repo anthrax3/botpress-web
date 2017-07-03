@@ -103,7 +103,7 @@ module.exports = (knex, botfile) => {
     return conversation && conversation.id
   }
 
-  function patchConversation(userId, conversationId, title, description, logoUrl) {
+  async function patchConversation(userId, conversationId, title, description, logoUrl) {
     await knex('web_conversations')
     .where({ userId, id: conversationId })
     .update({

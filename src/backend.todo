@@ -1,13 +1,13 @@
 
 APIS:
   ✔ List conversations (from userId) @critical @done (17-07-03 11:52)
-  - Send New Message (from userId, optional conversationId, type, data) @critical
-    - If conversationId = null, check if there is a recent conversation
-      - If no recent convo, create one
-      - If recent convo, append message to the convo
+  ✔ Send New Message (from userId, optional conversationId, type, data) @critical @done (17-07-03 13:47)
+    ✔ If conversationId = null, check if there is a recent conversation @done (17-07-03 13:47)
+      ✔ If no recent convo, create one @done (17-07-03 13:47)
+      ✔ If recent convo, append message to the convo @done (17-07-03 13:47)
       - Make "recent" time configurable
-    - Message types
-      - Text
+    ✔ Message types @done (17-07-03 13:48)
+      ✔ Text @done (17-07-03 13:48)
       - File --> Store in database
       - Conversation Status
         - "Sylvain joined the Conversation"
@@ -22,5 +22,5 @@ Socket:
   - <-- User is typing @low
 
 Users:
-  - Get or Create User (userId) @critical
-    - Give users "Silly Names" until Profile is Complete
+  ✔ Get or Create User (userId) @critical @done (17-07-03 14:12)
+    ✔ Give users "Silly Names" until Profile is Complete @done (17-07-03 14:12)

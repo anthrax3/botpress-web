@@ -5,6 +5,7 @@ import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
 
 import db from './db'
+import users from './users'
 
 const ERR_USER_ID_REQ = "`userId` is required and must be valid"
 const ERR_MSG_TYPE = "`type` is required and must be valid"
@@ -29,7 +30,10 @@ const ERR_MSG_TYPE = "`type` is required and must be valid"
 
 module.exports = async (bp, config) => {
 
-  const { listConversations, appendUserMessage } = db(knex, botfile)
+  const knex = await bp.db.get()
+
+  const { listConversations, appendUserMessage } = db(knex, bp.botfile)
+  const { getOrCreateUser } = await users(bp, config)
 
   const router = bp.getRouter('botpress-web', { auth: false })
     
@@ -45,9 +49,13 @@ module.exports = async (bp, config) => {
 
   // ?conversationId=xxx (optional)
   router.post('/message/:userId', async (req, res) => {
-    if (!validateUserId(req.params.userId)) {
+    const { userId } = req.params || {}
+
+    if (!validateUserId(userId)) {
       res.status(400).send(ERR_USER_ID_REQ)
     }
+
+    await getOrCreateUser(userId) // Just to create the user if it doesn't exist
 
     const payload = (req.body || {})
     let { conversationId } = (req.query || {})
@@ -60,17 +68,21 @@ module.exports = async (bp, config) => {
       conversationId = await _getOrCreateRecentConversation(userId)
     }
 
-    await sendNewMessage(req.params.userId, conversationId, payload)
+    await sendNewMessage(userId, conversationId, payload)
 
     return res.sendStatus(200)
   })
 
   router.get('/conversations/:userId', async (req, res) => {
-    if (!validateUserId(req.params.userId)) {
+    const { userId } = req.params || {}
+
+    if (!validateUserId(userId)) {
       res.status(400).send(ERR_USER_ID_REQ)
     }
 
-    const conversations = await listConversations(req.params.userId)
+    await getOrCreateUser(userId) // Just to create the user if it doesn't exist
+
+    const conversations = await listConversations(userId)
 
     return res.send([...conversations])
   })
