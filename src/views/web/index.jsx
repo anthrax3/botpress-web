@@ -54,15 +54,17 @@ export default class Web extends React.Component {
 
   componentDidMount() {
     this.fetchMessages()
-    this.fetchConfig()
 
-    this.setState({
-      loading: false
+    this.fetchConfig()
+    .then(() => {
+      this.setState({
+        loading: false
+      })
     })
   }
 
   fetchConfig() {
-    this.props.bp.axios.get('/api/botpress-web/config')
+    return this.props.bp.axios.get('/api/botpress-web/config')
     .then(({ data }) => {
       this.setState({
         config: data
