@@ -223,14 +223,14 @@ module.exports = {
         userId: user.id,
         __socketId: user && user.socketId // send back only to the sender
       }
-
-      const knex = await bp.db.get()
-
-      // Initialize the database
-      db(knex, bp.botfile).initialize()
-
-      // Setup the APIs
-      await api(bp, config)
     })
+
+    const knex = await bp.db.get()
+
+    // Initialize the database
+    db(knex, bp.botfile).initialize()
+
+    // Setup the APIs
+    await api(bp, config)
   }
 }
