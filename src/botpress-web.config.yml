@@ -6,5 +6,5 @@ welcomeMessageDelay: 5000
 backgroundColor: '#ffffff'
 textColorOnBackground: '#666666'
 
-foregroundColor: '#F53D48'
+foregroundColor: '#0176ff'
 textColorOnForeground: '#ffffff'

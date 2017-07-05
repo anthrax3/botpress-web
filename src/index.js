@@ -10,6 +10,8 @@ import umm from './umm'
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
 
+import configTemplate from 'raw!./botpress-web.config.yml'
+
 const outgoingTypes = ['text']
 
 const parseTyping = msg => {
@@ -117,9 +119,7 @@ const createConfigFile = (bp) => {
   const file = path.join(bp.projectLocation, name)
 
   if (!fs.existsSync(file)) {
-    
-    const template = fs.readFileSync(path.resolve(__dirname, '..' ,name))
-    fs.writeFileSync(file, template)
+    fs.writeFileSync(file, configTemplate)
 
     bp.notifications.send({
       level: 'info',
@@ -144,9 +144,10 @@ module.exports = {
     enableCampaigns: { type: 'bool', required: false, default: false },
     enableChatTargeting: { type: 'bool', required: false, default: false },
     welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
+    
     backgroundColor: { type: 'string', required: false, default: '#000000' },
-    textColorOnBackground: { type: 'string', required: false, default: '#000000' },
-    foregroundColor: { type: 'string', required: false, default: '#ffffff' },
+    textColorOnBackground: { type: 'string', required: false, default: '#666666' },
+    foregroundColor: { type: 'string', required: false, default: '#0176ff' },
     textColorOnForeground: { type: 'string', required: false, default: '#ffffff' }
   },
 
