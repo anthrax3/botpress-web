@@ -5,6 +5,9 @@ import path from 'path'
 import fs from 'fs'
 
 import umm from './umm'
+import api from './api'
+import socket from './socket'
+import db from './db'
 
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
