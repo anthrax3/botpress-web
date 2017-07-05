@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import axios from 'axios'
 import { Emoji } from 'emoji-mart'
 
 import Convo from './convo'
@@ -63,7 +62,7 @@ export default class Web extends React.Component {
   }
 
   fetchConfig() {
-    axios.get('/api/botpress-web/config')
+    this.props.bp.axios.get('/api/botpress-web/config')
     .then(({ data }) => {
       this.setState({
         config: data
