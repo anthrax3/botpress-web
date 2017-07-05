@@ -1,5 +1,4 @@
 import util from 'util'
-
 import _ from 'lodash'
 import Promise from 'bluebird'
 import path from 'path'
@@ -152,26 +151,18 @@ module.exports = {
   },
 
   init: async function(bp, configurator) {
-    bp.middlewares.register({
-      name: 'web.sendMessages',
-      type: 'outgoing',
-      order: 100,
-      handler: outgoingMiddleware(bp),
-      module: 'botpress-web',
-      description: 'Sends out messages that targets platform = web.' +
-      ' This middleware should be placed at the end as it swallows events once sent.'
-    })
+    const config = await configurator.loadAll()
+
+    // Setup the socket events
+    await socket(bp, config)
 
     createConfigFile(bp) //Create a config file
     umm(bp) // Initialize UMM
   },
 
   ready: async function(bp, configurator) {
-    // Your module's been loaded by Botpress.
-    // Serve your APIs here, execute logic, etc.
-
     const config = await configurator.loadAll()
-    
+
     const router = bp.getRouter('botpress-web', { auth: false })
     
     router.get('/config', async (req, res) => {
@@ -233,8 +224,13 @@ module.exports = {
         __socketId: user && user.socketId // send back only to the sender
       }
 
-      bp.events.emit('modules.web.session_started', event)
-    })
+      const knex = await bp.db.get()
 
+      // Initialize the database
+      db(knex, bp.botfile).initialize()
+
+      // Setup the APIs
+      await api(bp, config)
+    })
   }
 }
