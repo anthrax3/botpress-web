@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import {Emoji} from 'emoji-mart'
+import { Emoji } from 'emoji-mart'
 
 import Convo from './convo'
 import Side from './side'
@@ -55,8 +55,20 @@ export default class Web extends React.Component {
   componentDidMount() {
     this.fetchMessages()
 
-    this.setState({
-      loading: false
+    this.fetchConfig()
+    .then(() => {
+      this.setState({
+        loading: false
+      })
+    })
+  }
+
+  fetchConfig() {
+    return this.props.bp.axios.get('/api/botpress-web/config')
+    .then(({ data }) => {
+      this.setState({
+        config: data
+      })
     })
   }
 
@@ -120,7 +132,9 @@ export default class Web extends React.Component {
   }
 
   renderButton() {
-    return <button onClick={::this.handleButtonClicked}>
+    return <button
+      onClick={::this.handleButtonClicked}
+      style={{ backgroundColor: this.state.config.foregroundColor }}>
         <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
       </button>
   }
@@ -134,7 +148,7 @@ export default class Web extends React.Component {
                   change={::this.handleTextChanged}
                   send={::this.handleSendMessage}
                   text={this.state.text}
-                  /> }
+                  config={this.state.config} /> }
             {this.renderButton()}
           </span>
         </div>
@@ -148,7 +162,8 @@ export default class Web extends React.Component {
       send={::this.handleSendMessage}
       change={::this.handleTextChanged}
       messages={this.state.messages}
-      addEmojiToText={::this.handleAddEmoji} />
+      addEmojiToText={::this.handleAddEmoji}
+      config={this.state.config} />
   }
 
   render() {
@@ -157,8 +172,8 @@ export default class Web extends React.Component {
     }
 
     window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
-    
-    return <div className={style.web}>
+
+    return <div className={style.web} >
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }
