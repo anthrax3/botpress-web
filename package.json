@@ -62,8 +62,10 @@
     "webpack-node-externals": "^1.5.4"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "emoji-mart": "^1.0.1",
     "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
     "sillyname": "^0.1.0"
   }

@@ -10,7 +10,6 @@
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: #fff;
     border-left: 1px solid #ccc;
 
     -webkit-box-orient: vertical;
@@ -118,14 +117,14 @@
       }
 
       .icon {
-        color: rgb(154, 154, 154);
+        color: #bbb;
         margin-left: 22px;
         text-align: right;
         vertical-align: middle;
         cursor: pointer;
 
         &:hover {
-          color: rgb(1, 118, 255);
+          color: #aaa;
         }
 
         svg {
@@ -158,7 +157,6 @@
       }
 
       .bottom {
-        background-color: rgba(1, 118, 255, 0.05);
 
         .composer {
           border-top-width: 1px;
@@ -166,13 +164,8 @@
           border-top-color: #eee;
           position: relative;
           padding: .5rem 0 0;
-          background-color: #fff;
 
           transition: border 0.3s ease;
-
-          &.focused {
-            border-top-color: rgb(1, 118, 255);
-          }
 
           .flex-column {
             -webkit-box-orient: vertical;
@@ -226,7 +219,7 @@
                     color: #ccc;
                     
                     &:hover {
-                      color: rgb(1, 118, 255);
+                      color: #aaa;
                     }
 
                     i {
@@ -331,7 +324,7 @@
 
         }
       }
-      }
+    }
 
     .emoji {
       display: -webkit-box;

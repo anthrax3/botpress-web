@@ -44,7 +44,7 @@ export default class UMMComponent extends Component {
     })
 
     const tooltip = <Tooltip id="tooltip">
-      Typing for <strong>{this.props.raw.typing}</strong> seconds...
+      Typing for <strong>{this.props.raw.typing}</strong> milliseconds...
     </Tooltip>
 
     return <div className={classNames}>

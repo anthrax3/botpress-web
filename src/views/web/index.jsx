@@ -68,7 +68,9 @@ export default class Web extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData().then(() => {
+    this.fetchConfig()
+    .then(this.fetchData)
+    .then(() => {
       this.setState({
         loading: false
       })
@@ -108,6 +110,15 @@ export default class Web extends React.Component {
     // .then(({data}) => {
       
     // })
+  }
+
+  fetchConfig() {
+    return this.props.bp.axios.get('/api/botpress-web/config')
+    .then(({ data }) => {
+      this.setState({
+        config: data
+      })
+    })
   }
 
   handleSendMessage() {
@@ -168,7 +179,9 @@ export default class Web extends React.Component {
   }
 
   renderButton() {
-    return <button onClick={::this.handleButtonClicked}>
+    return <button
+      onClick={::this.handleButtonClicked}
+      style={{ backgroundColor: this.state.config.foregroundColor }}>
         <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
       </button>
   }
@@ -178,12 +191,11 @@ export default class Web extends React.Component {
         <div className={classnames(style['widget-container'])}> 
           <span>
             {this.state.view === 'convo'
-              ? <Convo
+              && <Convo
                   change={::this.handleTextChanged}
                   send={::this.handleSendMessage}
                   text={this.state.text}
-                  />
-              : null}
+                  config={this.state.config} /> }
             {this.renderButton()}
           </span>
         </div>
@@ -198,7 +210,8 @@ export default class Web extends React.Component {
       change={::this.handleTextChanged}
       messages={this.state.messages}
       conversations={this.state.conversations}
-      addEmojiToText={::this.handleAddEmoji} />
+      addEmojiToText={::this.handleAddEmoji}
+      config={this.state.config} />
   }
 
   render() {
@@ -206,9 +219,9 @@ export default class Web extends React.Component {
       return null
     }
 
-    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, "*")
-    
-    return <div className={style.web}>
+    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
+
+    return <div className={style.web} >
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }
