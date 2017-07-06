@@ -69,7 +69,7 @@ export default class Web extends React.Component {
 
   componentDidMount() {
     this.fetchConfig()
-    .then(this.fetchData)
+    .then(::this.fetchData)
     .then(() => {
       this.setState({
         loading: false
@@ -85,12 +85,11 @@ export default class Web extends React.Component {
   fetchConversations() {
     console.log('---> Fetch conversations...')
 
-    const axios = this.props.bp.axios
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}`
 
-    return axios.get(url)
-    .then(({data}) => {
+    return this.props.bp.axios.get(url)
+    .then(({ data }) => {
       this.setState({
         conversations: data
       })
