@@ -30,8 +30,8 @@ Connect with front-end:
   ✔ List conversations @critical @done (17-07-07 11:27)
   ✔ Send new message to conversationId = null when typing in the initial widget @critical @done (17-07-07 11:27)
   ✔ Send new message to conversationId when typing in the conversation window @high @done (17-07-07 12:12)
-  - Receive new text message from bot @high
-    - Unified events from middlewares
-    - Patch conversations as socket events come in
+  ✔ Receive new text message from bot @high @done (17-07-07 17:23)
+    ✔ Unified events from middlewares @done (17-07-07 17:23)
+    ✔ Patch conversations as socket events come in @done (17-07-07 17:23)
     - Provide bot default name, avatar, etc.
   - Bot "Typing" event @high

@@ -5,18 +5,20 @@ module.exports = async (bp, config) => {
   const knex = await bp.db.get()
 
   async function getOrCreateUser(userId, throwIfNotFound = false) {
+    const realUserId = userId.startsWith('web:') ? userId.substr(4) : userId
+    
     const user = await knex('users').where({
       platform: 'web',
-      userId: userId
+      userId: realUserId
     }).then().get(0).then()
 
     if (!user) {
       if (throwIfNotFound) {
-        throw new Error(`User ${userId} not found`)
+        throw new Error(`User ${realUserId} not found`)
       }
 
-      await createNewUser(userId)
-      return getOrCreateUser(userId, true)
+      await createNewUser(realUserId)
+      return getOrCreateUser(realUserId, true)
     }
 
     return user

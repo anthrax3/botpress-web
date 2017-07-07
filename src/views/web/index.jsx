@@ -66,6 +66,21 @@ export default class Web extends React.Component {
       this.props.bp.events.setup()
     }
 
+    this.props.bp.events.on('guest.web.message', event => {
+      const isUpdate = this.state.currentConversation
+        && this.state.currentConversationId === event.conversationId
+
+      if (!isUpdate) {
+        return
+      }
+
+      const currentConversation = Object.assign({}, this.state.currentConversation, {
+        messages: [...this.state.currentConversation.messages, event]
+      })
+
+      this.setState({ currentConversation })
+    })
+
     this.props.bp.events.on('guest.web.pong', function() {
       console.log('PONG!!', arguments)
     })

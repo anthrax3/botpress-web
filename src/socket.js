@@ -58,12 +58,10 @@ module.exports = async (bp, config) => {
     const conversationId = _.get(event, 'raw.conversationId')
       || await getOrCreateRecentConversation(user.id)
 
-    console.log(conversationId, event.raw)
-
     const message = await appendBotMessage(bot_name, bot_avatar, conversationId, event)
 
     Object.assign(message, {
-      __room: 'visitor:' + user.id // This is used to send to the relevant user's socket
+      __room: 'visitor:' + user.userId // This is used to send to the relevant user's socket
     })
 
     bp.events.emit('guest.web.message', message)
