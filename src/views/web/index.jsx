@@ -114,14 +114,15 @@ export default class Web extends React.Component {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
 
-    this.props.bp.events.emit('guest.web.ping', 'data!')
+    console.log('---> Sending: ' + this.state.text)
 
-    console.log(url)
-    console.log('---> Message send: ' + this.state.text) // TODO
-
-    this.setState({
-      view: 'side',
-      text: ''
+    this.props.bp.axios.post(url, { type: 'text', text: this.state.text })
+    .then(() => {
+      console.log('---> Message sent OK: ' + this.state.text)
+      this.setState({
+        view: 'side',
+        text: ''
+      })
     })
   }
 

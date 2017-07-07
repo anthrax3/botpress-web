@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import { Picker } from 'emoji-mart'
+import moment from 'moment'
 
 import Send from '../send'
 import Message from '../message'
@@ -150,41 +151,32 @@ export default class Side extends React.Component {
       </div>
   }
 
-  renderItemConvos(i, key) {
+  renderItemConvos(convo, key) {
+    // TODO Have default avatars
+    const avatar_url = convo.image_url || convo.message_author_avatar || 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
+    const title = convo.title || convo.message_author || 'Untitled Conversation'
+    const date = moment(convo.message_sent_on || convo.created_on).fromNow()
+    const message = convo.message_text || '...'
+
     return <div className={style.item} key={key}>
         <div className={style.left}>
           <div className={style.avatar}>
-            <div className={style.picture} style={{ backgroundImage: 'url(' + i.avatar_url +')'}}></div>
+            <div className={style.picture} style={{ backgroundImage: `url(${avatar_url})`}}></div>
           </div>
         </div>
         <div className={style.right}>
           <div className={style.title}>
-            <div className={style.name}>{i.name}</div>
-            <div className={style.date}>
-              <span>{i.lastDate}</span>
-            </div>
+            <div className={style.name}>{title}</div>
+            <div className={style.date}><span>{date}</span></div>
           </div>
-          <div className={style.text}>
-            {i.lastMessage}
-          </div> 
+          <div className={style.text}>{message}</div> 
         </div>
       </div>
   }
 
   renderListOfConvos() {
-
-    console.log('SIDE', this.props.conversations)
-    const items = [
-    {
-      name: 'Dany Fortin-Simard',
-      avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
-      lastDate: '06/28/2017',
-      lastMessage: 'Hello!'
-    
-    }]
-
     return <div className={style.list}>
-        {items.map(::this.renderItemConvos)}
+        {this.props.conversations.map(::this.renderItemConvos)}
       </div>
   }
 
