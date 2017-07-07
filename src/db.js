@@ -1,6 +1,8 @@
 import Promise from 'bluebird'
 import moment from 'moment'
 import _ from 'lodash'
+import uuid from 'uuid'
+
 import { DatabaseHelpers as helpers } from 'botpress'
 
 module.exports = (knex, botfile) => {
@@ -34,7 +36,7 @@ module.exports = (knex, botfile) => {
     })
     .then(function() {
       return helpers(knex).createTableIfNotExists('web_messages', function (table) {
-        table.increments('id').primary()
+        table.string('id').primary()
         table.integer('conversationId')
         table.string('userId')
         table.string('message_type')
@@ -57,7 +59,8 @@ module.exports = (knex, botfile) => {
       throw new Error(`Conversation "${conversationId}" not found`)
     }
 
-    await knex('web_messages').insert({
+    const message = {
+      id: uuid.v4(),
       conversationId: conversationId,
       userId: userId,
       full_name: fullName,
@@ -67,16 +70,23 @@ module.exports = (knex, botfile) => {
       message_raw: raw,
       message_data: data,
       sent_on: helpers(knex).date.now()
-    }).then()
+    }
 
-    return knex('web_conversations')
+    await knex('web_messages').insert(message).then()
+
+    await knex('web_conversations')
     .where({ id: conversationId, userId: userId })
     .update({ last_heard_on: helpers(knex).date.now() })
     .then()
+
+    return Object.assign(message, {
+      sent_on: new Date()
+    })
   }
 
-  function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw, data }) {
-    return knex('web_messages').insert({
+  async function appendBotMessage(botName, botAvatar, conversationId, { type, text, raw, data }) {
+    const message = {
+      id: uuid.v4(),
       conversationId: conversationId,
       userId: null,
       full_name: botName,
@@ -86,7 +96,13 @@ module.exports = (knex, botfile) => {
       message_raw: raw,
       message_data: data,
       sent_on: helpers(knex).date.now()
-    }).then()
+    }
+
+    await knex('web_messages').insert(message).then()
+
+    return Object.assign(message, {
+      sent_on: new Date()
+    })
   }
 
   async function createConversation(userId) {
