@@ -117,12 +117,9 @@ export default class Web extends React.Component {
   handleSendMessage() {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
-
-    console.log('---> Sending: ' + this.state.textToSend)
-
+    
     this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
     .then(() => {
-      console.log('---> Message sent OK: ' + this.state.textToSend)
       this.setState({
         view: 'side',
         textToSend: ''
