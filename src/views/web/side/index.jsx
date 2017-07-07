@@ -53,19 +53,19 @@ export default class Side extends React.Component {
             <div className={style.title}>
               <div className={style.name}>{name}</div>
               <div className={style.status}>
-                <svg viewBox="0 0 10 10" class="_31TIzmDvvmDrZg8EOTHP3y mEXm__nW0AApYkQYQ--L5"><ellipse cx="50%" cy="50%" rx="50%" ry="50%"></ellipse></svg>
+                <svg viewBox="0 0 10 10"><ellipse cx="50%" cy="50%" rx="50%" ry="50%"></ellipse></svg>
                 <span>online now</span>
               </div>
             </div>
           </div>
         </div>
         <span className={style.icon}>
-          <i class="flex" onClick={::this.handleConvosClicked}>
+          <i onClick={::this.handleConvosClicked}>
             <svg width="24" height="17" viewBox="0 0 24 17" xmlns="http://www.w3.org/2000/svg"><path d="M7 14.94h16c.552 0 1 .346 1 .772 0 .427-.448.773-1 .773H7c-.552 0-1-.346-1-.773 0-.426.448-.773 1-.773zM2.25 3.09H.75C.336 3.09 0 2.746 0 2.32V.773C0 .346.336 0 .75 0h1.5c.414 0 .75.346.75.773v1.545c0 .427-.336.773-.75.773zM2.25 10.303H.75c-.414 0-.75-.346-.75-.773V7.985c0-.427.336-.773.75-.773h1.5c.414 0 .75.346.75.773V9.53c0 .427-.336.773-.75.773zM2.25 17H.75c-.414 0-.75-.346-.75-.773v-1.545c0-.427.336-.773.75-.773h1.5c.414 0 .75.345.75.772v1.545c0 .427-.336.773-.75.773zM23 2.06H7c-.552 0-1-.346-1-.772 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .426-.448.773-1 .773zM23 9.273H7c-.552 0-1-.346-1-.773 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .427-.448.773-1 .773z"></path></svg>
           </i>
         </span>
         <span className={style.icon}>
-          <i class="flex" onClick={this.props.close}>
+          <i onClick={this.props.close}>
             <svg width="17" height="17" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"><path d="M9.502 8.5l7.29 7.29c.277.278.277.727 0 1.003-.137.138-.32.207-.5.207s-.362-.07-.5-.207L8.5 9.503l-7.29 7.29c-.14.138-.32.207-.5.207-.183 0-.364-.07-.502-.207-.277-.276-.277-.725 0-1.002l7.29-7.29-7.29-7.29C-.07.932-.07.483.208.206c.277-.276.725-.276 1 0L8.5 7.497l7.29-7.29c.277-.276.725-.276 1.002 0 .277.277.277.726 0 1.002L9.502 8.5z" fill-rule="evenodd"></path></svg>
           </i>
         </span>
