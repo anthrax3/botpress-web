@@ -234,13 +234,12 @@ export default class Web extends React.Component {
         <div className={classnames(style['widget-container'])}> 
           <span>
             {this.state.view === 'convo'
-              && <Convo
-                  change={::this.handleTextChanged}
-                  send={::this.handleSendMessage}
-                  config={this.state.config}
-                  text={this.state.textToSend} /> 
+              ? <Convo
+                change={::this.handleTextChanged}
+                send={::this.handleSendMessage}
+                config={this.state.config}
+                text={this.state.textToSend} /> 
               : null}
-
             {this.renderButton()}
           </span>
         </div>
