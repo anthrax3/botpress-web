@@ -131,9 +131,11 @@ export default class Side extends React.Component {
   }
 
   renderMessages() {
+    const messages = (this.props.currentConversation && this.props.currentConversation.messages) || []
+    
     return <div>
       <span>
-        {this.props.messages.map((m, k) => {
+        {messages.map((m, k) => {
           return <Message data={m} key={k} />
         })} 
       </span>

@@ -31,7 +31,11 @@ module.exports = async (bp, config) => {
 
   const knex = await bp.db.get()
 
-  const { listConversations, appendUserMessage, getOrCreateRecentConversation } = db(knex, bp.botfile)
+  const { listConversations, 
+    getConversation, 
+    appendUserMessage, 
+    getOrCreateRecentConversation } = db(knex, bp.botfile)
+
   const { getOrCreateUser } = await users(bp, config)
 
   const router = bp.getRouter('botpress-web', { auth: false })
@@ -80,6 +84,18 @@ module.exports = async (bp, config) => {
     return res.sendStatus(200)
   }))
 
+  router.get('/conversations/:userId/:conversationId', async (req, res) => {
+    const { userId, conversationId } = req.params || {}
+
+    if (!validateUserId(userId)) {
+      return res.status(400).send(ERR_USER_ID_REQ)
+    }
+
+    const conversation = await getConversation(userId, conversationId)
+
+    return res.send(conversation)
+  })
+  
   router.get('/conversations/:userId', async (req, res) => {
     const { userId } = req.params || {}
 

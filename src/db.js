@@ -171,7 +171,20 @@ module.exports = (knex, botfile) => {
     .then()
   }
 
-  function getConversation(userId, conversationId, fromId = null) {
+  async function getConversation(userId, conversationId, fromId = null) {
+    const conversation = await knex('web_conversations')
+      .where({ userId: userId, id: conversationId })
+      .then().get(0).then()
+
+    if (!conversation) {
+      return null
+    }
+
+    const messages = await getConversationMessages(userId, conversationId, fromId)
+    return Object.assign({}, conversation, { messages })
+  }
+
+  function getConversationMessages(userId, conversationId, fromId = null) {
     let query = knex('web_messages')
     .where({
       conversationId: conversationId,
