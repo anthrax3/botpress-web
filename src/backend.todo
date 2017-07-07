@@ -27,8 +27,8 @@ Users:
 
 Connect with front-end:
   ✔ Ping-pong Socket Test @critical @done (17-07-03 17:00)
-  - List conversations @critical
-  - Send new message to conversationId = null when typing in the initial widget @critical
+  ✔ List conversations @critical @done (17-07-07 11:27)
+  ✔ Send new message to conversationId = null when typing in the initial widget @critical @done (17-07-07 11:27)
   - Send new message to conversationId when typing in the conversation window @high
   - Receive new text message from bot @high
   - Bot "Typing" event @high
