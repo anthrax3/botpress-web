@@ -1,3 +1,7 @@
+import _ from 'lodash'
+import Promise from 'bluebird'
+
+import users from './users'
 import db from './db'
 
 const outgoingTypes = ['text']
@@ -6,6 +10,7 @@ module.exports = async (bp, config) => {
 
   const knex = await bp.db.get()
   const { appendBotMessage, getOrCreateRecentConversation } = db(knex, bp.botfile)
+  const { getOrCreateUser } = await users(bp, config)
 
   const {
     bot_name = 'Bot',
@@ -22,10 +27,9 @@ module.exports = async (bp, config) => {
     ' This middleware should be placed at the end as it swallows events once sent.'
   })
 
+  // TODO Remove this
   bp.events.on('guest.web.ping', (data, from, metadata) => {
     const { visitorId } = metadata
-    
-    console.log(data, from, metadata)
 
     bp.events.emit('guest.web.pong', {
       key: 'value',
@@ -41,28 +45,31 @@ module.exports = async (bp, config) => {
     if (!_.includes(outgoingTypes, event.type)) {
       return next('Unsupported event type: ' + event.type)
     }
-
+    
     let user = await getOrCreateUser(event.user.id)
 
-    const msg = Object.assign({}, event, {
-      bp: null,
-      __room: 'visitor:' + user.id // This is used to send to the relevant user's socket
-    })
-
-    const typing = parseTyping(msg)
+    const typing = parseTyping(event)
 
     if (typing) {
-      bp.events.emit('guest.web.typing', msg)
+      bp.events.emit('guest.web.typing', { userId: null })
       await Promise.delay(typing)
     }
 
-    const conversationId = await getOrCreateRecentConversation(user.id)
-    await appendBotMessage(bot_name, bot_avatar, conversationId, msg)
+    const conversationId = _.get(event, 'raw.conversationId')
+      || await getOrCreateRecentConversation(user.id)
 
-    bp.events.emit('guest.web.message', msg)
+    console.log(conversationId, event.raw)
+
+    const message = await appendBotMessage(bot_name, bot_avatar, conversationId, event)
+
+    Object.assign(message, {
+      __room: 'visitor:' + user.id // This is used to send to the relevant user's socket
+    })
+
+    bp.events.emit('guest.web.message', message)
 
     // Resolve the event promise
-    msg._promise && msg._resolve && msg._resolve()
+    event._promise && event._resolve && event._resolve()
   }
 }
 

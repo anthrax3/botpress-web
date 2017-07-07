@@ -180,22 +180,25 @@ module.exports = (knex, botfile) => {
       return null
     }
 
-    const messages = await getConversationMessages(userId, conversationId, fromId)
-    return Object.assign({}, conversation, { messages })
+    const messages = await getConversationMessages(conversationId, fromId)
+
+    return Object.assign({}, conversation, { 
+      messages: _.orderBy(messages, ['sent_on'], ['asc']) 
+    })
   }
 
-  function getConversationMessages(userId, conversationId, fromId = null) {
+  function getConversationMessages(conversationId, fromId = null) {
     let query = knex('web_messages')
-    .where({
-      conversationId: conversationId,
-      userId: userId
-    })
+    .where({ conversationId: conversationId })
 
     if (fromId) {
       query = query.andWhere('id', '<', fromId)
     }
 
-    return query.limit(20).then()
+    return query
+    .orderBy('sent_on', 'desc')
+    .limit(20)
+    .then()
   }
 
   return {

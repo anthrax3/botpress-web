@@ -51,11 +51,16 @@ function processOutgoing({ event, blocName, instruction }) {
   if (!_.isNil(instruction.text)) {
     const user = getUserId(event)
 
+    const raw = Object.assign({
+      to: user,
+      message: instruction.text
+    }, options, _.pick(event && event.raw, 'conversationId'))
+
     return PromisifyEvent({
       platform: 'web',
       type: 'text',
       user: { id: user },
-      raw: Object.assign({ to: user, message: instruction.text }, options),
+      raw: raw,
       text: instruction.text
     })
   }

@@ -131,7 +131,9 @@ module.exports = async (bp, config) => {
       type: payload.type,
       user: user,
       text: payload.text,
-      raw: payload
+      raw: Object.assign({}, sanitizedPayload, {
+        conversationId
+      })
     })
   }
 
