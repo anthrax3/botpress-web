@@ -20,6 +20,12 @@ export default class Side extends React.Component {
       showEmoji: false,
       showConvos: false
     }
+
+    this.messagesDiv = null
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight
   }
 
   handleFocus(value) {
@@ -145,7 +151,7 @@ export default class Side extends React.Component {
 
   renderConversation() {
     return <div className={style.conversation}>
-        <div className={style.messages}>
+        <div className={style.messages} ref={(m) => { this.messagesDiv = m }} >
           {this.renderMessages()}
         </div>
         <div className={style.bottom}>
