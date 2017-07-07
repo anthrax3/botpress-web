@@ -122,7 +122,13 @@ module.exports = async (bp, config) => {
 
     const sanitizedPayload = _.pick(payload, ['text', 'type'])
 
-    await appendUserMessage(userId, conversationId, sanitizedPayload)
+    const message = await appendUserMessage(userId, conversationId, sanitizedPayload)
+
+    Object.assign(message, {
+      __room: 'visitor:' + user.id // This is used to send to the relevant user's socket
+    })
+
+    bp.events.emit('guest.web.message', message)
 
     const user = await getOrCreateUser(userId)
 
