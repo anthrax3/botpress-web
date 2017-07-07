@@ -235,5 +235,8 @@ module.exports = {
 
     // Setup the APIs
     await api(bp, config)
+
+    // Reload middleware TODO remove this
+    bp.middlewares.load()
   }
 }

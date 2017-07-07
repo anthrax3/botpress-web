@@ -4,6 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import { Emoji } from 'emoji-mart'
+import _ from 'lodash'
 
 import Convo from './convo'
 import Side from './side'
@@ -51,8 +52,11 @@ export default class Web extends React.Component {
 
     this.state = {
       view: 'convo',
-      text: '',
-      loading: true
+      textToSend: '',
+      loading: true,
+      conversations: null,
+      currentConversation: null,
+      currentConversationId: null
     }
   }
 
@@ -61,6 +65,21 @@ export default class Web extends React.Component {
     if (this.props.bp && this.props.bp.events) {
       this.props.bp.events.setup()
     }
+
+    this.props.bp.events.on('guest.web.message', event => {
+      const isUpdate = this.state.currentConversation
+        && this.state.currentConversationId === event.conversationId
+
+      if (!isUpdate) {
+        return
+      }
+
+      const currentConversation = Object.assign({}, this.state.currentConversation, {
+        messages: [...this.state.currentConversation.messages, event]
+      })
+
+      this.setState({ currentConversation })
+    })
 
     this.props.bp.events.on('guest.web.pong', function() {
       console.log('PONG!!', arguments)
@@ -79,7 +98,7 @@ export default class Web extends React.Component {
 
   fetchData() {
     return this.fetchConversations()
-    .then(() => this.fetchMessages())
+    .then(::this.fetchCurrentConversation)
   }
 
   fetchConversations() {
@@ -93,6 +112,30 @@ export default class Web extends React.Component {
       this.setState({
         conversations: data
       })
+    })
+  }
+
+  fetchCurrentConversation() {
+    const axios = this.props.bp.axios
+    const userId = window.__BP_VISITOR_ID
+
+    let conversationIdToFetch = this.state.currentConversationId
+    if (!_.isEmpty(this.state.conversations) && !conversationIdToFetch) {
+      conversationIdToFetch = _.first(this.state.conversations).id
+      this.setState({ currentConversationId:  conversationIdToFetch })
+    }
+
+    const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}/${conversationIdToFetch}`
+
+    return axios.get(url)
+    .then(({data}) => {
+      // Possible race condition if the current conversation changed while fetching
+      if (this.state.currentConversationId !== conversationIdToFetch) {
+        // In which case we simply restart fetching
+        return fetchCurrentConversation()
+      }
+
+      this.setState({ currentConversation: data })
     })
   }
 
@@ -124,26 +167,27 @@ export default class Web extends React.Component {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
 
-    this.props.bp.events.emit('guest.web.ping', 'data!')
+    console.log('---> Sending: ' + this.state.textToSend)
 
-    console.log(url)
-    console.log('---> Message send: ' + this.state.text) // TODO
-
-    this.setState({
-      view: 'side',
-      text: ''
+    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
+    .then(() => {
+      console.log('---> Message sent OK: ' + this.state.textToSend)
+      this.setState({
+        view: 'side',
+        textToSend: ''
+      })
     })
   }
 
   handleTextChanged(event) {
     this.setState({
-      text: event.target.value
+      textToSend: event.target.value
     })
   }
 
   handleAddEmoji(emoji, event) {
     this.setState({
-      text: this.state.text + emoji.native + ' '
+      textToSend: this.state.textToSend + emoji.native + ' '
     })
   }
 
@@ -193,8 +237,10 @@ export default class Web extends React.Component {
               && <Convo
                   change={::this.handleTextChanged}
                   send={::this.handleSendMessage}
-                  text={this.state.text}
-                  config={this.state.config} /> }
+                  config={this.state.config}
+                  text={this.state.textToSend} /> 
+              : null}
+
             {this.renderButton()}
           </span>
         </div>
@@ -203,11 +249,11 @@ export default class Web extends React.Component {
 
   renderSide() {
     return <Side
-      text={this.state.text}
+      text={this.state.textToSend}
       close={::this.handleClosePanel}
       send={::this.handleSendMessage}
       change={::this.handleTextChanged}
-      messages={this.state.messages}
+      currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}
       addEmojiToText={::this.handleAddEmoji}
       config={this.state.config} />

@@ -31,7 +31,11 @@ module.exports = async (bp, config) => {
 
   const knex = await bp.db.get()
 
-  const { listConversations, appendUserMessage, getOrCreateRecentConversation } = db(knex, bp.botfile)
+  const { listConversations, 
+    getConversation, 
+    appendUserMessage, 
+    getOrCreateRecentConversation } = db(knex, bp.botfile)
+
   const { getOrCreateUser } = await users(bp, config)
 
   const router = bp.getRouter('botpress-web', { auth: false })
@@ -80,6 +84,18 @@ module.exports = async (bp, config) => {
     return res.sendStatus(200)
   }))
 
+  router.get('/conversations/:userId/:conversationId', async (req, res) => {
+    const { userId, conversationId } = req.params || {}
+
+    if (!validateUserId(userId)) {
+      return res.status(400).send(ERR_USER_ID_REQ)
+    }
+
+    const conversation = await getConversation(userId, conversationId)
+
+    return res.send(conversation)
+  })
+  
   router.get('/conversations/:userId', async (req, res) => {
     const { userId } = req.params || {}
 
@@ -106,7 +122,13 @@ module.exports = async (bp, config) => {
 
     const sanitizedPayload = _.pick(payload, ['text', 'type'])
 
-    await appendUserMessage(userId, conversationId, sanitizedPayload)
+    const message = await appendUserMessage(userId, conversationId, sanitizedPayload)
+
+    Object.assign(message, {
+      __room: 'visitor:' + userId // This is used to send to the relevant user's socket
+    })
+
+    bp.events.emit('guest.web.message', message)
 
     const user = await getOrCreateUser(userId)
 
@@ -115,7 +137,9 @@ module.exports = async (bp, config) => {
       type: payload.type,
       user: user,
       text: payload.text,
-      raw: payload
+      raw: Object.assign({}, sanitizedPayload, {
+        conversationId
+      })
     })
   }
 

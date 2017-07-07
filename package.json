@@ -67,6 +67,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",
-    "sillyname": "^0.1.0"
+    "sillyname": "^0.1.0",
+    "uuid": "^3.1.0"
   }
 }
