@@ -43,7 +43,7 @@ export default class Send extends Component {
 
   render() {
     return <div className={style.footer}>
-        {this.props.text === '' ? this.renderPromoElement() : this.renderSendButton()}
-      </div>
+      {this.props.text === '' ? this.renderPromoElement() : this.renderSendButton()}
+    </div>
   }
 }

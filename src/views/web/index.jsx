@@ -1,44 +1,17 @@
+/* global: window */
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import { Emoji } from 'emoji-mart'
+import _ from 'lodash'
 
 import Convo from './convo'
 import Side from './side'
 
 import style from './style.scss'
 
-const MESSAGES = [ // TEST VALUES
-{
-  fromUser: false,
-  name: 'Dany Fortin-Simard',
-  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
-  date: '11:21, Jan 27th, 1991',
-  message: {
-    type: 'text',
-    text: 'Hello!'
-  }
-},
-{
-  fromUser: true,
-  name: null,
-  avatar_url: null,
-  date: '11:22, Jan 27th, 1991',
-  message: {
-    type: 'text',
-    text: 'Hi!'
-  }
-},
-{
-  fromUser: false,
-  name: 'Dany Fortin-Simard',
-  avatar_url: 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400',
-  date: '11:33, Jan 27th, 1991',
-  message: {
-    type: 'text',
-    text: 'How are you today?'
-  }
-}]
+const BOT_HOSTNAME = window.location.origin
 
 export default class Web extends React.Component {
 
@@ -47,19 +20,85 @@ export default class Web extends React.Component {
 
     this.state = {
       view: 'convo',
-      text: '',
-      loading: true
+      textToSend: '',
+      loading: true,
+      conversations: null,
+      currentConversation: null,
+      currentConversationId: null
     }
   }
 
-  componentDidMount() {
-    this.fetchMessages()
+  componentWillMount() {
+    // Connect the Botpress's Web Socket to the server
+    if (this.props.bp && this.props.bp.events) {
+      this.props.bp.events.setup()
+    }
 
-    this.fetchConfig()
+    this.props.bp.events.on('guest.web.message', event => {
+      const isUpdate = this.state.currentConversation
+        && this.state.currentConversationId === event.conversationId
+
+      if (!isUpdate) {
+        return
+      }
+
+      const currentConversation = Object.assign({}, this.state.currentConversation, {
+        messages: [...this.state.currentConversation.messages, event]
+      })
+
+      this.setState({ currentConversation })
+    })
+  }
+
+  componentDidMount() {
+    this.fetchData()
     .then(() => {
       this.setState({
         loading: false
       })
+    })
+  }
+
+  fetchData() {
+    return this.fetchConfig()
+    .then(::this.fetchConversations)
+    .then(::this.fetchCurrentConversation)
+  }
+
+  fetchConversations() {
+    const axios = this.props.bp.axios
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}`
+
+    return axios.get(url)
+    .then(({ data }) => {
+      this.setState({
+        conversations: data
+      })
+    })
+  }
+
+  fetchCurrentConversation() {
+    const axios = this.props.bp.axios
+    const userId = window.__BP_VISITOR_ID
+
+    let conversationIdToFetch = this.state.currentConversationId
+    if (!_.isEmpty(this.state.conversations) && !conversationIdToFetch) {
+      conversationIdToFetch = _.first(this.state.conversations).id
+      this.setState({ currentConversationId:  conversationIdToFetch })
+    }
+
+    const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}/${conversationIdToFetch}`
+
+    return axios.get(url)
+    .then(({data}) => {
+      // Possible race condition if the current conversation changed while fetching
+      if (this.state.currentConversationId !== conversationIdToFetch) {
+        // In which case we simply restart fetching
+        return fetchCurrentConversation()
+      }
+
+      this.setState({ currentConversation: data })
     })
   }
 
@@ -72,32 +111,27 @@ export default class Web extends React.Component {
     })
   }
 
-  fetchMessages() {
-    console.log('---> Fetch messages...')
-
-    this.setState({
-      messages: MESSAGES // TODO
-    })
-  }
-
   handleSendMessage() {
-    console.log('---> Message send: ' + this.state.text) // TODO
-
-    this.setState({
-      view: 'side',
-      text: ''
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
+    .then(() => {
+      this.setState({
+        view: 'side',
+        textToSend: ''
+      })
     })
   }
 
   handleTextChanged(event) {
     this.setState({
-      text: event.target.value
+      textToSend: event.target.value
     })
   }
 
   handleAddEmoji(emoji, event) {
     this.setState({
-      text: this.state.text + emoji.native + ' '
+      textToSend: this.state.textToSend + emoji.native + ' '
     })
   }
 
@@ -144,11 +178,12 @@ export default class Web extends React.Component {
         <div className={classnames(style['widget-container'])}> 
           <span>
             {this.state.view === 'convo'
-              && <Convo
-                  change={::this.handleTextChanged}
-                  send={::this.handleSendMessage}
-                  text={this.state.text}
-                  config={this.state.config} /> }
+              ? <Convo
+                change={::this.handleTextChanged}
+                send={::this.handleSendMessage}
+                config={this.state.config}
+                text={this.state.textToSend} /> 
+              : null}
             {this.renderButton()}
           </span>
         </div>
@@ -157,11 +192,12 @@ export default class Web extends React.Component {
 
   renderSide() {
     return <Side
-      text={this.state.text}
+      text={this.state.textToSend}
       close={::this.handleClosePanel}
       send={::this.handleSendMessage}
       change={::this.handleTextChanged}
-      messages={this.state.messages}
+      currentConversation={this.state.currentConversation}
+      conversations={this.state.conversations}
       addEmojiToText={::this.handleAddEmoji}
       config={this.state.config} />
   }
