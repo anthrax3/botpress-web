@@ -1,15 +1,15 @@
-- Group messages by "sent by" and "time <= 5 minutes"
+- Group messages by "sent by" and "time <= 5 minutes" @high
   - At the beginning of the group put the date separator
   - Don't repeat "Bot"
-- Display "typing"
-- Display quick replies if last message
-- When clicking on a convo, switch to that convo
-- Default bot avatar
-- Default user avatar
-- Header should contain Title + Icon of the convo
-- Play sound when no focus & new message in
-- On receive new message & not active convo
+- Display "typing" @critical
+- Display quick replies if last message @critical
+- When clicking on a convo, switch to that convo @critical
+- Default bot avatar @critical
+- Default user avatar @critical
+- Header should contain Title + Icon of the convo @critical
+- Play sound when no focus & new message in @high
+- On receive new message & not active convo @high
   - Amend convo last message
   - Mark as unread
-- Send "mark_seen" on seen convo (scroll to bottom)
-- Put a separator where unseen
+- Send "mark_seen" on seen convo (scroll to bottom) @high
+- Put a separator where unseen @low
