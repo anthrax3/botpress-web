@@ -20,6 +20,12 @@ export default class Side extends React.Component {
       showEmoji: false,
       showConvos: false
     }
+
+    this.messagesDiv = null
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight
   }
 
   handleFocus(value) {
@@ -43,7 +49,7 @@ export default class Side extends React.Component {
   renderHeader() {
     const name = 'Dany Fortin-Simard'
     const avatar_url = 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
-    
+
     return <div className={style.header}>
         <div className={style.left}>
           <div className={style.line}>
@@ -59,6 +65,7 @@ export default class Side extends React.Component {
             </div>
           </div>
         </div>
+
         <span className={style.icon}>
           <i onClick={::this.handleConvosClicked}>
             <svg width="24" height="17" viewBox="0 0 24 17" xmlns="http://www.w3.org/2000/svg"><path d="M7 14.94h16c.552 0 1 .346 1 .772 0 .427-.448.773-1 .773H7c-.552 0-1-.346-1-.773 0-.426.448-.773 1-.773zM2.25 3.09H.75C.336 3.09 0 2.746 0 2.32V.773C0 .346.336 0 .75 0h1.5c.414 0 .75.346.75.773v1.545c0 .427-.336.773-.75.773zM2.25 10.303H.75c-.414 0-.75-.346-.75-.773V7.985c0-.427.336-.773.75-.773h1.5c.414 0 .75.346.75.773V9.53c0 .427-.336.773-.75.773zM2.25 17H.75c-.414 0-.75-.346-.75-.773v-1.545c0-.427.336-.773.75-.773h1.5c.414 0 .75.345.75.772v1.545c0 .427-.336.773-.75.773zM23 2.06H7c-.552 0-1-.346-1-.772 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .426-.448.773-1 .773zM23 9.273H7c-.552 0-1-.346-1-.773 0-.427.448-.773 1-.773h16c.552 0 1 .346 1 .773 0 .427-.448.773-1 .773z"></path></svg>
@@ -75,18 +82,17 @@ export default class Side extends React.Component {
   renderComposer() {
     const name = 'Dany Fortin-Simard'
 
-    const classNames = classnames({
-      [style.composer]: true,
-      [style.focused]: this.state.focused
-    })
-
-    return <div className={classNames}>
+    return <div className={style.composer} 
+      style={{
+        borderColor: this.state.focused ? this.props.config.foregroundColor : null
+      }}>
         <div className={style['flex-column']}>
           <Input placeholder={"Reply to " + name}
             send={this.props.send}
             change={this.props.change}
             text={this.props.text}
-            focused={::this.handleFocus} />
+            focused={::this.handleFocus}
+            config={this.props.config}/>
           <div className={style.line}>
             <ul className={style.elements}>
               <li>
@@ -106,7 +112,8 @@ export default class Side extends React.Component {
             </ul>
             <Send
               send={this.props.send}
-              text={this.props.text} />
+              text={this.props.text}
+              config={this.props.config} />
           </div>
           {this.renderEmojiPicker()}
         </div>
@@ -125,7 +132,7 @@ export default class Side extends React.Component {
             set='emojione'
             emojiSize={18}
             perLine={10}
-            color='#0176ff'/>
+            color={this.props.config.foregroundColor}/>
         </div>
       </div>
   }
@@ -136,7 +143,7 @@ export default class Side extends React.Component {
     return <div>
       <span>
         {messages.map((m, k) => {
-          return <Message data={m} key={k} />
+          return <Message config={this.props.config} data={m} key={k} />
         })} 
       </span>
     </div>
@@ -144,7 +151,7 @@ export default class Side extends React.Component {
 
   renderConversation() {
     return <div className={style.conversation}>
-        <div className={style.messages}>
+        <div className={style.messages} ref={(m) => { this.messagesDiv = m }} >
           {this.renderMessages()}
         </div>
         <div className={style.bottom}>
@@ -184,7 +191,11 @@ export default class Side extends React.Component {
 
   render() {
     return <span className={style.external}>
-      <div className={style.internal}>
+      <div className={style.internal}
+        style={{ 
+          backgroundColor: this.props.config.backgroundColor,
+          color: this.props.config.textColorOnBackgound
+        }}>
         {this.renderHeader()}
         {this.state.showConvos ? this.renderListOfConvos() : this.renderConversation()}
       </div>

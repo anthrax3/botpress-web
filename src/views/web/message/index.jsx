@@ -33,7 +33,10 @@ export default class Message extends Component {
     return <div className={classNames}>
         <div className={style['message-container']}>
           <div className={style.content}>
-            <div className={style.bubble}>
+            <div className={style.bubble}
+              style={{
+                backgroundColor: this.props.config.foregroundColor
+              }}>
               <div>
                 <p>{m.message_text}</p>
               </div>
@@ -54,5 +57,3 @@ export default class Message extends Component {
     return <div>{message}</div>
   }
 }
-
-  

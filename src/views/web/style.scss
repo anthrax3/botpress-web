@@ -8,7 +8,6 @@ body {
 .web {
   button {
     float: right;
-    background-color: rgb(1, 118, 255);
     fill: rgb(255, 255, 255);
     cursor: pointer;
     outline: none;
@@ -61,23 +60,5 @@ body {
       flex: 1 0 auto;
       width: 100%;
     }
-
-    // button {
-    //   position: absolute;
-    //   bottom: 12px;
-    //   right: 12px;
-      
-    //   i {
-    //     opacity: 0.5;
-    //   }
-
-    //   &:hover {
-    //     i {
-    //       opacity: 1;
-    //     }
-    //   }
-    // }
   }
 }
-  
-

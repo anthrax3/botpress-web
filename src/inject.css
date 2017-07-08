@@ -12,13 +12,14 @@
   font-size: 16px;    
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
+  padding: 0;
 }
 
 .bp-widget-widget {
   top: auto;
   left: auto;
   bottom: 24px;
-  right: 24px;
+  right: 36px;
   width: 76px !important;
   height: 76px !important; 
 }
@@ -27,7 +28,7 @@
   top: auto;
   left: auto;
   bottom: 24px;
-  right: 24px;
+  right: 36px;
   width: 420px !important;
   min-height: 382px !important;
   max-height: 500px !important;
