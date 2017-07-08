@@ -7,6 +7,7 @@ import moment from 'moment'
 import Send from '../send'
 import Message from '../message'
 import Input from '../input'
+import TypingIndicator from '../message/typing'
 
 import style from './style.scss'
 require('emoji-mart/css/emoji-mart.css')
@@ -153,6 +154,10 @@ export default class Side extends React.Component {
     return <div className={style.conversation}>
         <div className={style.messages} ref={(m) => { this.messagesDiv = m }} >
           {this.renderMessages()}
+          <TypingIndicator 
+            enabled={this.props.currentConversation.typingUntil}
+            avatar_url={null}
+            color={this.props.config.foregroundColor} />
         </div>
         <div className={style.bottom}>
           {this.renderComposer()}

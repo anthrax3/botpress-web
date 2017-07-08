@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import { Emoji } from 'emoji-mart'
 import _ from 'lodash'
+import moment from 'moment'
 
 import Convo from './convo'
 import Side from './side'
@@ -29,25 +30,7 @@ export default class Web extends React.Component {
   }
 
   componentWillMount() {
-    // Connect the Botpress's Web Socket to the server
-    if (this.props.bp && this.props.bp.events) {
-      this.props.bp.events.setup()
-    }
-
-    this.props.bp.events.on('guest.web.message', event => {
-      const isUpdate = this.state.currentConversation
-        && this.state.currentConversationId === event.conversationId
-
-      if (!isUpdate) {
-        return
-      }
-
-      const currentConversation = Object.assign({}, this.state.currentConversation, {
-        messages: [...this.state.currentConversation.messages, event]
-      })
-
-      this.setState({ currentConversation })
-    })
+    this.setupSocket()
   }
 
   componentDidMount() {
@@ -57,6 +40,16 @@ export default class Web extends React.Component {
         loading: false
       })
     })
+  }
+
+  setupSocket() {
+    // Connect the Botpress's Web Socket to the server
+    if (this.props.bp && this.props.bp.events) {
+      this.props.bp.events.setup()
+    }
+
+    this.props.bp.events.on('guest.web.message', ::this.handleNewMessage)
+    this.props.bp.events.on('guest.web.typing', ::this.handleBotTyping)
   }
 
   fetchData() {
@@ -109,6 +102,51 @@ export default class Web extends React.Component {
         config: data
       })
     })
+  }
+
+  handleNewMessage(event) {
+    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+      return Object.assign({}, convo, {
+        messages: [...convo.messages, event],
+        typingUntil: event.userId ? convo.typingUntil : null
+      })
+    })
+  }
+
+  handleBotTyping(event) {
+    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+      return Object.assign({}, convo, {
+        typingUntil: moment().add(event.timeInMs, 'milliseconds').toDate()
+      })
+    })
+
+    setTimeout(::this.expireTyping, event.timeInMs + 50)
+  }
+
+  expireTyping() {
+    const currentTypingUntil = this.state.currentConversation
+      && this.state.currentConversation.typingUntil
+
+    const now = moment()
+    const timerExpired = currentTypingUntil && moment(currentTypingUntil).isBefore(now)
+    if (timerExpired) {
+      this.safeUpdateCurrentConvo(this.state.currentConversationId, convo => {
+        return Object.assign({}, convo, { typingUntil: null })
+      })
+    }
+  }
+
+  safeUpdateCurrentConvo(convoId, updater) {
+    if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
+      // there's no conversation to update or our convo changed
+      return
+    }
+
+    const newConvo = updater && updater(this.state.currentConversation)
+
+    if (newConvo) {
+      this.setState({ currentConversation: newConvo })
+    }
   }
 
   handleSendMessage() {
