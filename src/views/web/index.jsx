@@ -61,7 +61,7 @@ export default class Web extends React.Component {
 
   fetchData() {
     return this.fetchConfig()
-    .then(::this.fetchConversations())
+    .then(::this.fetchConversations)
     .then(::this.fetchCurrentConversation)
   }
 
