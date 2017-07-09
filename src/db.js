@@ -67,8 +67,8 @@ module.exports = (knex, botfile) => {
       avatar_url,
       message_type: type,
       message_text: text,
-      message_raw: raw,
-      message_data: data,
+      message_raw: helpers(knex).json.set(raw),
+      message_data: helpers(knex).json.set(raw),
       sent_on: helpers(knex).date.now()
     }
 
@@ -80,7 +80,9 @@ module.exports = (knex, botfile) => {
     .then()
 
     return Object.assign(message, {
-      sent_on: new Date()
+      sent_on: new Date(),
+      message_raw: helpers(knex).json.get(message.message_raw),
+      message_data: helpers(knex).json.get(message.message_data)
     })
   }
 
@@ -93,15 +95,17 @@ module.exports = (knex, botfile) => {
       avatar_url: botAvatar,
       message_type: type,
       message_text: text,
-      message_raw: raw,
-      message_data: data,
+      message_raw: helpers(knex).json.set(raw),
+      message_data: helpers(knex).json.set(data),
       sent_on: helpers(knex).date.now()
     }
 
     await knex('web_messages').insert(message).then()
 
     return Object.assign(message, {
-      sent_on: new Date()
+      sent_on: new Date(),
+      message_raw: helpers(knex).json.get(message.message_raw),
+      message_data: helpers(knex).json.get(message.message_data)
     })
   }
 
@@ -197,6 +201,13 @@ module.exports = (knex, botfile) => {
     }
 
     const messages = await getConversationMessages(conversationId, fromId)
+
+    messages.forEach(m => {
+      return Object.assign(m, {
+        message_raw: helpers(knex).json.get(m.message_raw),
+        message_data: helpers(knex).json.get(m.message_data)
+      })
+    })
 
     return Object.assign({}, conversation, { 
       messages: _.orderBy(messages, ['sent_on'], ['asc']) 
