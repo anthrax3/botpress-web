@@ -138,3 +138,32 @@
     &:nth-child(3) { animation-delay: 400ms; }
   }
 }
+
+.quickReplyContainer {
+  box-sizing: border-box;
+  display: block;
+  text-align: right;
+  text-align: right;
+
+  button {
+    display: inline-block;
+    margin: 3px 2px;
+    cursor: pointer;
+    text-transform: none;
+    overflow: visible;
+    align-items: flex-start;
+    
+    &.bubble {
+      box-shadow: none;
+      background-color: transparent;
+      font-size: 1rem;
+      padding: .5rem 1rem;
+      width: initial;
+      min-width: 5rem;
+      height: 40px;
+      text-align: center;
+      border: 1px solid currentColor;
+      border-radius: 20px;
+    }
+  }
+}

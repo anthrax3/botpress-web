@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import { Picker } from 'emoji-mart'
 import moment from 'moment'
+import _ from 'lodash'
 
 import Send from '../send'
 import Message from '../message'
 import Input from '../input'
 import TypingIndicator from '../message/typing'
+import QuickReplies from '../message/quick_replies'
 
 import style from './style.scss'
 require('emoji-mart/css/emoji-mart.css')
@@ -150,14 +152,28 @@ export default class Side extends React.Component {
     </div>
   }
 
+  renderTypingIndicators() {
+    return <TypingIndicator 
+      enabled={this.props.currentConversation.typingUntil}
+      avatar_url={null}
+      color={this.props.config.foregroundColor} />
+  }
+
+  renderQuickReplies() {
+    const message = _.last(_.get(this.props.currentConversation, 'messages'))
+    const quick_replies = _.get(message, 'message_raw.quick_replies')
+
+    return <QuickReplies 
+      quick_replies={quick_replies} 
+      fgColor={this.props.config.foregroundColor} />
+  }
+
   renderConversation() {
     return <div className={style.conversation}>
         <div className={style.messages} ref={(m) => { this.messagesDiv = m }} >
           {this.renderMessages()}
-          <TypingIndicator 
-            enabled={this.props.currentConversation.typingUntil}
-            avatar_url={null}
-            color={this.props.config.foregroundColor} />
+          {this.renderTypingIndicators()}
+          {this.renderQuickReplies()}
         </div>
         <div className={style.bottom}>
           {this.renderComposer()}
