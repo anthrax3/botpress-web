@@ -1,5 +1,7 @@
 import style from './style.scss'
 
+import BotAvatar from './bot_avatar'
+
 const TypingIndicator = props => {
   if (!props.enabled) {
     return null
@@ -7,10 +9,13 @@ const TypingIndicator = props => {
 
   const bubble = () => <div className={style.typingBubble} style={{ backgroundColor: props.color }}/>
   
+  const passthroughProps = {
+    foregroundColor: props.color,
+    ...props
+  }
+
   return <div className={style.message}>
-    <div className={style.avatar}>
-      <div className={style.picture} style={{ backgroundImage: 'url(' + props.avatar_url +')'}}></div>
-    </div>
+    <BotAvatar {...passthroughProps} />
     <div className={style['message-container']}>
       <div className={style.content}>
         <div className={style.bubble}>

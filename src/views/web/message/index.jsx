@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
 
+import BotAvatar from './bot_avatar'
+
 import style from './style.scss'
 
 export default class Message extends Component {
@@ -10,10 +12,14 @@ export default class Message extends Component {
   }
 
   renderFromBot(m) {
+
+    const passthroughProps = {
+      ...this.props.config,
+      ...m
+    }
+
     return <div className={style.message}>
-        <div className={style.avatar}>
-          <div className={style.picture} style={{ backgroundImage: 'url(' + m.avatar_url +')'}}></div>
-        </div>
+        <BotAvatar {...passthroughProps} />
         <div className={style['message-container']}>
           <div className={style['info-line']}>{m.full_name}</div>
           <div className={style.content}>

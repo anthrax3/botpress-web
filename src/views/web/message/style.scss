@@ -16,6 +16,10 @@
     flex-shrink: 0;
     width: 1.875rem;
     height: 1.875rem;
+    
+    .color {
+      fill: currentColor;
+    }
 
     .picture {
       border-radius: 50%;
