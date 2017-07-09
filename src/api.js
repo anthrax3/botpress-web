@@ -70,6 +70,7 @@ module.exports = async (bp, config) => {
 
     const payload = (req.body || {})
     let { conversationId } = (req.query || {})
+    conversationId = conversationId && parseInt(conversationId)
 
     if (!_.includes(['text', 'quick_reply'], payload.type)) { // TODO: Support files
       res.status(400).send(ERR_MSG_TYPE)

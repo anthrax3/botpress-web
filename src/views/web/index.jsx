@@ -152,8 +152,9 @@ export default class Web extends React.Component {
   handleSendMessage() {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
-    // TODO add conversationId if available
-    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
+    const config = { params: { conversationId: this.state.currentConversationId } }
+
+    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend }, config)
     .then(() => {
       this.setState({
         view: 'side',
@@ -189,8 +190,13 @@ export default class Web extends React.Component {
   handleSendQuickReply(title, payload) {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
-    // TODO add conversationId if available
-    this.props.bp.axios.post(url, { type: 'quick_reply', text: title, data: { payload } }).then()
+    const config = { params: { conversationId: this.state.currentConversationId } }
+
+    this.props.bp.axios.post(url, { 
+      type: 'quick_reply', 
+      text: title, 
+      data: { payload } 
+    }, config).then()
   }
 
   handleSwitchConvo(convoId) {
