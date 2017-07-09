@@ -10,6 +10,7 @@ import Message from '../message'
 import Input from '../input'
 import TypingIndicator from '../message/typing'
 import QuickReplies from '../message/quick_replies'
+import BotAvatar from '../message/bot_avatar'
 
 import style from './style.scss'
 require('emoji-mart/css/emoji-mart.css')
@@ -64,21 +65,28 @@ export default class Side extends React.Component {
   }
 
   renderHeader() {
-    const name = 'Dany Fortin-Simard'
-    const avatar_url = 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
+
+    const name = (this.props.currentConversation && !this.state.showConvos)
+      ? this.props.currentConversation.title
+      : 'Conversations'
+
+    const avatar_url = _.get(this.props, 'currentConversation.avatar_url')
+
+    const avatar = (this.props.currentConversation && !this.state.showConvos)
+      ? <BotAvatar foregroundColor={this.props.config.foregroundColor} avatar_url={avatar_url} />
+      : null
+
+    const status = <div className={style.status}>
+      <svg viewBox="0 0 10 10"><ellipse cx="50%" cy="50%" rx="50%" ry="50%"></ellipse></svg>
+      <span>always online</span>
+    </div>
 
     return <div className={style.header}>
         <div className={style.left}>
           <div className={style.line}>
-            <div className={style.avatar}>
-              <div className={style.picture} style={{ backgroundImage: 'url(' + avatar_url +')'}}></div>
-            </div> 
+            {avatar}
             <div className={style.title}>
               <div className={style.name}>{name}</div>
-              <div className={style.status}>
-                <svg viewBox="0 0 10 10"><ellipse cx="50%" cy="50%" rx="50%" ry="50%"></ellipse></svg>
-                <span>online now</span>
-              </div>
             </div>
           </div>
         </div>

@@ -7,9 +7,8 @@
 ✔ Display "typing" @critical @done (17-07-08 20:17)
 ✔ Display quick replies if last message @critical @done (17-07-09 16:43)
 ✔ When clicking on a convo, switch to that convo @critical @done (17-07-09 17:07)
-- Default bot avatar @critical
-- Default user avatar @critical
-- Header should contain Title + Icon of the convo @critical
+✔ Default bot avatar @critical @done (17-07-09 19:56)
+✔ Header should contain Title + Icon of the convo @critical @done (17-07-09 20:31)
 - Play sound when no focus & new message in @high
 - On receive new message & not active convo @high
   - Amend convo last message
