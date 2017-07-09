@@ -152,6 +152,7 @@ export default class Web extends React.Component {
   handleSendMessage() {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+    // TODO add conversationId if available
     this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
     .then(() => {
       this.setState({
@@ -183,6 +184,13 @@ export default class Web extends React.Component {
         view: 'side'
       })
     }
+  }
+
+  handleSendQuickReply(title, payload) {
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+    // TODO add conversationId if available
+    this.props.bp.axios.post(url, { type: 'quick_reply', text: title, data: { payload } }).then()
   }
 
   handleClosePanel() {
@@ -230,14 +238,17 @@ export default class Web extends React.Component {
 
   renderSide() {
     return <Side
+      config={this.state.config}
       text={this.state.textToSend}
-      close={::this.handleClosePanel}
-      send={::this.handleSendMessage}
-      change={::this.handleTextChanged}
       currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}
+
       addEmojiToText={::this.handleAddEmoji}
-      config={this.state.config} />
+
+      onClose={::this.handleClosePanel}
+      onTextSend={::this.handleSendMessage}
+      onTextChanged={::this.handleTextChanged}
+      onQuickReplySend={::this.handleSendQuickReply} />
   }
 
   render() {

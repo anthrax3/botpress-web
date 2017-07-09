@@ -5,7 +5,7 @@
   - Bubbles have squared corners when in between messages
   - Very small margins between messages
 ✔ Display "typing" @critical @done (17-07-08 20:17)
-- Display quick replies if last message @critical
+✔ Display quick replies if last message @critical @done (17-07-09 16:43)
 - When clicking on a convo, switch to that convo @critical
 - Default bot avatar @critical
 - Default user avatar @critical

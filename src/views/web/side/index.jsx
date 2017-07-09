@@ -75,7 +75,7 @@ export default class Side extends React.Component {
           </i>
         </span>
         <span className={style.icon}>
-          <i onClick={this.props.close}>
+          <i onClick={this.props.onClose}>
             <svg width="17" height="17" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"><path d="M9.502 8.5l7.29 7.29c.277.278.277.727 0 1.003-.137.138-.32.207-.5.207s-.362-.07-.5-.207L8.5 9.503l-7.29 7.29c-.14.138-.32.207-.5.207-.183 0-.364-.07-.502-.207-.277-.276-.277-.725 0-1.002l7.29-7.29-7.29-7.29C-.07.932-.07.483.208.206c.277-.276.725-.276 1 0L8.5 7.497l7.29-7.29c.277-.276.725-.276 1.002 0 .277.277.277.726 0 1.002L9.502 8.5z" fill-rule="evenodd"></path></svg>
           </i>
         </span>
@@ -91,8 +91,8 @@ export default class Side extends React.Component {
       }}>
         <div className={style['flex-column']}>
           <Input placeholder={"Reply to " + name}
-            send={this.props.send}
-            change={this.props.change}
+            send={this.props.onTextSend}
+            change={this.props.onTextChanged}
             text={this.props.text}
             focused={::this.handleFocus}
             config={this.props.config}/>
@@ -114,7 +114,7 @@ export default class Side extends React.Component {
               </li>
             </ul>
             <Send
-              send={this.props.send}
+              send={this.props.onTextSend}
               text={this.props.text}
               config={this.props.config} />
           </div>
@@ -164,8 +164,9 @@ export default class Side extends React.Component {
     const quick_replies = _.get(message, 'message_raw.quick_replies')
 
     return <QuickReplies 
-      quick_replies={quick_replies} 
-      fgColor={this.props.config.foregroundColor} />
+      quick_replies={quick_replies}
+      fgColor={this.props.config.foregroundColor}
+      onQuickReplySend={this.props.onQuickReplySend} />
   }
 
   renderConversation() {

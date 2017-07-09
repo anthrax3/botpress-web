@@ -71,7 +71,7 @@ module.exports = async (bp, config) => {
     const payload = (req.body || {})
     let { conversationId } = (req.query || {})
 
-    if (!_.includes(['text'], payload.type)) { // TODO: Support files
+    if (!_.includes(['text', 'quick_reply'], payload.type)) { // TODO: Support files
       res.status(400).send(ERR_MSG_TYPE)
     }
 
@@ -120,7 +120,7 @@ module.exports = async (bp, config) => {
       throw new Error('Text must be a valid string of less than 360 chars')
     }
 
-    const sanitizedPayload = _.pick(payload, ['text', 'type'])
+    const sanitizedPayload = _.pick(payload, ['text', 'type', 'data'])
 
     const message = await appendUserMessage(userId, conversationId, sanitizedPayload)
 
@@ -132,7 +132,7 @@ module.exports = async (bp, config) => {
 
     const user = await getOrCreateUser(userId)
 
-    return bp.middlewares.sendIncoming({
+    return bp.middlewares.sendIncoming(Object.assign({
       platform: 'web',
       type: payload.type,
       user: user,
@@ -140,7 +140,7 @@ module.exports = async (bp, config) => {
       raw: Object.assign({}, sanitizedPayload, {
         conversationId
       })
-    })
+    }, payload.data))
   }
 
   async function sendEvent(userId, event, data) {
