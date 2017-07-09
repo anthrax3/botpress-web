@@ -193,6 +193,22 @@ export default class Web extends React.Component {
     this.props.bp.axios.post(url, { type: 'quick_reply', text: title, data: { payload } }).then()
   }
 
+  handleSwitchConvo(convoId) {
+    this.setState({
+      currentConversation: null,
+      currentConversationId: convoId
+    })
+
+    setImmediate(() => {
+      this.fetchCurrentConversation()
+      .then(() => {
+        this.setState({
+          view: 'side'
+        })
+      })
+    })
+  }
+
   handleClosePanel() {
     this.setState({
       view: 'widget'
@@ -246,6 +262,7 @@ export default class Web extends React.Component {
       addEmojiToText={::this.handleAddEmoji}
 
       onClose={::this.handleClosePanel}
+      onSwitchConvo={::this.handleSwitchConvo}
       onTextSend={::this.handleSendMessage}
       onTextChanged={::this.handleTextChanged}
       onQuickReplySend={::this.handleSendQuickReply} />
