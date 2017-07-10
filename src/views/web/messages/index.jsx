@@ -3,7 +3,6 @@ import classnames from 'classnames'
 import moment from 'moment'
 
 import BotAvatar from './bot_avatar'
-import TypingIndicator from './typing'
 import QuickReplies from './quick_replies'
 
 import style from './style.scss'
@@ -61,13 +60,6 @@ export default class MessageList extends Component {
     } catch (err) {
       // Discard the error
     }
-  }
-
-  renderTypingIndicators() {
-    return <TypingIndicator 
-      enabled={this.props.typingUntil}
-      avatar_url={null}
-      color={this.props.fgColor} />
   }
 
   renderQuickReplies() {
