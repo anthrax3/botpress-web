@@ -1,9 +1,9 @@
-- Group messages by "sent by" and "time <= 5 minutes" @high
-  - At the beginning of the group put the date separator
-  - Don't repeat "Bot"
-  - Avatar shows up at the end of the group only
-  - Bubbles have squared corners when in between messages
-  - Very small margins between messages
+✔ Group messages by "sent by" and "time <= 5 minutes" @high @done (17-07-10 11:10)
+  ☐ At the beginning of the group put the date separator
+  ✔ Don't repeat "Bot" @done (17-07-10 11:10)
+  ✔ Avatar shows up at the end of the group only @done (17-07-10 11:10)
+  ✔ Bubbles have squared corners when in between messages @done (17-07-10 11:10)
+  ✔ Very small margins between messages @done (17-07-10 11:10)
 ✔ Display "typing" @critical @done (17-07-08 20:17)
 ✔ Display quick replies if last message @critical @done (17-07-09 16:43)
 ✔ When clicking on a convo, switch to that convo @critical @done (17-07-09 17:07)

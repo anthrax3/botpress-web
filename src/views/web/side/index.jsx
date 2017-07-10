@@ -6,11 +6,10 @@ import moment from 'moment'
 import _ from 'lodash'
 
 import Send from '../send'
-import Message from '../message'
+import MessageList from '../messages'
 import Input from '../input'
-import TypingIndicator from '../message/typing'
-import QuickReplies from '../message/quick_replies'
-import BotAvatar from '../message/bot_avatar'
+
+import BotAvatar from '../messages/bot_avatar'
 
 import style from './style.scss'
 require('emoji-mart/css/emoji-mart.css')
@@ -24,12 +23,6 @@ export default class Side extends React.Component {
       showEmoji: false,
       showConvos: false
     }
-
-    this.messagesDiv = null
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.tryScrollToBottom()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,14 +47,6 @@ export default class Side extends React.Component {
     this.setState({
       showConvos: !this.state.showConvos
     })
-  }
-
-  tryScrollToBottom() {
-    try {
-      this.messagesDiv.scrollTop = this.messagesDiv.scrollHeight
-    } catch (err) {
-      // Discard the error
-    }
   }
 
   renderHeader() {
@@ -162,42 +147,17 @@ export default class Side extends React.Component {
       </div>
   }
 
-  renderMessages() {
-    const messages = (this.props.currentConversation && this.props.currentConversation.messages) || []
-    
-    return <div>
-      <span>
-        {messages.map((m, k) => {
-          return <Message config={this.props.config} data={m} key={k} />
-        })} 
-      </span>
-    </div>
-  }
-
-  renderTypingIndicators() {
-    return <TypingIndicator 
-      enabled={this.props.currentConversation.typingUntil}
-      avatar_url={null}
-      color={this.props.config.foregroundColor} />
-  }
-
-  renderQuickReplies() {
-    const message = _.last(_.get(this.props.currentConversation, 'messages'))
-    const quick_replies = _.get(message, 'message_raw.quick_replies')
-
-    return <QuickReplies 
-      quick_replies={quick_replies}
-      fgColor={this.props.config.foregroundColor}
-      onQuickReplySend={this.props.onQuickReplySend} />
-  }
-
   renderConversation() {
+
+    const messagesProps = {
+      typingUntil: _.get(this.props, 'currentConversation.typingUntil'),
+      fgColor: _.get(this.props, 'config.foregroundColor'),
+      messages: _.get(this.props, 'currentConversation.messages'),
+      onQuickReplySend: this.props.onQuickReplySend
+    }
+
     return <div className={style.conversation}>
-        <div className={style.messages} ref={(m) => { this.messagesDiv = m }} >
-          {this.renderMessages()}
-          {this.renderTypingIndicators()}
-          {this.renderQuickReplies()}
-        </div>
+        <MessageList {...messagesProps} />
         <div className={style.bottom}>
           {this.renderComposer()}
         </div>

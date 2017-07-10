@@ -146,16 +146,6 @@
       flex-direction: column;
       min-height: 1px;
 
-      .messages {
-        -webkit-box-flex: 1;
-        -ms-flex: 1;
-        flex: 1;
-        overflow-y: auto;
-        -ms-flex-positive: 1;
-        flex-grow: 1;
-        padding: 0 .65rem 1rem;
-      }
-
       .bottom {
 
         .composer {

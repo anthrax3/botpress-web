@@ -18,7 +18,17 @@
     height: 100%;
   }
 }
-  
+
+.messages {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  overflow-y: auto;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0 .65rem 1rem;
+}
+
 .message {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -39,7 +49,7 @@
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-
+    
     .info-line {
       margin: 0 12px;
       -webkit-box-flex: 0;
@@ -56,7 +66,8 @@
       display: flex;
     }
 
-    .content {
+    .group {
+
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
@@ -68,18 +79,34 @@
       -ms-flex-align: start;
       align-items: flex-start;
       width: 100%;
-      
-      .bubble {
-        border-radius: 20px;
-        max-width: 100%;
-        background-color: #f8f8f8;
-        padding: .5rem .75rem;
-        white-space: pre-wrap;
-        word-break: break-word;
 
-        p {
-          margin: 0;
-        }
+      & > :not(:last-child) {
+        margin-bottom: 2px;
+      }
+    }
+
+    .bubble {
+
+      border-radius: 5px;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      
+      &:first-of-type {
+        border-top-left-radius: 20px;
+      }
+      
+      &:last-of-type {
+        border-bottom-left-radius: 20px;
+      }
+
+      max-width: 100%;
+      background-color: #f8f8f8;
+      padding: .5rem .75rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+
+      p {
+        margin: 0;
       }
     }
   }
@@ -96,7 +123,7 @@
     -ms-flex-align: end;
     align-items: flex-end;
 
-    .content {
+    .group {
       padding-left: 60px;
       -webkit-box-pack: end;
       -ms-flex-pack: end;
@@ -108,6 +135,18 @@
       .bubble {
         color: rgb(255, 255, 255);
         background-color: rgb(1, 118, 255);
+        
+        border-radius: 5px;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+
+        &:first-of-type {
+          border-top-right-radius: 20px;
+        }
+        
+        &:last-of-type {
+          border-bottom-right-radius: 20px;
+        }
       }
     }
   }
