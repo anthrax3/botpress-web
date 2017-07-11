@@ -9,7 +9,7 @@
 ✔ When clicking on a convo, switch to that convo @critical @done (17-07-09 17:07)
 ✔ Default bot avatar @critical @done (17-07-09 19:56)
 ✔ Header should contain Title + Icon of the convo @critical @done (17-07-09 20:31)
-- Play sound when no focus & new message in @high
+✔ Play sound when no focus & new message in @high @done (17-07-11 16:24)
 - On receive new message & not active convo @high
   - Amend convo last message
   - Mark as unread
