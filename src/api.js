@@ -1,7 +1,11 @@
 import _ from 'lodash'
+import path from 'path'
 
 import injectScript from 'raw!./inject.js'
 import injectStyle from 'raw!./inject.css'
+import notificationSound from 'raw!../static/notification.mp3'
+
+import serveStatic from 'serve-static'
 
 import db from './db'
 import users from './users'
@@ -57,6 +61,10 @@ module.exports = async (bp, config) => {
     res.contentType('text/css')
     res.send(injectStyle)
   })
+
+  const modulePath = bp._loadedModules['botpress-web'].root
+  const staticFolder = path.join(modulePath, './static')
+  router.use('/static', serveStatic(staticFolder))
 
   // ?conversationId=xxx (optional)
   router.post('/messages/:userId', asyncApi(async (req, res) => {

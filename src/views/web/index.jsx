@@ -2,6 +2,7 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Sound from 'react-sound'
 import classnames from 'classnames'
 import { Emoji } from 'emoji-mart'
 import _ from 'lodash'
@@ -23,6 +24,7 @@ export default class Web extends React.Component {
       view: 'convo',
       textToSend: '',
       loading: true,
+      soundPlaying: Sound.status.STOPPED,
       conversations: null,
       currentConversation: null,
       currentConversationId: null
@@ -139,7 +141,12 @@ export default class Web extends React.Component {
   safeUpdateCurrentConvo(convoId, updater) {
     if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
       // there's no conversation to update or our convo changed
+      this.playSound() // TODO We also need to amend the convo and set unread count ++
       return
+    }
+
+    if (document.hasFocus && !document.hasFocus()) {
+      this.playSound() // TODO We also need to amend the convo unread count ++
     }
 
     const newConvo = updater && updater(this.state.currentConversation)
@@ -147,6 +154,11 @@ export default class Web extends React.Component {
     if (newConvo) {
       this.setState({ currentConversation: newConvo })
     }
+  }
+
+  playSound() {
+    console.log('PLAY SOUND')
+    this.setState({ soundPlaying: Sound.status.PLAYING })
   }
 
   handleSendMessage() {
@@ -221,6 +233,10 @@ export default class Web extends React.Component {
     })
   }
 
+  handleSoundDone() {
+    this.setState({ soundPlaying: Sound.status.STOPPED })
+  }
+
   renderOpenIcon() {
     return <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
       <path d="M4.583 14.894l-3.256 3.78c-.7.813-1.26.598-1.25-.46a10689.413 10689.413 0 0 1 .035-4.775V4.816a3.89 3.89 0 0 1 3.88-3.89h12.064a3.885 3.885 0 0 1 3.882 3.89v6.185a3.89 3.89 0 0 1-3.882 3.89H4.583z" fill="#FFF" fill-rule="evenodd"></path>
@@ -282,6 +298,7 @@ export default class Web extends React.Component {
     window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
     return <div className={style.web} >
+        <Sound url={'/api/botpress-web/static/notification.mp3'} playStatus={this.state.soundPlaying} onFinishedPlaying={::this.handleSoundDone} />
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }
