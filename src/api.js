@@ -147,5 +147,6 @@ module.exports = async (bp, config) => {
   async function sendEvent(userId, event, data) {
 
   }
-}
 
+  return router
+}
