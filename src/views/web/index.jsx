@@ -21,7 +21,7 @@ export default class Web extends React.Component {
     super(props)
 
     this.state = {
-      view: 'convo',
+      view: 'widget',
       textToSend: '',
       loading: true,
       soundPlaying: Sound.status.STOPPED,
