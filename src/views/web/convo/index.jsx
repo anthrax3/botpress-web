@@ -7,6 +7,13 @@ import Input from '../input'
 
 import style from './style.scss'
 
+const DEFAULT_NAME = 'Bot'
+const DEFAULT_AVATAR_URL = 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
+const DEFAULT_WELCOME_MESSAGE = `Hello!
+  Curious about our offer?
+  It will be a pleasure to help you getting started.
+`
+
 export default class Convo extends React.Component {
 
   constructor(props) {
@@ -53,70 +60,88 @@ export default class Convo extends React.Component {
     </span>
   }
 
-  render() {
-    const name = 'Dany Fortin-Simard'
-    const avatar_url = 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
-    const text = <div className={style.paragraph}>
-        <p>Hello!</p>
-        <p><br/></p>
-        <p>Curious about Botpress?</p>
-        <p><br/></p>
-        <p>It will be a pleasure to help you getting started.</p>
-      </div>
+  renderName() {
+    const name = this.props.config.botName || DEFAULT_NAME
 
+    return <div className={style.name}
+        style={{
+          color: this.props.config.textColorOnForeground
+        }}>
+        <div>
+          <span>{name}</span>
+        </div>
+      </div>
+  }
+
+  renderAvatar() {
+    const avatar_url = this.props.config.botAvatarUrl || DEFAULT_AVATAR_URL
+    
+    return <div className={style.avatar}>
+        <div className={style.square}>
+          <div className={style.circle}
+            style={{
+              borderColor: this.props.config.foregroundColor
+            }}>
+            <div className={style.picture} style={{ backgroundImage: 'url(' + avatar_url +')'}}></div>
+          </div>
+        </div>
+      </div>
+  }
+
+  renderWelcomeMessage() {
+    const message = this.props.config.welcomeMsg || DEFAULT_WELCOME_MESSAGE
+    
+    return <div className={style.paragraph}>
+        {message}
+      </div>
+  }
+
+  renderHeader() {
+    return <div className={style.header}
+        style={{ 
+          color: this.props.config.textColorOnForeground,
+          backgroundColor: this.props.config.foregroundColor
+        }}>
+        <div className={style.line}>
+          <div className={style.title}>
+            {this.renderAvatar()}
+            {this.renderName()}
+          </div>
+        </div>
+        <div className={style.text}>
+          {this.renderWelcomeMessage()}
+        </div>
+      </div>
+  }
+
+  renderComposer() {
+    return <div className={classnames(style.composer)}>
+        <div className={style['flex-column']}>
+          <Input
+            send={this.props.send}
+            change={this.props.change} 
+            placeholder='Type your message...'
+            text={this.props.text}
+            config={this.props.config} />
+          <div className={style.bottom}>
+            <Send
+              text={this.props.text}
+              send={this.props.send}
+              config={this.props.config} />
+          </div>
+        </div>
+      </div>
+  }
+
+  render() {
     return <div className={style.external}>
         <div className={style.internal}
           style={{
             color: this.props.config.textColorOnBackground,
             backgroundColor: this.props.config.backgroundColor
           }}>
-          <div className={style.header}
-            style={{ 
-              color: this.props.config.textColorOnForeground,
-              backgroundColor: this.props.config.foregroundColor
-            }}>
-            <div className={style.line}>
-              <div className={style.title}>
-                <div className={style.avatar}>
-                  <div className={style.square}>
-                    <div className={style.circle}
-                      style={{
-                        borderColor: this.props.config.foregroundColor
-                      }}>
-                      <div className={style.picture} style={{ backgroundImage: 'url(' + avatar_url +')'}}></div>
-                    </div>
-                  </div>
-                </div>
-                <div className={style.name}
-                  style={{
-                    color: this.props.config.textColorOnForeground
-                  }}>
-                  <div>
-                    <span>{name}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className={style.text}>
-              {text}
-            </div>
-          </div>
-          <div className={classnames(style.composer)}>
-            <div className={style['flex-column']}>
-              <Input
-                send={this.props.send}
-                change={this.props.change} 
-                placeholder='Type your message...'
-                text={this.props.text}
-                config={this.props.config} />
-              <div className={style.bottom}>
-                <Send
-                  text={this.props.text}
-                  send={this.props.send}
-                  config={this.props.config} />
-              </div>
-            </div>
-          </div>
+          {this.renderHeader()}
+          {this.renderComposer()}
         </div>
       </div> 
   }
