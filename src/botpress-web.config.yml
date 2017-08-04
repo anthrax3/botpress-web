@@ -1,10 +1,20 @@
+# TEMPORARY UNUSED SETTINGS
 enableWelcomeMessage: false
 enableCampaigns: false 
 enableChatTargeting: false 
 welcomeMessageDelay: 5000 
 
-backgroundColor: '#ffffff'
-textColorOnBackground: '#666666'
+# DEFAULT SETTINGS
+botName: 'Bot' ## Name of your bot
+botAvatarUrl: null ## Default avatar url of the image (e.g. 'https://avatars3.githubusercontent.com/u/1315508?v=4&s=400' )
+botConvoTitle: 'Technical Support' ## Title of the first conversation with the bot
+welcomeMsg: | ## Welcome message that shows at on pop-up (multi-lines)
+  Hey guys!
+  Curious about our offer?
+  This is the default message...
 
-foregroundColor: '#0176ff'
-textColorOnForeground: '#ffffff'
+# COLOR SETTINGS
+backgroundColor: '#ffffff' ## Color of the background 
+textColorOnBackground: '#666666' ## Color of the text on the background
+foregroundColor: '#0176ff' ## Element background color (header, composer, button..)
+textColorOnForeground: '#ffffff'  ## Element text color (header, composer, button..)

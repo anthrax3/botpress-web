@@ -2,7 +2,34 @@ import util from 'util'
 import _ from 'lodash'
 import Promise from 'bluebird'
 
+
+const QUICK_REPLY_PAYLOAD = /\<(.+)\>\s(.+)/i
+
 // TODO Extract this logic directly to botpress's UMM
+function processQuickReplies(qrs, blocName) {
+  if (!_.isArray(qrs)) {
+    throw new Error('Expected quick_replies to be an array')
+  }
+
+  return qrs.map(qr => {
+    if (_.isString(qr) && QUICK_REPLY_PAYLOAD.test(qr)) {
+      let [, payload, text] = QUICK_REPLY_PAYLOAD.exec(qr)
+      
+      // <.HELLO> becomes <BLOCNAME.HELLO>
+      if (payload.startsWith('.')) {
+        payload = blocName + payload
+      }
+
+      return {
+        title: text,
+        payload: payload.toUpperCase()
+      }
+    }
+
+    return qr
+  })
+}
+
 function getUserId(event) {
   const userId = _.get(event, 'user.id')
     || _.get(event, 'user.userId')
@@ -36,12 +63,16 @@ function processOutgoing({ event, blocName, instruction }) {
   // PRE-PROCESSING
   ////////
   
-  const optionsList = ['typing']
+  const optionsList = ['typing', 'quick_replies']
 
   const options = _.pick(instruction, optionsList)
   
   for (let prop of optionsList) {
     delete ins[prop]
+  }
+
+  if (options.quick_replies) {
+    options.quick_replies = processQuickReplies(options.quick_replies, blocName)
   }
 
   /////////

@@ -2,9 +2,11 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
+import Sound from 'react-sound'
 import classnames from 'classnames'
 import { Emoji } from 'emoji-mart'
 import _ from 'lodash'
+import moment from 'moment'
 
 import Convo from './convo'
 import Side from './side'
@@ -22,6 +24,7 @@ export default class Web extends React.Component {
       view: 'convo',
       textToSend: '',
       loading: true,
+      soundPlaying: Sound.status.STOPPED,
       conversations: null,
       currentConversation: null,
       currentConversationId: null
@@ -29,25 +32,7 @@ export default class Web extends React.Component {
   }
 
   componentWillMount() {
-    // Connect the Botpress's Web Socket to the server
-    if (this.props.bp && this.props.bp.events) {
-      this.props.bp.events.setup()
-    }
-
-    this.props.bp.events.on('guest.web.message', event => {
-      const isUpdate = this.state.currentConversation
-        && this.state.currentConversationId === event.conversationId
-
-      if (!isUpdate) {
-        return
-      }
-
-      const currentConversation = Object.assign({}, this.state.currentConversation, {
-        messages: [...this.state.currentConversation.messages, event]
-      })
-
-      this.setState({ currentConversation })
-    })
+    this.setupSocket()
   }
 
   componentDidMount() {
@@ -57,6 +42,16 @@ export default class Web extends React.Component {
         loading: false
       })
     })
+  }
+
+  setupSocket() {
+    // Connect the Botpress's Web Socket to the server
+    if (this.props.bp && this.props.bp.events) {
+      this.props.bp.events.setup()
+    }
+
+    this.props.bp.events.on('guest.web.message', ::this.handleNewMessage)
+    this.props.bp.events.on('guest.web.typing', ::this.handleBotTyping)
   }
 
   fetchData() {
@@ -111,10 +106,67 @@ export default class Web extends React.Component {
     })
   }
 
+  handleNewMessage(event) {
+    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+      return Object.assign({}, convo, {
+        messages: [...convo.messages, event],
+        typingUntil: event.userId ? convo.typingUntil : null
+      })
+    })
+  }
+
+  handleBotTyping(event) {
+    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+      return Object.assign({}, convo, {
+        typingUntil: moment().add(event.timeInMs, 'milliseconds').toDate()
+      })
+    })
+
+    setTimeout(::this.expireTyping, event.timeInMs + 50)
+  }
+
+  expireTyping() {
+    const currentTypingUntil = this.state.currentConversation
+      && this.state.currentConversation.typingUntil
+
+    const now = moment()
+    const timerExpired = currentTypingUntil && moment(currentTypingUntil).isBefore(now)
+    if (timerExpired) {
+      this.safeUpdateCurrentConvo(this.state.currentConversationId, convo => {
+        return Object.assign({}, convo, { typingUntil: null })
+      })
+    }
+  }
+
+  safeUpdateCurrentConvo(convoId, updater) {
+    if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
+      // there's no conversation to update or our convo changed
+      this.playSound() // TODO We also need to amend the convo and set unread count ++
+      return
+    }
+
+    if (document.hasFocus && !document.hasFocus()) {
+      this.playSound() // TODO We also need to amend the convo unread count ++
+    }
+
+    const newConvo = updater && updater(this.state.currentConversation)
+
+    if (newConvo) {
+      this.setState({ currentConversation: newConvo })
+    }
+  }
+
+  playSound() {
+    console.log('PLAY SOUND')
+    this.setState({ soundPlaying: Sound.status.PLAYING })
+  }
+
   handleSendMessage() {
     const userId = window.__BP_VISITOR_ID
     const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
-    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend })
+    const config = { params: { conversationId: this.state.currentConversationId } }
+
+    this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend }, config)
     .then(() => {
       this.setState({
         view: 'side',
@@ -147,10 +199,42 @@ export default class Web extends React.Component {
     }
   }
 
+  handleSendQuickReply(title, payload) {
+    const userId = window.__BP_VISITOR_ID
+    const url = `${BOT_HOSTNAME}/api/botpress-web/messages/${userId}`
+    const config = { params: { conversationId: this.state.currentConversationId } }
+
+    this.props.bp.axios.post(url, { 
+      type: 'quick_reply', 
+      text: title, 
+      data: { payload } 
+    }, config).then()
+  }
+
+  handleSwitchConvo(convoId) {
+    this.setState({
+      currentConversation: null,
+      currentConversationId: convoId
+    })
+
+    setImmediate(() => {
+      this.fetchCurrentConversation()
+      .then(() => {
+        this.setState({
+          view: 'side'
+        })
+      })
+    })
+  }
+
   handleClosePanel() {
     this.setState({
       view: 'widget'
     })
+  }
+
+  handleSoundDone() {
+    this.setState({ soundPlaying: Sound.status.STOPPED })
   }
 
   renderOpenIcon() {
@@ -192,14 +276,18 @@ export default class Web extends React.Component {
 
   renderSide() {
     return <Side
+      config={this.state.config}
       text={this.state.textToSend}
-      close={::this.handleClosePanel}
-      send={::this.handleSendMessage}
-      change={::this.handleTextChanged}
       currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}
+
       addEmojiToText={::this.handleAddEmoji}
-      config={this.state.config} />
+
+      onClose={::this.handleClosePanel}
+      onSwitchConvo={::this.handleSwitchConvo}
+      onTextSend={::this.handleSendMessage}
+      onTextChanged={::this.handleTextChanged}
+      onQuickReplySend={::this.handleSendQuickReply} />
   }
 
   render() {
@@ -210,6 +298,7 @@ export default class Web extends React.Component {
     window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
     return <div className={style.web} >
+        <Sound url={'/api/botpress-web/static/notification.mp3'} playStatus={this.state.soundPlaying} onFinishedPlaying={::this.handleSoundDone} />
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }

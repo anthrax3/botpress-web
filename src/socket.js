@@ -40,13 +40,19 @@ module.exports = async (bp, config) => {
 
     const typing = parseTyping(event)
 
-    if (typing) {
-      bp.events.emit('guest.web.typing', { userId: null })
-      await Promise.delay(typing)
-    }
-
     const conversationId = _.get(event, 'raw.conversationId')
       || await getOrCreateRecentConversation(user.id)
+
+    if (typing) {
+      bp.events.emit('guest.web.typing', { 
+        timeInMs: typing, 
+        userId: null,
+        __room: 'visitor:' + user.userId,
+        conversationId
+      })
+
+      await Promise.delay(typing)
+    }
 
     const message = await appendBotMessage(bot_name, bot_avatar, conversationId, event)
 

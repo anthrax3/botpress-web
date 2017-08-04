@@ -39,6 +39,12 @@
   left: auto;
   bottom: 0px;
   right: 0px;
-  width: 360px !important;
+  width: 360px;
   height: 100% !important;
+}
+
+@media only screen and (max-device-width: 768px) {
+  .bp-widget-side {
+    width: 100%;
+  }
 }
