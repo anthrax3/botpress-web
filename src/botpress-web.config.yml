@@ -5,8 +5,9 @@ enableChatTargeting: false
 welcomeMessageDelay: 5000 
 
 # DEFAULT SETTINGS
-botName: 'Default Bot' ## Default name of your bot
-botAvatarUrl: 'https://avatars3.githubusercontent.com/u/1315508?v=4&s=400' ## Default avatar url of the image
+botName: 'Bot' ## Name of your bot
+botAvatarUrl: null ## Default avatar url of the image (e.g. 'https://avatars3.githubusercontent.com/u/1315508?v=4&s=400' )
+botConvoTitle: 'Technical Support' ## Title of the first conversation with the bot
 welcomeMsg: | ## Welcome message that shows at on pop-up (multi-lines)
   Hey guys!
   Curious about our offer?

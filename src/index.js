@@ -33,7 +33,8 @@ module.exports = {
     welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
     
     botName: { type: 'string', required: false, default: 'Bot' },
-    botAvatarUrl: { type: 'string', required: false, default: '' },
+    botAvatarUrl: { type: 'any', required: false, default: null },
+    botConvoTitle: { type: 'string', required: false, default: 'Support'},
     welcomeMsg: { type: 'string', required: false, default: ''},
     
     backgroundColor: { type: 'string', required: false, default: '#000000' },
