@@ -99,17 +99,16 @@
     }
 
     .bubble {
-
       border-radius: 5px;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
       
       &:first-of-type {
         border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
       }
       
       &:last-of-type {
         border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
       }
 
       max-width: 100%;
