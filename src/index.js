@@ -26,19 +26,15 @@ module.exports = {
 
   config: {
     locale: { type: 'string', required: false, default: 'en-US' },
-    messages: {
-      type: 'any', required: false,
-      default: {
-        welcomeMessage: 'Hey there!',
-        awayMessage: "Hey, we're not here right now, but leave a message.",
-        emailCaptureMessage: "Leave your email so we can get back to you.",
-        thankYouMessage: "Thanks we'll follow up soon."
-      }
-    },
+    
     enableWelcomeMessage: { type: 'bool', required: false, default: false },
     enableCampaigns: { type: 'bool', required: false, default: false },
     enableChatTargeting: { type: 'bool', required: false, default: false },
     welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
+    
+    botName: { type: 'string', required: false, default: 'Bot' },
+    botAvatarUrl: { type: 'string', required: false, default: '' },
+    welcomeMsg: { type: 'string', required: false, default: ''},
     
     backgroundColor: { type: 'string', required: false, default: '#000000' },
     textColorOnBackground: { type: 'string', required: false, default: '#666666' },
