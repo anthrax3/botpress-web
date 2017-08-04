@@ -2,7 +2,7 @@ import style from './style.scss'
 
 const BotAvatar = props => {
 
-  let content = <i>
+  return <i>
     <svg viewBox="0 0 254 252" xmlns="http://www.w3.org/2000/svg">
       <g fill="none" fill-rule="evenodd">
         <path d="M127 252c69.036 0 125-55.964 125-125S196.036 2 127 2 2 57.964 2 127s55.964 125 125 125z" className={style.color} fill="#A029D3"></path>
@@ -15,17 +15,6 @@ const BotAvatar = props => {
       </g>
     </svg>
   </i>
-
-  if (props.avatar_url) {
-    content = <div 
-      className={style.picture} 
-      style={{ backgroundImage: 'url(' + props.avatar_url +')'}}>
-    </div>
-  }
-
-  return <div className={style.avatar} style={{ color: props.foregroundColor }}>
-   {content}
-  </div>
 }
 
 export default BotAvatar

@@ -9,7 +9,7 @@ import Send from '../send'
 import MessageList from '../messages'
 import Input from '../input'
 
-import BotAvatar from '../messages/bot_avatar'
+import BotAvatar from '../bot_avatar'
 
 import style from './style.scss'
 require('emoji-mart/css/emoji-mart.css')
@@ -49,17 +49,26 @@ export default class Side extends React.Component {
     })
   }
 
+  renderAvatar() {
+    let content = <BotAvatar foregroundColor={this.props.config.foregroundColor} />
+
+    if (this.props.config && this.props.config.botAvatarUrl) {
+      content = <div 
+        className={style.picture} 
+        style={{ backgroundImage: 'url(' + this.props.config.botAvatarUrl +')'}}>
+      </div>
+    }
+
+    return <div className={style.avatar} style={{ color: this.props.config.foregroundColor }}>
+      {content}
+    </div>
+  }
+
   renderHeader() {
 
     const name = (this.props.currentConversation && !this.state.showConvos)
       ? this.props.currentConversation.title
       : 'Conversations'
-
-    const avatar_url = _.get(this.props, 'currentConversation.avatar_url')
-
-    const avatar = (this.props.currentConversation && !this.state.showConvos)
-      ? <BotAvatar foregroundColor={this.props.config.foregroundColor} avatar_url={avatar_url} />
-      : null
 
     const status = <div className={style.status}>
       <svg viewBox="0 0 10 10"><ellipse cx="50%" cy="50%" rx="50%" ry="50%"></ellipse></svg>
@@ -69,7 +78,7 @@ export default class Side extends React.Component {
     return <div className={style.header}>
         <div className={style.left}>
           <div className={style.line}>
-            {avatar}
+            {this.renderAvatar()}
             <div className={style.title}>
               <div className={style.name}>{name}</div>
             </div>
@@ -148,11 +157,11 @@ export default class Side extends React.Component {
   }
 
   renderConversation() {
-
     const messagesProps = {
       typingUntil: _.get(this.props, 'currentConversation.typingUntil'),
       fgColor: _.get(this.props, 'config.foregroundColor'),
       messages: _.get(this.props, 'currentConversation.messages'),
+      avatarUrl: _.get(this.props, 'config.botAvatarUrl'),
       onQuickReplySend: this.props.onQuickReplySend
     }
 
@@ -165,8 +174,6 @@ export default class Side extends React.Component {
   }
 
   renderItemConvos(convo, key) {
-    // TODO Have default avatars
-    const avatar_url = convo.image_url || convo.message_author_avatar || 'https://avatars3.githubusercontent.com/u/5629987?v=3&u=dfd5eb1c9fa2301ece76034b157cef8d38f89022&s=400'
     const title = convo.title || convo.message_author || 'Untitled Conversation'
     const date = moment(convo.message_sent_on || convo.created_on).fromNow()
     const message = convo.message_text || '...'
@@ -175,9 +182,7 @@ export default class Side extends React.Component {
 
     return <div className={style.item} key={key} onClick={onClick}>
         <div className={style.left}>
-          <div className={style.avatar}>
-            <div className={style.picture} style={{ backgroundImage: `url(${avatar_url})`}}></div>
-          </div>
+          {this.renderAvatar()}
         </div>
         <div className={style.right}>
           <div className={style.title}>

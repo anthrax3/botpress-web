@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import classnames from 'classnames'
 import moment from 'moment'
 
-import BotAvatar from './bot_avatar'
+import BotAvatar from '../bot_avatar'
 import QuickReplies from './quick_replies'
 
 import style from './style.scss'
@@ -10,14 +10,25 @@ import style from './style.scss'
 const TIME_BETWEEN_DATES = 10 // 10 minutes
 
 class MessageGroup extends Component {
+  
+  renderAvatar() {
+    let content = <BotAvatar foregroundColor={this.props.fgColor} />
+
+    if (this.props.avatarUrl) {
+      content = <div 
+        className={style.picture} 
+        style={{ backgroundImage: 'url(' + this.props.avatarUrl +')'}}>
+      </div>
+    }
+
+    return <div className={style.avatar} style={{ color: this.props.fgColor }}>
+      {content}
+    </div>
+  }
+
   render() {
     const sample = this.props.messages[0]
     const isBot = !sample.userId
-
-    const passthroughProps = {
-      avatar_url: null,
-      foregroundColor: this.props.fgColor
-    }
 
     const className = classnames(style.message, {
       [style.user]: !isBot
@@ -26,7 +37,7 @@ class MessageGroup extends Component {
     const bubbleColor = this.props.fgColor
 
     return <div className={className}>
-      {isBot && <BotAvatar {...passthroughProps} />}
+      {isBot && this.renderAvatar()}
       <div className={style['message-container']}>
         {isBot && <div className={style['info-line']}>{sample.full_name}</div>}
         <div className={style.group}>
@@ -124,6 +135,7 @@ export default class MessageList extends Component {
         return <div>
             {isDateNeeded ? this.renderDate(_.first(messages).sent_on) : null}
             <MessageGroup 
+              avatarUrl={this.props.avatarUrl}
               fgColor={this.props.fgColor}
               key={`msg-group-${i}`}
               messages={messages} />
