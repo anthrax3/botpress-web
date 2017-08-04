@@ -7,6 +7,8 @@ import QuickReplies from './quick_replies'
 
 import style from './style.scss'
 
+const TIME_BETWEEN_DATES = 10 // 10 minutes
+
 class MessageGroup extends Component {
   render() {
     const sample = this.props.messages[0]
@@ -38,11 +40,6 @@ class MessageGroup extends Component {
 }
 
 export default class MessageList extends Component {
-  // Date Time
-  // Group
-  // Group
-  // Date Time*
-  // Group
   
   constructor(props) {
     super(props)
@@ -72,9 +69,11 @@ export default class MessageList extends Component {
       onQuickReplySend={this.props.onQuickReplySend} />
   }
 
-  renderDate() {
-    // TODO Implement this
-    return null
+  renderDate(date) {
+    return <div className={style.date}>
+        {moment(date).format("MMMM Do YYYY, h:mm a")}
+        <div className={style.smallLine}></div>
+      </div>
   }
 
   renderMessageGroups() {
@@ -89,8 +88,8 @@ export default class MessageList extends Component {
       const speaker = !!m.userId ? m.userId : 'bot'
       const date = m.sent_on
 
-      // Create a new group if messages are separated by more than 5 minutes or if different speaker
-      if (speaker !== lastSpeaker || moment(lastDate).diff(date, 'minutes') >= 5) {
+      // Create a new group if messages are separated by more than X minutes or if different speaker
+      if (speaker !== lastSpeaker || moment(lastDate).diff(date, 'minutes') >= TIME_BETWEEN_DATES) {
         currentGroup = []
         groups.push(currentGroup)
       }
@@ -116,19 +115,26 @@ export default class MessageList extends Component {
 
     return <div>
       {groups.map((messages, i) => {
-        return <MessageGroup 
-          fgColor={this.props.fgColor}
-          key={`msg-group-${i}`}
-          messages={messages} />
+        const lastDate = groups[i - 1] && _.last(groups[i - 1]) && _.last(groups[i - 1]).sent_on 
+        const groupDate = messages && _.first(messages).sent_on
+
+        const isDateNeeded = !groups[i - 1]
+          || moment(groupDate).diff(moment(lastDate), 'minutes') > TIME_BETWEEN_DATES
+
+        return <div>
+            {isDateNeeded ? this.renderDate(_.first(messages).sent_on) : null}
+            <MessageGroup 
+              fgColor={this.props.fgColor}
+              key={`msg-group-${i}`}
+              messages={messages} />
+          </div>
       })}
     </div>
   }
 
   render() {
     return <div className={style.messages} ref={(m) => { this.messagesDiv = m }}>
-      {this.renderDate()}
       {this.renderMessageGroups()}
-      
       {this.renderQuickReplies()}
     </div>
 

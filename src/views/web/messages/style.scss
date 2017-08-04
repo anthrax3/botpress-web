@@ -19,6 +19,20 @@
   }
 }
 
+.date {
+  color: #9a9a9a;
+  text-align: center;
+  font-size: 12px;
+  margin: 40px 0 20px;
+
+  .smallLine {
+    border-bottom: solid 1px #e6e6e6;
+    margin: auto;
+    width: 80px;
+    margin-top: 5px;
+  }
+}
+
 .messages {
   -webkit-box-flex: 1;
   -ms-flex: 1;
@@ -67,7 +81,6 @@
     }
 
     .group {
-
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
