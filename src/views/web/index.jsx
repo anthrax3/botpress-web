@@ -16,6 +16,8 @@ import style from './style.scss'
 const BOT_HOSTNAME = window.location.origin
 const ANIM_DURATION = 300
 
+const MIN_TIME_BETWEEN_SOUNDS = 10000 // 10 seconds
+
 export default class Web extends React.Component {
 
   constructor(props) {
@@ -26,6 +28,7 @@ export default class Web extends React.Component {
       textToSend: '',
       loading: true,
       soundPlaying: Sound.status.STOPPED,
+      played: false,
       conversations: null,
       currentConversation: null,
       currentConversationId: null
@@ -49,7 +52,6 @@ export default class Web extends React.Component {
   }
 
   showConvoPopUp() {
-    console.log(this.state.config)
     if (this.state.config.welcomeMsgEnable) {
       setTimeout(() => {
         if (this.state.view !== 'side') {
@@ -235,8 +237,19 @@ export default class Web extends React.Component {
   }
 
   playSound() {
-    console.log('PLAY SOUND')
-    this.setState({ soundPlaying: Sound.status.PLAYING })
+    if (!this.state.played) {
+      this.setState({ 
+        soundPlaying: Sound.status.PLAYING,
+        played: true
+      })
+
+      setTimeout(() => {
+        this.setState({
+          played: false
+        })
+      }, MIN_TIME_BETWEEN_SOUNDS)
+    }
+    
   }
 
   handleSendMessage() {
