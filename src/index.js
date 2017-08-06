@@ -26,17 +26,15 @@ module.exports = {
 
   config: {
     locale: { type: 'string', required: false, default: 'en-US' },
-    
-    enableWelcomeMessage: { type: 'bool', required: false, default: false },
-    enableCampaigns: { type: 'bool', required: false, default: false },
-    enableChatTargeting: { type: 'bool', required: false, default: false },
-    welcomeMessageDelay: { type: 'any', required: false, default: 5000 },
-    
+
     botName: { type: 'string', required: false, default: 'Bot' },
     botAvatarUrl: { type: 'any', required: false, default: null },
     botConvoTitle: { type: 'string', required: false, default: 'Support'},
-    welcomeMsg: { type: 'string', required: false, default: ''},
-    
+
+    welcomeMsgEnable: { type: 'bool', required: false, default: false },
+    welcomeMsgDelay: { type: 'any', required: false, default: 5000 },
+    welcomeMsgText: { type: 'string', required: false, default: ''},
+
     backgroundColor: { type: 'string', required: false, default: '#000000' },
     textColorOnBackground: { type: 'string', required: false, default: '#666666' },
     foregroundColor: { type: 'string', required: false, default: '#0176ff' },
