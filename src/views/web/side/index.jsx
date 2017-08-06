@@ -196,7 +196,13 @@ export default class Side extends React.Component {
     const date = moment(convo.message_sent_on || convo.created_on).fromNow()
     const message = convo.message_text || '...'
     
-    const onClick = () => this.props.onSwitchConvo && this.props.onSwitchConvo(convo.id)
+    const onClick = () => {
+      this.props.onSwitchConvo && this.props.onSwitchConvo(convo.id)
+      
+      this.setState({
+        showConvos: false
+      })
+    }
 
     return <div className={style.item} key={key} onClick={onClick}>
         <div className={style.left}>
