@@ -144,7 +144,6 @@ export default class Side extends React.Component {
             config={this.props.config}/>
           <div className={style.line}>
             <ul className={style.elements}>
-              {this.renderAttachmentButton()}
               {this.renderEmojiButton()}
             </ul>
             <Send
