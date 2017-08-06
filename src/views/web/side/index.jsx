@@ -219,8 +219,10 @@ export default class Side extends React.Component {
   }
 
   render() {
+    const classNames = classnames(style.internal, style[this.props.transition])
+
     return <span className={style.external}>
-      <div className={style.internal}
+      <div className={classNames}
         style={{ 
           backgroundColor: this.props.config.backgroundColor,
           color: this.props.config.textColorOnBackgound

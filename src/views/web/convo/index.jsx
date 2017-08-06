@@ -94,7 +94,7 @@ export default class Convo extends React.Component {
   }
 
   renderWelcomeMessage() {
-    const message = this.props.config.welcomeMsg || DEFAULT_WELCOME_MESSAGE
+    const message = this.props.config.welcomeMsgText || DEFAULT_WELCOME_MESSAGE
     
     return <div className={style.paragraph}>
         {message}
@@ -139,8 +139,9 @@ export default class Convo extends React.Component {
   }
 
   render() {
+    const classNames = classnames(style.internal, style[this.props.transition])
     return <div className={style.external}>
-        <div className={style.internal}
+        <div className={classNames}
           style={{
             color: this.props.config.textColorOnBackground,
             backgroundColor: this.props.config.backgroundColor
