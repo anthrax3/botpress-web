@@ -14,6 +14,7 @@ import Side from './side'
 import style from './style.scss'
 
 const BOT_HOSTNAME = window.location.origin
+const ANIM_DURATION = 300
 
 export default class Web extends React.Component {
 
@@ -21,7 +22,7 @@ export default class Web extends React.Component {
     super(props)
 
     this.state = {
-      view: 'convo',
+      view: null,
       textToSend: '',
       loading: true,
       soundPlaying: Sound.status.STOPPED,
@@ -41,7 +42,84 @@ export default class Web extends React.Component {
       this.setState({
         loading: false
       })
+
+      this.handleSwitchView('widget')
+      this.showConvoPopUp()
     })
+  }
+
+  showConvoPopUp() {
+    console.log(this.state.config)
+    if (this.state.config.welcomeMsgEnable) {
+      setTimeout(() => {
+        if (this.state.view !== 'side') {
+          this.handleSwitchView('convo')
+        }
+      }, this.state.config.welcomeMsgDelay || 5000)
+    }
+  }
+
+  handleSwitchView(view) {
+    if (view === 'side' && this.state.view !== 'side') {
+      this.setState({
+        convoTransition: 'fadeOut',
+        widgetTransition: 'fadeOut'
+      })
+
+      if (this.state.view !== 'convo') {
+        setTimeout(() => {
+          this.setState({
+            sideTransition: 'fadeIn'
+          })
+        }, ANIM_DURATION)
+      }
+    }
+
+    if (view === 'convo') {
+      setTimeout(() => {
+        this.setState({
+          convoTransition: 'fadeIn'
+        })
+      }, ANIM_DURATION)
+    }
+
+    if (view === 'widget') {
+      this.setState({
+        convoTransition: 'fadeOut',
+        sideTransition: 'fadeOut'
+      })
+
+      if (!this.state.view || this.state.view === 'side') {
+        setTimeout(() => {
+          this.setState({
+            widgetTransition: 'fadeIn'
+          })
+        }, ANIM_DURATION)
+      }
+    }
+
+    setTimeout(() => {
+      this.setState({
+        view: view
+      })
+    }, ANIM_DURATION)
+    
+
+    setTimeout(() => {
+      this.setState({
+        widgetTransition: null,
+        convoTransition: null,
+        sideTransition: null
+      })
+    }, ANIM_DURATION * 2)
+  }
+
+  handleButtonClicked() {
+    if (this.state.view === 'convo') {
+      this.handleSwitchView('widget')
+    } else {
+      this.handleSwitchView('side')
+    }
   }
 
   setupSocket() {
@@ -168,8 +246,9 @@ export default class Web extends React.Component {
 
     this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend }, config)
     .then(() => {
+      this.handleSwitchView('side')
+
       this.setState({
-        view: 'side',
         textToSend: ''
       })
     })
@@ -185,18 +264,6 @@ export default class Web extends React.Component {
     this.setState({
       textToSend: this.state.textToSend + emoji.native + ' '
     })
-  }
-
-  handleButtonClicked() {
-    if (this.state.view === 'convo') {
-      this.setState({
-        view: 'widget',
-      })
-    } else {
-      this.setState({
-        view: 'side'
-      })
-    }
   }
 
   handleSendQuickReply(title, payload) {
@@ -219,18 +286,11 @@ export default class Web extends React.Component {
 
     setImmediate(() => {
       this.fetchCurrentConversation()
-      .then(() => {
-        this.setState({
-          view: 'side'
-        })
-      })
     })
   }
 
   handleClosePanel() {
-    this.setState({
-      view: 'widget'
-    })
+    this.handleSwitchView('widget')
   }
 
   handleSoundDone() {
@@ -251,6 +311,7 @@ export default class Web extends React.Component {
 
   renderButton() {
     return <button
+      className={style[this.state.widgetTransition]}
       onClick={::this.handleButtonClicked}
       style={{ backgroundColor: this.state.config.foregroundColor }}>
         <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
@@ -263,6 +324,7 @@ export default class Web extends React.Component {
           <span>
             {this.state.view === 'convo'
               ? <Convo
+                transition={this.state.convoTransition}
                 change={::this.handleTextChanged}
                 send={::this.handleSendMessage}
                 config={this.state.config}
@@ -278,6 +340,8 @@ export default class Web extends React.Component {
     return <Side
       config={this.state.config}
       text={this.state.textToSend}
+      transition={this.state.sideTransition}
+
       currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}
 
@@ -291,7 +355,7 @@ export default class Web extends React.Component {
   }
 
   render() {
-    if (this.state.loading) {
+    if (this.state.loading || !this.state.view) {
       return null
     }
 
