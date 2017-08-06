@@ -29,6 +29,7 @@ export default class Web extends React.Component {
       loading: true,
       soundPlaying: Sound.status.STOPPED,
       played: false,
+      opened: false,
       conversations: null,
       currentConversation: null,
       currentConversationId: null
@@ -54,7 +55,7 @@ export default class Web extends React.Component {
   showConvoPopUp() {
     if (this.state.config.welcomeMsgEnable) {
       setTimeout(() => {
-        if (this.state.view !== 'side') {
+        if (!this.state.opened) {
           this.handleSwitchView('convo')
         }
       }, this.state.config.welcomeMsgDelay || 5000)
@@ -64,6 +65,7 @@ export default class Web extends React.Component {
   handleSwitchView(view) {
     if (view === 'side' && this.state.view !== 'side') {
       this.setState({
+        opened: true,
         convoTransition: 'fadeOut',
         widgetTransition: 'fadeOut'
       })
