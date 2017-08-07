@@ -40,6 +40,21 @@ body {
       padding: 0;
       line-height: 0;
     }
+
+    .unread {
+      display: block;
+      position: absolute;
+      right: 2px;
+      bottom: 54px;
+      width: 20px !important;
+      height: 20px !important;
+      border-radius: 50%;
+      line-height: 20px;
+
+      color: #fff;
+      background-color: rgb(255, 93, 93);
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.4)
+    }
   }
 }
 
