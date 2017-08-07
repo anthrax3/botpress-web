@@ -32,7 +32,8 @@ export default class Web extends React.Component {
       opened: false,
       conversations: null,
       currentConversation: null,
-      currentConversationId: null
+      currentConversationId: null,
+      unreadCount: 0
     }
   }
 
@@ -66,6 +67,7 @@ export default class Web extends React.Component {
     if (view === 'side' && this.state.view !== 'side') {
       this.setState({
         opened: true,
+        unreadCount: 0,
         convoTransition: 'fadeOut',
         widgetTransition: 'fadeOut'
       })
@@ -189,7 +191,7 @@ export default class Web extends React.Component {
   }
 
   handleNewMessage(event) {
-    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+    this.safeUpdateCurrentConvo(event.conversationId, true, convo => {
       return Object.assign({}, convo, {
         messages: [...convo.messages, event],
         typingUntil: event.userId ? convo.typingUntil : null
@@ -198,7 +200,7 @@ export default class Web extends React.Component {
   }
 
   handleBotTyping(event) {
-    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+    this.safeUpdateCurrentConvo(event.conversationId, false, convo => {
       return Object.assign({}, convo, {
         typingUntil: moment().add(event.timeInMs, 'milliseconds').toDate()
       })
@@ -214,22 +216,29 @@ export default class Web extends React.Component {
     const now = moment()
     const timerExpired = currentTypingUntil && moment(currentTypingUntil).isBefore(now)
     if (timerExpired) {
-      this.safeUpdateCurrentConvo(this.state.currentConversationId, convo => {
+      this.safeUpdateCurrentConvo(this.state.currentConversationId, false, convo => {
         return Object.assign({}, convo, { typingUntil: null })
       })
     }
   }
 
-  safeUpdateCurrentConvo(convoId, updater) {
+  safeUpdateCurrentConvo(convoId, addToUnread, updater) {
+    // there's no conversation to update or our convo changed
     if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
-      // there's no conversation to update or our convo changed
-      this.playSound() // TODO We also need to amend the convo and set unread count ++
+      updateSoundAndUnreadCount()
       return
     }
 
-    if (document.hasFocus && !document.hasFocus()) {
-      this.playSound() // TODO We also need to amend the convo unread count ++
-    }
+    // there's no focus on the actual conversation
+    if ((document.hasFocus && !document.hasFocus()) || this.state.view !== 'side') {
+      this.playSound()
+      
+      if (addToUnread) {
+        this.increaseUnreadCount()
+      }
+    } 
+
+    this.handleResetUnreadCount()
 
     const newConvo = updater && updater(this.state.currentConversation)
 
@@ -251,7 +260,20 @@ export default class Web extends React.Component {
         })
       }, MIN_TIME_BETWEEN_SOUNDS)
     }
-    
+  }
+
+  increaseUnreadCount() {
+    this.setState({
+      unreadCount: this.state.unreadCount + 1
+    })
+  }
+
+  handleResetUnreadCount() {
+    if (document.hasFocus && document.hasFocus() && this.state.view === 'side') {
+      this.setState({
+        unreadCount: 0
+      })
+    }
   }
 
   handleSendMessage() {
@@ -324,12 +346,17 @@ export default class Web extends React.Component {
       </svg>
   }
 
+  renderUncountMessages() {
+    return <span className={style.unread}>{this.state.unreadCount}</span>
+  }
+
   renderButton() {
     return <button
       className={style[this.state.widgetTransition]}
       onClick={::this.handleButtonClicked}
       style={{ backgroundColor: this.state.config.foregroundColor }}>
         <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
+        {this.state.unreadCount > 0 ? this.renderUncountMessages() : null}
       </button>
   }
 
@@ -376,8 +403,10 @@ export default class Web extends React.Component {
 
     window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
-    return <div className={style.web} >
-        <Sound url={'/api/botpress-web/static/notification.mp3'} playStatus={this.state.soundPlaying} onFinishedPlaying={::this.handleSoundDone} />
+    return <div className={style.web} onFocus={::this.handleResetUnreadCount}>
+        <Sound url={'/api/botpress-web/static/notification.mp3'}
+          playStatus={this.state.soundPlaying}
+          onFinishedPlaying={::this.handleSoundDone} />
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
       </div>
   }
