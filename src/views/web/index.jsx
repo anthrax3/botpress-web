@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Sound from 'react-sound'
 import classnames from 'classnames'
-import { Emoji } from 'emoji-mart'
+// import { Emoji } from 'emoji-mart'
 import _ from 'lodash'
 import moment from 'moment'
 

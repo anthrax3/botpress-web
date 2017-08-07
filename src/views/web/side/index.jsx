@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import { Picker } from 'emoji-mart'
+// import { Picker } from 'emoji-mart'
 import moment from 'moment'
 import _ from 'lodash'
 
@@ -12,7 +12,7 @@ import Input from '../input'
 import BotAvatar from '../bot_avatar'
 
 import style from './style.scss'
-require('emoji-mart/css/emoji-mart.css')
+// require('emoji-mart/css/emoji-mart.css')
 
 export default class Side extends React.Component {
 
@@ -113,6 +113,8 @@ export default class Side extends React.Component {
   }
 
   renderAttachmentButton() {
+    return null // Temporary removed this feature (not implemented yet)
+
     return <li>
         <a>
           <i>
@@ -123,6 +125,8 @@ export default class Side extends React.Component {
   }
 
   renderEmojiButton() {
+    return null // Temporary removed this feature (emoji-mart lib is too big)
+
     return <li>
         <a>
           <i onClick={::this.handleEmojiClicked}>
@@ -148,6 +152,7 @@ export default class Side extends React.Component {
             config={this.props.config}/>
           <div className={style.line}>
             <ul className={style.elements}>
+              {this.renderAttachmentButton()}
               {this.renderEmojiButton()}
             </ul>
             <Send
@@ -165,16 +170,18 @@ export default class Side extends React.Component {
       return null
     }
 
-    return <div className={style.emoji}>
-        <div className={style.inside}>
-          <Picker
-            onClick={this.props.addEmojiToText} 
-            set='emojione'
-            emojiSize={18}
-            perLine={10}
-            color={this.props.config.foregroundColor}/>
-        </div>
-      </div>
+    return null // Temporary removed this feature (emoji-mart is too big)
+
+    // return <div className={style.emoji}>
+    //     <div className={style.inside}>
+    //       <Picker
+    //         onClick={this.props.addEmojiToText} 
+    //         set='emojione'
+    //         emojiSize={18}
+    //         perLine={10}
+    //         color={this.props.config.foregroundColor}/>
+    //     </div>
+    //   </div>
   }
 
   renderConversation() {
