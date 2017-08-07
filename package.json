@@ -63,6 +63,7 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "date-fns": "^1.28.5",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "raw-loader": "^0.5.1",

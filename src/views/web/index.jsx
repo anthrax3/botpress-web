@@ -5,8 +5,11 @@ import ReactDOM from 'react-dom'
 import Sound from 'react-sound'
 import classnames from 'classnames'
 // import { Emoji } from 'emoji-mart'
+
 import _ from 'lodash'
-import moment from 'moment'
+
+import addMilliseconds from 'date-fns/add_milliseconds'
+import isBefore from 'date-fns/is_before'
 
 import Convo from './convo'
 import Side from './side'
@@ -202,7 +205,7 @@ export default class Web extends React.Component {
   handleBotTyping(event) {
     this.safeUpdateCurrentConvo(event.conversationId, false, convo => {
       return Object.assign({}, convo, {
-        typingUntil: moment().add(event.timeInMs, 'milliseconds').toDate()
+        typingUntil: addMilliseconds(new Date(), event.timeInMs)
       })
     })
 
@@ -213,8 +216,7 @@ export default class Web extends React.Component {
     const currentTypingUntil = this.state.currentConversation
       && this.state.currentConversation.typingUntil
 
-    const now = moment()
-    const timerExpired = currentTypingUntil && moment(currentTypingUntil).isBefore(now)
+    const timerExpired = currentTypingUntil && isBefore(new Date(currentTypingUntil), new Date())
     if (timerExpired) {
       this.safeUpdateCurrentConvo(this.state.currentConversationId, false, convo => {
         return Object.assign({}, convo, { typingUntil: null })

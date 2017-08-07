@@ -2,8 +2,9 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 // import { Picker } from 'emoji-mart'
-import moment from 'moment'
 import _ from 'lodash'
+
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 import Send from '../send'
 import MessageList from '../messages'
@@ -203,7 +204,7 @@ export default class Side extends React.Component {
 
   renderItemConvos(convo, key) {
     const title = convo.title || convo.message_author || 'Untitled Conversation'
-    const date = moment(convo.message_sent_on || convo.created_on).fromNow()
+    const date = distanceInWordsToNow(new Date(convo.message_sent_on || convo.created_on))
     const message = convo.message_text || '...'
     
     const onClick = () => {

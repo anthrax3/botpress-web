@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import classnames from 'classnames'
-import moment from 'moment'
+
+import format from 'date-fns/format'
+import differenceInMinutes from 'date-fns/difference_in_minutes'
 
 import BotAvatar from '../bot_avatar'
 import QuickReplies from './quick_replies'
@@ -82,7 +84,7 @@ export default class MessageList extends Component {
 
   renderDate(date) {
     return <div className={style.date}>
-        {moment(date).format("MMMM Do YYYY, h:mm a")}
+        {format(new Date(date), 'MMMM Do YYYY, h:mm a')}
         <div className={style.smallLine}></div>
       </div>
   }
@@ -100,7 +102,7 @@ export default class MessageList extends Component {
       const date = m.sent_on
 
       // Create a new group if messages are separated by more than X minutes or if different speaker
-      if (speaker !== lastSpeaker || moment(lastDate).diff(date, 'minutes') >= TIME_BETWEEN_DATES) {
+      if (speaker !== lastSpeaker || differenceInMinutes(new Date(date), new Date(lastDate)) >= TIME_BETWEEN_DATES) {
         currentGroup = []
         groups.push(currentGroup)
       }
@@ -130,7 +132,7 @@ export default class MessageList extends Component {
         const groupDate = messages && _.first(messages).sent_on
 
         const isDateNeeded = !groups[i - 1]
-          || moment(groupDate).diff(moment(lastDate), 'minutes') > TIME_BETWEEN_DATES
+          || differenceInMinutes(new Date(groupDate), new Date(lastDate)) > TIME_BETWEEN_DATES
 
         return <div>
             {isDateNeeded ? this.renderDate(_.first(messages).sent_on) : null}
