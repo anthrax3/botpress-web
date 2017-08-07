@@ -247,8 +247,8 @@ export default class Web extends React.Component {
     }
   }
 
-  playSound() {
-    if (!this.state.played) {
+  playSound() { 
+    if (!this.state.played && this.state.view !== 'convo') { // TODO: Remove this condition (view !== 'convo') and fix transition sounds
       this.setState({ 
         soundPlaying: Sound.status.PLAYING,
         played: true
@@ -383,6 +383,7 @@ export default class Web extends React.Component {
       config={this.state.config}
       text={this.state.textToSend}
       transition={this.state.sideTransition}
+      unreadCount={this.state.unreadCount}
 
       currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}

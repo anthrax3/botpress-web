@@ -64,13 +64,17 @@ export default class Side extends React.Component {
     </div>
   }
 
+  renderUnreadCount() {
+    return <span className={style.unread}>{this.props.unreadCount}</span>
+  }
+
   renderTitle() {
     const title  = (this.props.currentConversation && !this.state.showConvos)
       ? this.props.config.botConvoTitle
       : 'Conversations'
 
     return <div className={style.title}>
-        <div className={style.name}>{title}</div>
+        <div className={style.name}>{title}{this.props.unreadCount > 0 ? this.renderUnreadCount() : null}</div>
       </div>
   }
 
