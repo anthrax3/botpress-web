@@ -225,7 +225,6 @@ export default class Web extends React.Component {
   safeUpdateCurrentConvo(convoId, addToUnread, updater) {
     // there's no conversation to update or our convo changed
     if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
-      updateSoundAndUnreadCount()
       return
     }
 
