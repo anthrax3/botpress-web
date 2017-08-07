@@ -73,8 +73,9 @@ export default class MessageList extends Component {
   }
 
   renderQuickReplies() {
-    const message = _.last(this.props.messages)
-    const quick_replies = _.get(message, 'message_raw.quick_replies')
+    const messages = this.props.messages
+    const message = messages[messages.length - 1]
+    const quick_replies = message && message['message_raw'] && message['message_raw']['quick_replies']
 
     return <QuickReplies 
       quick_replies={quick_replies}
@@ -128,14 +129,15 @@ export default class MessageList extends Component {
 
     return <div>
       {groups.map((messages, i) => {
-        const lastDate = groups[i - 1] && _.last(groups[i - 1]) && _.last(groups[i - 1]).sent_on 
-        const groupDate = messages && _.first(messages).sent_on
+        const lastGroup = groups[i - 1]
+        const lastDate = lastGroup && lastGroup[lastGroup.length - 1] && lastGroup[lastGroup.length - 1].sent_on 
+        const groupDate = messages && messages[0].sent_on
 
         const isDateNeeded = !groups[i - 1]
           || differenceInMinutes(new Date(groupDate), new Date(lastDate)) > TIME_BETWEEN_DATES
 
         return <div>
-            {isDateNeeded ? this.renderDate(_.first(messages).sent_on) : null}
+            {isDateNeeded ? this.renderDate(messages[0].sent_on) : null}
             <MessageGroup 
               avatarUrl={this.props.avatarUrl}
               fgColor={this.props.fgColor}

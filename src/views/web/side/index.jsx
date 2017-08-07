@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 // import { Picker } from 'emoji-mart'
-import _ from 'lodash'
 
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
@@ -187,10 +186,10 @@ export default class Side extends React.Component {
 
   renderConversation() {
     const messagesProps = {
-      typingUntil: _.get(this.props, 'currentConversation.typingUntil'),
-      fgColor: _.get(this.props, 'config.foregroundColor'),
-      messages: _.get(this.props, 'currentConversation.messages'),
-      avatarUrl: _.get(this.props, 'config.botAvatarUrl'),
+      typingUntil: this.props.currentConversation && this.props.currentConversation.typingUntil,
+      messages: this.props.currentConversation && this.props.currentConversation.messages,
+      fgColor: this.props.config && this.props.config.foregroundColor,
+      avatarUrl: this.props.config && this.props.config.botAvatarUrl,
       onQuickReplySend: this.props.onQuickReplySend
     }
 
