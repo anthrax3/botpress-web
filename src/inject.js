@@ -16,9 +16,9 @@ $(function() {
 
     if ($('#bp-web-widget').length <= 0) {
 
-      var BASE_URL = 'http://localhost:3000'; // <<--- TODO
+      var BASE_URL = window.BOTPRESS_URL || 'http://localhost:3000'; 
 
-      var style = $('<link href="' + BASE_URL + '/api/botpress-web/inject.css" rel="stylesheet">');
+      var style = $('<link href="/api/botpress-web/inject.css" rel="stylesheet">');
       style.appendTo('head');
 
       var widgetContainer = $("<div id='bp-web-widget'></div>");
@@ -26,6 +26,6 @@ $(function() {
 
       $('<iframe id="bp-widget">')
       .appendTo('#bp-web-widget')
-      .attr({ src: BASE_URL + '/lite/?m=web&v=web' });
+      .attr({ src: '/lite/?m=web&v=web' });
     }
 });
