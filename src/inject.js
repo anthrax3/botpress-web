@@ -16,8 +16,6 @@ $(function() {
 
     if ($('#bp-web-widget').length <= 0) {
 
-      var BASE_URL = window.BOTPRESS_URL || 'http://localhost:3000'; 
-
       var style = $('<link href="/api/botpress-web/inject.css" rel="stylesheet">');
       style.appendTo('head');
 
