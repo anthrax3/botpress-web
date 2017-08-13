@@ -73,7 +73,7 @@ export default class MessageList extends Component {
   }
 
   renderQuickReplies() {
-    const messages = this.props.messages
+    const messages = this.props.messages || []
     const message = messages[messages.length - 1]
     const quick_replies = message && message['message_raw'] && message['message_raw']['quick_replies']
 

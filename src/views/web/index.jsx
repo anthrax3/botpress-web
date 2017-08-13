@@ -44,12 +44,12 @@ export default class Web extends React.Component {
   componentDidMount() {
     this.fetchData()
     .then(() => {
+      this.handleSwitchView('widget')
+      this.showConvoPopUp()
+
       this.setState({
         loading: false
       })
-
-      this.handleSwitchView('widget')
-      this.showConvoPopUp()
     })
   }
 
@@ -157,11 +157,11 @@ export default class Web extends React.Component {
     })
   }
 
-  fetchCurrentConversation() {
+  fetchCurrentConversation(convoId) {
     const axios = this.props.bp.axios
     const userId = window.__BP_VISITOR_ID
 
-    let conversationIdToFetch = this.state.currentConversationId
+    let conversationIdToFetch = convoId || this.state.currentConversationId
     if (this.state.conversations.length > 0 && !conversationIdToFetch) {
       conversationIdToFetch = this.state.conversations[0].id
       this.setState({ currentConversationId:  conversationIdToFetch })
@@ -325,9 +325,7 @@ export default class Web extends React.Component {
       currentConversationId: convoId
     })
 
-    setImmediate(() => {
-      this.fetchCurrentConversation()
-    })
+    this.fetchCurrentConversation(convoId)
   }
 
   handleClosePanel() {
