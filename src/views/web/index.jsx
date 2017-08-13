@@ -397,7 +397,7 @@ export default class Web extends React.Component {
       return null
     }
 
-    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
+    window.parent && window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
     return <div className={style.web} onFocus={::this.handleResetUnreadCount}>
         {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
