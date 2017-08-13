@@ -13,8 +13,8 @@
     border-left: 1px solid #ccc;
     visibility: hidden;
 
-    .transiting {
-
+    &.fullscreen {
+      visibility: visible;
     }
 
     -webkit-box-orient: vertical;
@@ -390,7 +390,6 @@
     }
   }
 }
-
 
 // Animations
 .fadeIn {

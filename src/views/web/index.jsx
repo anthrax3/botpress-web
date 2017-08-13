@@ -381,6 +381,8 @@ export default class Web extends React.Component {
     return <Side
       config={this.state.config}
       text={this.state.textToSend}
+
+      fullscreen={this.props.fullscreen}
       transition={!this.props.fullscreen ? this.state.sideTransition : null}
       unreadCount={this.state.unreadCount}
 

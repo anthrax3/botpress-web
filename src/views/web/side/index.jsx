@@ -239,7 +239,8 @@ export default class Side extends React.Component {
   }
 
   render() {
-    const classNames = classnames(style.internal, style[this.props.transition])
+    const fullscreen = this.props.fullscreen ? 'fullscreen' : null
+    const classNames = classnames(style.internal, style[fullscreen], style[this.props.transition])
 
     return <span className={style.external}>
       <div className={classNames}
