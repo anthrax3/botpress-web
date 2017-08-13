@@ -74,22 +74,27 @@ export default class Web extends React.Component {
 
       if (this.state.view !== 'convo') {
         setTimeout(() => {
+          console.log('Transition A', new Date().getTime())
           this.setState({
-            sideTransition: 'fadeIn'
+            sideTransition: 'fadeIn',
+            view: view
           })
-        }, ANIM_DURATION)
+        }, ANIM_DURATION + 10)
       }
     }
 
     if (view === 'convo') {
       setTimeout(() => {
+        console.log('Transition B', new Date().getTime())
         this.setState({
-          convoTransition: 'fadeIn'
+          convoTransition: 'fadeIn',
+          view: view
         })
       }, ANIM_DURATION)
     }
 
     if (view === 'widget') {
+      console.log('Transition C', new Date().getTime())
       this.setState({
         convoTransition: 'fadeOut',
         sideTransition: 'fadeOut'
@@ -97,27 +102,30 @@ export default class Web extends React.Component {
 
       if (!this.state.view || this.state.view === 'side') {
         setTimeout(() => {
+          console.log('Transition D', new Date().getTime())
           this.setState({
-            widgetTransition: 'fadeIn'
+            widgetTransition: 'fadeIn',
+            view: view
           })
         }, ANIM_DURATION)
       }
     }
 
     setTimeout(() => {
+      console.log('Transition <SET VIEW TO ' + view + '>', new Date().getTime())
       this.setState({
         view: view
       })
     }, ANIM_DURATION)
-    
 
     setTimeout(() => {
+      console.log('Transition <CLEAR ALL> <KEEP FADE IN>', new Date().getTime())
       this.setState({
         widgetTransition: null,
         convoTransition: null,
-        sideTransition: null
+        sideTransition: this.state.sideTransition === 'fadeIn' ? 'fadeIn' : null
       })
-    }, ANIM_DURATION * 2)
+    }, ANIM_DURATION * 2.1)
   }
 
   handleButtonClicked() {
