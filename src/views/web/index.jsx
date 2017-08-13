@@ -72,20 +72,17 @@ export default class Web extends React.Component {
         widgetTransition: 'fadeOut'
       })
 
-      if (this.state.view !== 'convo') {
-        setTimeout(() => {
-          console.log('Transition A', new Date().getTime())
-          this.setState({
-            sideTransition: 'fadeIn',
-            view: view
-          })
-        }, ANIM_DURATION + 10)
-      }
+      setTimeout(() => {
+        this.setState({
+          sideTransition: 'fadeIn',
+          view: view
+        })
+      }, ANIM_DURATION + 10)
+      
     }
 
     if (view === 'convo') {
       setTimeout(() => {
-        console.log('Transition B', new Date().getTime())
         this.setState({
           convoTransition: 'fadeIn',
           view: view
@@ -94,7 +91,6 @@ export default class Web extends React.Component {
     }
 
     if (view === 'widget') {
-      console.log('Transition C', new Date().getTime())
       this.setState({
         convoTransition: 'fadeOut',
         sideTransition: 'fadeOut'
@@ -102,7 +98,6 @@ export default class Web extends React.Component {
 
       if (!this.state.view || this.state.view === 'side') {
         setTimeout(() => {
-          console.log('Transition D', new Date().getTime())
           this.setState({
             widgetTransition: 'fadeIn',
             view: view
@@ -112,14 +107,12 @@ export default class Web extends React.Component {
     }
 
     setTimeout(() => {
-      console.log('Transition <SET VIEW TO ' + view + '>', new Date().getTime())
       this.setState({
         view: view
       })
     }, ANIM_DURATION)
 
     setTimeout(() => {
-      console.log('Transition <CLEAR ALL> <KEEP FADE IN>', new Date().getTime())
       this.setState({
         widgetTransition: null,
         convoTransition: null,
