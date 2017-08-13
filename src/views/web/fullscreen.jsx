@@ -9,5 +9,5 @@ export default class FullscreenChat extends React.Component {
   render() {
     return <Chat fullscreen={true} {...this.props}/>
   }
-
+  
 }
