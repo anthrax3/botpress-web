@@ -224,6 +224,10 @@ export default class Web extends React.Component {
   safeUpdateCurrentConvo(convoId, addToUnread, updater) {
     // there's no conversation to update or our convo changed
     if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
+      
+      this.fetchConversations()
+      .then(::this.fetchCurrentConversation)
+      
       return
     }
 
@@ -378,7 +382,7 @@ export default class Web extends React.Component {
     return <Side
       config={this.state.config}
       text={this.state.textToSend}
-      transition={this.state.sideTransition}
+      transition={!this.props.fullscreen ? this.state.sideTransition : null}
       unreadCount={this.state.unreadCount}
 
       currentConversation={this.state.currentConversation}
@@ -386,7 +390,7 @@ export default class Web extends React.Component {
 
       addEmojiToText={::this.handleAddEmoji}
 
-      onClose={::this.handleClosePanel}
+      onClose={!this.props.fullscreen ? ::this.handleClosePanel : null}
       onSwitchConvo={::this.handleSwitchConvo}
       onTextSend={::this.handleSendMessage}
       onTextChanged={::this.handleTextChanged}
@@ -400,8 +404,12 @@ export default class Web extends React.Component {
 
     window.parent && window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
+    const view = this.state.view !== 'side' && !this.props.fullscreen
+      ? this.renderWidget()
+      : this.renderSide()
+
     return <div className={style.web} onFocus={::this.handleResetUnreadCount}>
-        {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
+        {view}
       </div>
   }
 }
