@@ -79,7 +79,8 @@ var webConfig = {
 
 const liteConfig = Object.assign({}, webConfig, {
   entry: {
-    web: './src/views/web/index.jsx'
+    embedded: './src/views/web/embedded.jsx',
+    fullscreen: './src/views/web/fullscreen.jsx'
   },
   output: {
     path: './bin/lite',

@@ -24,6 +24,6 @@ $(function() {
 
       $('<iframe id="bp-widget">')
       .appendTo('#bp-web-widget')
-      .attr({ src: '/lite/?m=web&v=web' });
+      .attr({ src: '/lite/?m=web&v=embedded' });
     }
 });
