@@ -128,6 +128,7 @@ module.exports = (knex, botfile) => {
   }
 
   async function patchConversation(userId, conversationId, title, description, logoUrl) {
+
     await knex('web_conversations')
     .where({ userId, id: conversationId })
     .update({
@@ -170,11 +171,11 @@ module.exports = (knex, botfile) => {
       this.from('web_messages')
       .whereIn('conversationId', conversationIds)
       .groupBy('conversationId')
-      .select('conversationId', knex.raw('MAX(id) as msgId'))
+      .select('conversationId', knex.raw('max(id) as msgid'))
       .as('q1')
     })
     .innerJoin('web_conversations', 'web_conversations.id', 'q1.conversationId')
-    .innerJoin('web_messages', 'web_messages.id', 'q1.msgId')
+    .innerJoin('web_messages', 'web_messages.id', 'q1.msgid')
     .orderBy('web_messages.sent_on', 'desc')
     .select(
       'web_conversations.id',
@@ -192,8 +193,14 @@ module.exports = (knex, botfile) => {
   }
 
   async function getConversation(userId, conversationId, fromId = null) {
+    const condition = { userId: userId }
+
+    if (conversationId && conversationId !== 'null') {
+      condition.id = conversationId
+    }
+
     const conversation = await knex('web_conversations')
-      .where({ userId: userId, id: conversationId })
+      .where(condition)
       .then().get(0).then()
 
     if (!conversation) {
