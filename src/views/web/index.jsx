@@ -1,12 +1,13 @@
+
 /* global: window */
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Sound from 'react-sound'
 import classnames from 'classnames'
-import { Emoji } from 'emoji-mart'
-import _ from 'lodash'
-import moment from 'moment'
+// import { Emoji } from 'emoji-mart'
+
+import addMilliseconds from 'date-fns/add_milliseconds'
+import isBefore from 'date-fns/is_before'
 
 import Convo from './convo'
 import Side from './side'
@@ -14,6 +15,9 @@ import Side from './side'
 import style from './style.scss'
 
 const BOT_HOSTNAME = window.location.origin
+const ANIM_DURATION = 300
+
+const MIN_TIME_BETWEEN_SOUNDS = 10000 // 10 seconds
 
 export default class Web extends React.Component {
 
@@ -21,13 +25,15 @@ export default class Web extends React.Component {
     super(props)
 
     this.state = {
-      view: 'convo',
+      view: null,
       textToSend: '',
       loading: true,
-      soundPlaying: Sound.status.STOPPED,
+      played: false,
+      opened: false,
       conversations: null,
       currentConversation: null,
-      currentConversationId: null
+      currentConversationId: null,
+      unreadCount: 0
     }
   }
 
@@ -38,10 +44,89 @@ export default class Web extends React.Component {
   componentDidMount() {
     this.fetchData()
     .then(() => {
+      this.handleSwitchView('widget')
+      this.showConvoPopUp()
+
       this.setState({
         loading: false
       })
     })
+  }
+
+  showConvoPopUp() {
+    if (this.state.config.welcomeMsgEnable) {
+      setTimeout(() => {
+        if (!this.state.opened) {
+          this.handleSwitchView('convo')
+        }
+      }, this.state.config.welcomeMsgDelay || 5000)
+    }
+  }
+
+  handleSwitchView(view) {
+    if (view === 'side' && this.state.view !== 'side') {
+      this.setState({
+        opened: true,
+        unreadCount: 0,
+        convoTransition: 'fadeOut',
+        widgetTransition: 'fadeOut'
+      })
+
+      setTimeout(() => {
+        this.setState({
+          sideTransition: 'fadeIn',
+          view: view
+        })
+      }, ANIM_DURATION + 10)
+      
+    }
+
+    if (view === 'convo') {
+      setTimeout(() => {
+        this.setState({
+          convoTransition: 'fadeIn',
+          view: view
+        })
+      }, ANIM_DURATION)
+    }
+
+    if (view === 'widget') {
+      this.setState({
+        convoTransition: 'fadeOut',
+        sideTransition: 'fadeOut'
+      })
+
+      if (!this.state.view || this.state.view === 'side') {
+        setTimeout(() => {
+          this.setState({
+            widgetTransition: 'fadeIn',
+            view: view
+          })
+        }, ANIM_DURATION)
+      }
+    }
+
+    setTimeout(() => {
+      this.setState({
+        view: view
+      })
+    }, ANIM_DURATION)
+
+    setTimeout(() => {
+      this.setState({
+        widgetTransition: null,
+        convoTransition: null,
+        sideTransition: this.state.sideTransition === 'fadeIn' ? 'fadeIn' : null
+      })
+    }, ANIM_DURATION * 2.1)
+  }
+
+  handleButtonClicked() {
+    if (this.state.view === 'convo') {
+      this.handleSwitchView('widget')
+    } else {
+      this.handleSwitchView('side')
+    }
   }
 
   setupSocket() {
@@ -73,13 +158,13 @@ export default class Web extends React.Component {
     })
   }
 
-  fetchCurrentConversation() {
+  fetchCurrentConversation(convoId) {
     const axios = this.props.bp.axios
     const userId = window.__BP_VISITOR_ID
 
-    let conversationIdToFetch = this.state.currentConversationId
-    if (!_.isEmpty(this.state.conversations) && !conversationIdToFetch) {
-      conversationIdToFetch = _.first(this.state.conversations).id
+    let conversationIdToFetch = convoId || this.state.currentConversationId
+    if (this.state.conversations.length > 0 && !conversationIdToFetch) {
+      conversationIdToFetch = this.state.conversations[0].id
       this.setState({ currentConversationId:  conversationIdToFetch })
     }
 
@@ -107,7 +192,7 @@ export default class Web extends React.Component {
   }
 
   handleNewMessage(event) {
-    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+    this.safeUpdateCurrentConvo(event.conversationId, true, convo => {
       return Object.assign({}, convo, {
         messages: [...convo.messages, event],
         typingUntil: event.userId ? convo.typingUntil : null
@@ -116,9 +201,9 @@ export default class Web extends React.Component {
   }
 
   handleBotTyping(event) {
-    this.safeUpdateCurrentConvo(event.conversationId, convo => {
+    this.safeUpdateCurrentConvo(event.conversationId, false, convo => {
       return Object.assign({}, convo, {
-        typingUntil: moment().add(event.timeInMs, 'milliseconds').toDate()
+        typingUntil: addMilliseconds(new Date(), event.timeInMs)
       })
     })
 
@@ -129,25 +214,34 @@ export default class Web extends React.Component {
     const currentTypingUntil = this.state.currentConversation
       && this.state.currentConversation.typingUntil
 
-    const now = moment()
-    const timerExpired = currentTypingUntil && moment(currentTypingUntil).isBefore(now)
+    const timerExpired = currentTypingUntil && isBefore(new Date(currentTypingUntil), new Date())
     if (timerExpired) {
-      this.safeUpdateCurrentConvo(this.state.currentConversationId, convo => {
+      this.safeUpdateCurrentConvo(this.state.currentConversationId, false, convo => {
         return Object.assign({}, convo, { typingUntil: null })
       })
     }
   }
 
-  safeUpdateCurrentConvo(convoId, updater) {
+  safeUpdateCurrentConvo(convoId, addToUnread, updater) {
+    // there's no conversation to update or our convo changed
     if (!this.state.currentConversation || this.state.currentConversationId !== convoId) {
-      // there's no conversation to update or our convo changed
-      this.playSound() // TODO We also need to amend the convo and set unread count ++
+      
+      this.fetchConversations()
+      .then(::this.fetchCurrentConversation)
+      
       return
     }
 
-    if (document.hasFocus && !document.hasFocus()) {
-      this.playSound() // TODO We also need to amend the convo unread count ++
-    }
+    // there's no focus on the actual conversation
+    if ((document.hasFocus && !document.hasFocus()) || this.state.view !== 'side') {
+      this.playSound()
+      
+      if (addToUnread) {
+        this.increaseUnreadCount()
+      }
+    } 
+
+    this.handleResetUnreadCount()
 
     const newConvo = updater && updater(this.state.currentConversation)
 
@@ -156,9 +250,35 @@ export default class Web extends React.Component {
     }
   }
 
-  playSound() {
-    console.log('PLAY SOUND')
-    this.setState({ soundPlaying: Sound.status.PLAYING })
+  playSound() { 
+    if (!this.state.played && this.state.view !== 'convo') { // TODO: Remove this condition (view !== 'convo') and fix transition sounds
+      const audio = new Audio('/api/botpress-web/static/notification.mp3')
+      audio.play()
+
+      this.setState({ 
+        played: true
+      })
+
+      setTimeout(() => {
+        this.setState({
+          played: false
+        })
+      }, MIN_TIME_BETWEEN_SOUNDS)
+    }
+  }
+
+  increaseUnreadCount() {
+    this.setState({
+      unreadCount: this.state.unreadCount + 1
+    })
+  }
+
+  handleResetUnreadCount() {
+    if (document.hasFocus && document.hasFocus() && this.state.view === 'side') {
+      this.setState({
+        unreadCount: 0
+      })
+    }
   }
 
   handleSendMessage() {
@@ -168,8 +288,9 @@ export default class Web extends React.Component {
 
     this.props.bp.axios.post(url, { type: 'text', text: this.state.textToSend }, config)
     .then(() => {
+      this.handleSwitchView('side')
+
       this.setState({
-        view: 'side',
         textToSend: ''
       })
     })
@@ -185,18 +306,6 @@ export default class Web extends React.Component {
     this.setState({
       textToSend: this.state.textToSend + emoji.native + ' '
     })
-  }
-
-  handleButtonClicked() {
-    if (this.state.view === 'convo') {
-      this.setState({
-        view: 'widget',
-      })
-    } else {
-      this.setState({
-        view: 'side'
-      })
-    }
   }
 
   handleSendQuickReply(title, payload) {
@@ -217,24 +326,11 @@ export default class Web extends React.Component {
       currentConversationId: convoId
     })
 
-    setImmediate(() => {
-      this.fetchCurrentConversation()
-      .then(() => {
-        this.setState({
-          view: 'side'
-        })
-      })
-    })
+    this.fetchCurrentConversation(convoId)
   }
 
   handleClosePanel() {
-    this.setState({
-      view: 'widget'
-    })
-  }
-
-  handleSoundDone() {
-    this.setState({ soundPlaying: Sound.status.STOPPED })
+    this.handleSwitchView('widget')
   }
 
   renderOpenIcon() {
@@ -249,11 +345,17 @@ export default class Web extends React.Component {
       </svg>
   }
 
+  renderUncountMessages() {
+    return <span className={style.unread}>{this.state.unreadCount}</span>
+  }
+
   renderButton() {
     return <button
+      className={style[this.state.widgetTransition]}
       onClick={::this.handleButtonClicked}
       style={{ backgroundColor: this.state.config.foregroundColor }}>
         <i>{this.state.view === 'convo' ? this.renderCloseIcon() : this.renderOpenIcon()}</i>
+        {this.state.unreadCount > 0 ? this.renderUncountMessages() : null}
       </button>
   }
 
@@ -263,6 +365,7 @@ export default class Web extends React.Component {
           <span>
             {this.state.view === 'convo'
               ? <Convo
+                transition={this.state.convoTransition}
                 change={::this.handleTextChanged}
                 send={::this.handleSendMessage}
                 config={this.state.config}
@@ -278,12 +381,15 @@ export default class Web extends React.Component {
     return <Side
       config={this.state.config}
       text={this.state.textToSend}
+      transition={!this.props.fullscreen ? this.state.sideTransition : null}
+      unreadCount={this.state.unreadCount}
+
       currentConversation={this.state.currentConversation}
       conversations={this.state.conversations}
 
       addEmojiToText={::this.handleAddEmoji}
 
-      onClose={::this.handleClosePanel}
+      onClose={!this.props.fullscreen ? ::this.handleClosePanel : null}
       onSwitchConvo={::this.handleSwitchConvo}
       onTextSend={::this.handleSendMessage}
       onTextChanged={::this.handleTextChanged}
@@ -291,15 +397,18 @@ export default class Web extends React.Component {
   }
 
   render() {
-    if (this.state.loading) {
+    if (this.state.loading || !this.state.view) {
       return null
     }
 
-    window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
+    window.parent && window.parent.postMessage({ type: 'setClass', value: 'bp-widget-web bp-widget-' + this.state.view }, '*')
 
-    return <div className={style.web} >
-        <Sound url={'/api/botpress-web/static/notification.mp3'} playStatus={this.state.soundPlaying} onFinishedPlaying={::this.handleSoundDone} />
-        {this.state.view !== 'side' ? this.renderWidget() : this.renderSide()}
+    const view = this.state.view !== 'side' && !this.props.fullscreen
+      ? this.renderWidget()
+      : this.renderSide()
+
+    return <div className={style.web} onFocus={::this.handleResetUnreadCount}>
+        {view}
       </div>
   }
 }

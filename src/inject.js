@@ -6,8 +6,14 @@
 $(function() {
     var w = window;
 
+    var host = '';
+
+    if (w.botpressSettings) {
+      host = 'https://' + w.botpressSettings.hostname
+    }
+
     window.addEventListener('message', event => {
-      const data = event.data
+      var data = event.data
 
       if (data && data.type && data.type === 'setClass') {
         $('#bp-widget').attr('class', data.value)
@@ -16,9 +22,7 @@ $(function() {
 
     if ($('#bp-web-widget').length <= 0) {
 
-      var BASE_URL = 'http://localhost:3000'; // <<--- TODO
-
-      var style = $('<link href="' + BASE_URL + '/api/botpress-web/inject.css" rel="stylesheet">');
+      var style = $('<link href="' + host + '/api/botpress-web/inject.css" rel="stylesheet">');
       style.appendTo('head');
 
       var widgetContainer = $("<div id='bp-web-widget'></div>");
@@ -26,6 +30,6 @@ $(function() {
 
       $('<iframe id="bp-widget">')
       .appendTo('#bp-web-widget')
-      .attr({ src: BASE_URL + '/lite/?m=web&v=web' });
+      .attr({ src: host + '/lite/?m=web&v=embedded' });
     }
 });

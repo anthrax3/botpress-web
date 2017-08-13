@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
-import { Picker } from 'emoji-mart'
-import moment from 'moment'
-import _ from 'lodash'
+// import { Picker } from 'emoji-mart'
+
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now'
 
 import Send from '../send'
 import MessageList from '../messages'
@@ -12,7 +12,7 @@ import Input from '../input'
 import BotAvatar from '../bot_avatar'
 
 import style from './style.scss'
-require('emoji-mart/css/emoji-mart.css')
+// require('emoji-mart/css/emoji-mart.css')
 
 export default class Side extends React.Component {
 
@@ -64,13 +64,17 @@ export default class Side extends React.Component {
     </div>
   }
 
+  renderUnreadCount() {
+    return <span className={style.unread}>{this.props.unreadCount}</span>
+  }
+
   renderTitle() {
     const title  = (this.props.currentConversation && !this.state.showConvos)
       ? this.props.config.botConvoTitle
       : 'Conversations'
 
     return <div className={style.title}>
-        <div className={style.name}>{title}</div>
+        <div className={style.name}>{title}{this.props.unreadCount > 0 ? this.renderUnreadCount() : null}</div>
       </div>
   }
 
@@ -83,6 +87,10 @@ export default class Side extends React.Component {
   }
 
   renderCloseButton() {
+    if (!this.props.onClose) {
+      return null
+    }
+    
     return <span className={style.icon}>
         <i onClick={this.props.onClose}>
           <svg width="17" height="17" viewBox="0 0 17 17" xmlns="http://www.w3.org/2000/svg"><path d="M9.502 8.5l7.29 7.29c.277.278.277.727 0 1.003-.137.138-.32.207-.5.207s-.362-.07-.5-.207L8.5 9.503l-7.29 7.29c-.14.138-.32.207-.5.207-.183 0-.364-.07-.502-.207-.277-.276-.277-.725 0-1.002l7.29-7.29-7.29-7.29C-.07.932-.07.483.208.206c.277-.276.725-.276 1 0L8.5 7.497l7.29-7.29c.277-.276.725-.276 1.002 0 .277.277.277.726 0 1.002L9.502 8.5z" fill-rule="evenodd"></path></svg>
@@ -109,6 +117,8 @@ export default class Side extends React.Component {
   }
 
   renderAttachmentButton() {
+    return null // Temporary removed this feature (not implemented yet)
+
     return <li>
         <a>
           <i>
@@ -119,6 +129,8 @@ export default class Side extends React.Component {
   }
 
   renderEmojiButton() {
+    return null // Temporary removed this feature (emoji-mart lib is too big)
+
     return <li>
         <a>
           <i onClick={::this.handleEmojiClicked}>
@@ -162,24 +174,26 @@ export default class Side extends React.Component {
       return null
     }
 
-    return <div className={style.emoji}>
-        <div className={style.inside}>
-          <Picker
-            onClick={this.props.addEmojiToText} 
-            set='emojione'
-            emojiSize={18}
-            perLine={10}
-            color={this.props.config.foregroundColor}/>
-        </div>
-      </div>
+    return null // Temporary removed this feature (emoji-mart is too big)
+
+    // return <div className={style.emoji}>
+    //     <div className={style.inside}>
+    //       <Picker
+    //         onClick={this.props.addEmojiToText} 
+    //         set='emojione'
+    //         emojiSize={18}
+    //         perLine={10}
+    //         color={this.props.config.foregroundColor}/>
+    //     </div>
+    //   </div>
   }
 
   renderConversation() {
     const messagesProps = {
-      typingUntil: _.get(this.props, 'currentConversation.typingUntil'),
-      fgColor: _.get(this.props, 'config.foregroundColor'),
-      messages: _.get(this.props, 'currentConversation.messages'),
-      avatarUrl: _.get(this.props, 'config.botAvatarUrl'),
+      typingUntil: this.props.currentConversation && this.props.currentConversation.typingUntil,
+      messages: this.props.currentConversation && this.props.currentConversation.messages,
+      fgColor: this.props.config && this.props.config.foregroundColor,
+      avatarUrl: this.props.config && this.props.config.botAvatarUrl,
       onQuickReplySend: this.props.onQuickReplySend
     }
 
@@ -193,10 +207,16 @@ export default class Side extends React.Component {
 
   renderItemConvos(convo, key) {
     const title = convo.title || convo.message_author || 'Untitled Conversation'
-    const date = moment(convo.message_sent_on || convo.created_on).fromNow()
+    const date = distanceInWordsToNow(new Date(convo.message_sent_on || convo.created_on))
     const message = convo.message_text || '...'
     
-    const onClick = () => this.props.onSwitchConvo && this.props.onSwitchConvo(convo.id)
+    const onClick = () => {
+      this.props.onSwitchConvo && this.props.onSwitchConvo(convo.id)
+      
+      this.setState({
+        showConvos: false
+      })
+    }
 
     return <div className={style.item} key={key} onClick={onClick}>
         <div className={style.left}>
@@ -219,8 +239,10 @@ export default class Side extends React.Component {
   }
 
   render() {
+    const classNames = classnames(style.internal, style[this.props.transition])
+
     return <span className={style.external}>
-      <div className={style.internal}
+      <div className={classNames}
         style={{ 
           backgroundColor: this.props.config.backgroundColor,
           color: this.props.config.textColorOnBackgound
