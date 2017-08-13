@@ -74,7 +74,7 @@ export default class Convo extends React.Component {
   }
 
   renderAvatar() {
-    let content = <BotAvatar />
+    let content = <BotAvatar foregroundColor={this.props.config.foregroundColor}/>
 
     if (this.props.config.botAvatarUrl) {
       content = <div className={style.picture} style={{ backgroundImage: 'url(' + this.props.config.botAvatarUrl +')'}}></div>
