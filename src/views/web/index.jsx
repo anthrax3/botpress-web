@@ -4,6 +4,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classnames from 'classnames'
+
 // import { Emoji } from 'emoji-mart'
 
 import addMilliseconds from 'date-fns/add_milliseconds'
@@ -42,7 +43,8 @@ export default class Web extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData()
+    this.setUserId()
+    .then(::this.fetchData)
     .then(() => {
       this.handleSwitchView('widget')
       this.showConvoPopUp()
@@ -50,6 +52,25 @@ export default class Web extends React.Component {
       this.setState({
         loading: false
       })
+    })
+  }
+
+  setUserId() {
+    return new Promise((resolve, reject) => {
+
+      const interval = setInterval(() => {
+        if (window.__BP_VISITOR_ID) {
+          clearInterval(interval)
+          this.userId = window.__BP_VISITOR_ID
+          resolve()
+        }
+      }, 250)
+
+      setTimeout(() => {
+        clearInterval(interval)
+        reject()
+      }, 10000)
+      
     })
   }
 
@@ -147,7 +168,7 @@ export default class Web extends React.Component {
 
   fetchConversations() {
     const axios = this.props.bp.axios
-    const userId = window.__BP_VISITOR_ID
+    const userId = this.userId
     const url = `${BOT_HOSTNAME}/api/botpress-web/conversations/${userId}`
 
     return axios.get(url)
@@ -160,7 +181,7 @@ export default class Web extends React.Component {
 
   fetchCurrentConversation(convoId) {
     const axios = this.props.bp.axios
-    const userId = window.__BP_VISITOR_ID
+    const userId = this.userId
 
     let conversationIdToFetch = convoId || this.state.currentConversationId
     if (this.state.conversations.length > 0 && !conversationIdToFetch) {
