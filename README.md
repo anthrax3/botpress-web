@@ -17,7 +17,7 @@ Actually, there's two ways of installing `botpress-web`. The reason is because t
 Installing modules on Botpress is simple. By using the CLI, you only need to type this command in your terminal to add the messenger module to your bot.
 
 ```
-  botpress install botpress-web@next
+  npm install botpress-web@next
 ```
 
 > **Note about branch**
@@ -142,13 +142,17 @@ foregroundColor: '#0176ff' ## Element background color (header, composer, button
 textColorOnForeground: '#ffffff'  ## Element text color (header, composer, button..)
 ```
 
-### Pro Version
-- Make the chat style customizable (pro version, ask @Sylvain about this)
+> **Note**
+> 
+> You need to restart your bot by running `bp start` again for new settings to be effective.
 
-## Caveats
 
-- If you're running the bot in NODE_ENV=production, the module will prompt a login screen. We solved this situation in Botpress Pro (ask @Sylvain about this). To run this in production you essentially need a Pro version due to technical limitations regarding authentication & UI.
+### Community
 
-## Credits
+There's a [Slack community](https://slack.botpress.io) where you are welcome to join us, ask any question and even help others.
 
-Thanks to James Campbell for the original code of the Web Interface (code from Bottr)!
+Get an invite and join us now! 👉 [https://slack.botpress.io](https://slack.botpress.io)
+
+### License
+
+botpress-messenger is licensed under AGPL-3.0
