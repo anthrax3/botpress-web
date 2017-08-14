@@ -1,6 +1,6 @@
 # botpress-web
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_convo.png" height="60px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_convo.png" height="200px" />
 
 Official Webchat connector module for [Botpress](http://github.com/botpress/botpress).
 
@@ -30,11 +30,11 @@ You can use it a the same way you use **botpress-messenger** and **botpress-slac
 
 - Text messages
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="60px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
 
 - Quick replies
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="60px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" />
 
 - Caroussel *(soon)*
 - Image *(soon)*
@@ -49,13 +49,13 @@ When your bot is running, you can have access to a mobile view at **${HOSTNAME}/
 
 This **URL** is public so you can share it we other people, so they can try and talk with your bot.
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="60px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
 
 ### Web view (in the interface)
 
 The webchat is really useful to test and develop your bot. You won't have to connect your bot to any platform. You can access and test it directly in the UI of Botpress. When `botpress-web` is installed, it's automatically added to the plugins of your bot.
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_side.png" height="60px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_side.png" height="200px" />
 
 ### Web view (on external website)
 
