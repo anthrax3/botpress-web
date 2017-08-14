@@ -1,10 +1,8 @@
-# botpress-web (Alpha)
+# botpress-web (alpha)
 
 <img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_convo.png" height="200px" />
 
-Official Webchat connector module for [Botpress](http://github.com/botpress/botpress).
-
-This module has been build to accelerate and facilitate development of bots.
+Official Webchat connector module for [Botpress](http://github.com/botpress/botpress). This module has been build to accelerate and facilitate development of bots.
 
 ## How to install it
 
