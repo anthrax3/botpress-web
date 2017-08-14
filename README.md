@@ -1,19 +1,35 @@
-# botpress-web
+# botpress-web (Alpha)
 
 <img src="https://rawgit.com/botpress/botpress-web/next/assets/webview_convo.png" height="200px" />
 
 Official Webchat connector module for [Botpress](http://github.com/botpress/botpress).
 
-This module has been build to accelerate and facilitate development of Messenger bots.
+This module has been build to accelerate and facilitate development of bots.
 
 ## How to install it
 
-**Important:** You will need to run the development botpress branch (`next`) in order for this demo to work. The reason is because the fullscreen features is unreleased yet.
+Actually, there's two ways of installing `botpress-web` to your bot.
 
-- Compile botpress on branch `next`
-- `npm link ../path/to/botpress` in your bot
-- Run your bot and navigate to the `botpress-web` module interface
-- Append the `viewMode=3` to the URL query to put it in fullscreen
+### Using NPM
+
+Installing modules on Botpress is simple. By using the CLI, you only need to type this command in your terminal to add the messenger module to your bot.
+
+```
+botpress install botpress-web@next
+```
+> **Note**
+> 
+> The module is still under development, so we pushed it to on a different branch... It's also the reason why you need to add a @tag to install the good version.
+
+### Fork or clone from Github
+
+You will need to compile it yourself on branch (`next`). The reason is because the module is still under development and it's not officially unreleased yet.
+
+- Clone or fork the repository on branch `next`
+- Compile the module `npm run compile` under the module repository
+- Install it on your bot `bp i botpress-web`
+- Link it to your local version `npm link {$path}/botpress-web` (e.g. `npm link /Users/dfs/botpress-web`)
+- Run your bot `bp start` and go to the interface
 
 ## How to use it
 
