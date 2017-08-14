@@ -117,7 +117,7 @@ To embedded the web interface to an existing website, you simply need to add thi
 </script>
 ```
 
-### Customize the view
+## Customize the view
 
 A configuration file (`botpress-web.config.yml`) has been created at the `root` of your bot when you installed the module. By changing the values, you gonna be able to change some settings (name, messages, colors...) of your bot.
 
