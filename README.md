@@ -47,7 +47,7 @@ You can use it a the same way you use **botpress-messenger** and **botpress-slac
 
 ### Supported messages
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" /><img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" />
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" /><img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
 
 #### Sending Text
 
@@ -90,13 +90,13 @@ We are still working on other type of messages to increase the power of this mod
 
 ### Mobile view
 
-When your bot is running, you can have access to a mobile view at **${HOSTNAME}/lite/?m=web&v=fullscreen** *(e.g http://localhost:3000/lite/?m=web&v=fullscreen)*.
+When your bot is running, you can have access to a mobile view at `${HOSTNAME}/lite/?m=web&v=fullscreen` *(e.g `http://localhost:3000/lite/?m=web&v=fullscreen`)*.
 
 This **URL** is public so you can share it we other people, so they can try and talk with your bot.
 
 <img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
 
-### Web view (in the interface)
+### Web view (in the UI)
 
 The webchat is really useful to test and develop your bot. You won't have to connect your bot to any platform. You can access and test it directly in the UI of Botpress. When `botpress-web` is installed, it's automatically added to the plugins of your bot.
 
@@ -106,15 +106,40 @@ The webchat is really useful to test and develop your bot. You won't have to con
 
 To embedded the web interface to an existing website, you simply need to add this `script` at the end of your `<body>`. Don't forget to set the `hostname` correctly to match the **URL** of your bot.
 
-```
+```js
 <script>
   window.botpressSettings = {
     hostname: "botpress.pagekite.me" // <<-- Change this to your bot hostname
   };
-  </script>
-  <script>
+</script>
+<script>
   !function(){function t(){var t=n.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://"+a.hostname+"/api/botpress-web/inject.js";var e=n.getElementsByTagName("script")[0];e.parentNode.insertBefore(t,e)}var e=window,a=e.botpressSettings,n=document;e.attachEvent?e.attachEvent("onload",t):e.addEventListener("load",t,!1)}();
-  </script>
+</script>
+```
+
+### Customize the view
+
+A configuration file (`botpress-web.config.yml`) has been created at the `root` of your bot when you installed the module. By changing the values, you gonna be able to change some settings (name, messages, colors...) of your bot.
+
+```yaml
+# DEFAULT SETTINGS
+botName: 'Bot' ## Name of your bot
+botAvatarUrl: null ## Default avatar url of the image (e.g. 'https://avatars3.githubusercontent.com/u/1315508?v=4&s=400' )
+botConvoTitle: 'Technical Support' ## Title of the first conversation with the bot
+
+# POPUP CONVERSATION SETTINGS
+welcomeMsgEnable: true
+welcomeMsgDelay: 1000
+welcomeMsgText: | ## Welcome message that shows at on pop-up (multi-lines)
+  Hey guys!
+  Curious about our offer?
+  This is the default message...
+
+# COLOR SETTINGS
+backgroundColor: '#ffffff' ## Color of the background 
+textColorOnBackground: '#666666' ## Color of the text on the background
+foregroundColor: '#0176ff' ## Element background color (header, composer, button..)
+textColorOnForeground: '#ffffff'  ## Element text color (header, composer, button..)
 ```
 
 ### Pro Version
