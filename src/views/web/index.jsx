@@ -69,7 +69,7 @@ export default class Web extends React.Component {
       setTimeout(() => {
         clearInterval(interval)
         reject()
-      }, 10000)
+      }, 300000)
       
     })
   }
