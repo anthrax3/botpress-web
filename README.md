@@ -6,18 +6,18 @@ Official Webchat connector module for [Botpress](http://github.com/botpress/botp
 
 ## How to install it
 
-Actually, there's two ways of installing `botpress-web` to your bot. The reason is because the module is still under development and it's not officially unreleased yet. 
+Actually, there's two ways of installing `botpress-web`. The reason is because the module is still under development and it's not officially unreleased yet. 
 
 > **Note about release**
 > 
-> Official release should be done in the next few weeks. There's still some works to do and bug to fix. It should be working but we don't garanty it. 
+> Official release should be done in the next few weeks. There's still some works to do and bug to fix. It should be working, but we don't garanty it. 
 
 ### Using NPM
 
 Installing modules on Botpress is simple. By using the CLI, you only need to type this command in your terminal to add the messenger module to your bot.
 
 ```
-botpress install botpress-web@next
+  botpress install botpress-web@next
 ```
 
 > **Note about branch**
@@ -39,13 +39,15 @@ You will need to compile it yourself on branch (`next`) if you want to use it th
 You can use it a the same way you use **botpress-messenger** and **botpress-slack** or any other connector. The way of coding it remains the same, so you should use to code the interactions:
 
 - [UMM](https://botpress.io/docs/foundamentals/umm.html)
-- Flows (https://botpress.io/docs/foundamentals/flow.html).
+- [Flows](https://botpress.io/docs/foundamentals/flow.html).
 
 > **Note on Views**
 > 
 > You can talk to it and use it in different views (mobile, web, embedded), see section below to have the detail.
 
 ### Supported messages
+
+<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" /><img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" />
 
 #### Sending Text
 
@@ -62,8 +64,6 @@ welcome:
     message :).
 ```
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
-
 ##### Quick replies
 
 ##### `content.yml`
@@ -77,17 +77,14 @@ welcome:
       - <QR_NO> No
 ```
 
-<img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" />
-
-
 #### Other type of messages
 
 We are still working on other type of messages to increase the power of this module. **Pull requests** are always welcome if you want to help us to improve it and accelerate the development.
 
-- Caroussel *(soon)*
-- Image *(soon)*
-- Video *(soon)*
-- Audio *(soon)*
+- Caroussel **(soon)**
+- Image **(soon)**
+- Video **(soon)**
+- Audio **(soon)**
 
 ## Supported views
 
