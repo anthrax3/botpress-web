@@ -8,7 +8,11 @@ This module has been build to accelerate and facilitate development of bots.
 
 ## How to install it
 
-Actually, there's two ways of installing `botpress-web` to your bot.
+Actually, there's two ways of installing `botpress-web` to your bot. The reason is because the module is still under development and it's not officially unreleased yet. 
+
+> **Note about release**
+> 
+> Official release should be done in the next few weeks. There's still some works to do and bug to fix. It should be working but we don't garanty it. 
 
 ### Using NPM
 
@@ -17,13 +21,14 @@ Installing modules on Botpress is simple. By using the CLI, you only need to typ
 ```
 botpress install botpress-web@next
 ```
-> **Note**
+
+> **Note about branch**
 > 
-> The module is still under development, so we pushed it to on a different branch... It's also the reason why you need to add a @tag to install the good version.
+> The module is still under development, so we pushed it to on a branch `next`. It's the reason why you need to add a @tag to install the good version from NPM.
 
 ### Fork or clone from Github
 
-You will need to compile it yourself on branch (`next`). The reason is because the module is still under development and it's not officially unreleased yet.
+You will need to compile it yourself on branch (`next`) if you want to use it this way.
 
 - Clone or fork the repository on branch `next`
 - Compile the module `npm run compile` under the module repository
@@ -42,15 +47,44 @@ You can use it a the same way you use **botpress-messenger** and **botpress-slac
 > 
 > You can talk to it and use it in different views (mobile, web, embedded), see section below to have the detail.
 
-#### Supported messages
+### Supported messages
 
-- Text messages
+#### Sending Text
+
+##### `content.yml`
+
+```yaml
+welcome:
+  - Hello, world!
+  - This is a message on Messenger!
+  - text: this works too!
+    typing: 2s
+  - |
+    This is a multi-line
+    message :).
+```
 
 <img src="https://rawgit.com/botpress/botpress-web/next/assets/mobile_view.png" height="200px" />
 
-- Quick replies
+##### Quick replies
+
+##### `content.yml`
+
+```yaml
+welcome:
+  - text: Hello, world!
+    typing: 250ms
+    quick_replies:
+      - <QR_YES> Yes
+      - <QR_NO> No
+```
 
 <img src="https://rawgit.com/botpress/botpress-web/next/assets/quick_replies.png" height="200px" />
+
+
+#### Other type of messages
+
+We are still working on other type of messages to increase the power of this module. **Pull requests** are always welcome if you want to help us to improve it and accelerate the development.
 
 - Caroussel *(soon)*
 - Image *(soon)*
