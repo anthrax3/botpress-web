@@ -8,7 +8,7 @@ import style from './style.scss'
 
 class TypingIndicator extends React.Component {
   render() {
-    return <div className={style.typing}>
+    return <div className={style.typingIndicatorWrapper}>
       <Spinner name='ball-pulse-sync' fadeIn={'quarter'} className={style.spinner}/>
     </div>
   }
